@@ -12,7 +12,7 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package advanced;
+package example.getting_started;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,14 +24,12 @@ import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.CancelSpotInstanceRequestsRequest;
-import com.amazonaws.services.ec2.model.CreateTagsRequest;
 import com.amazonaws.services.ec2.model.DescribeSpotInstanceRequestsRequest;
 import com.amazonaws.services.ec2.model.DescribeSpotInstanceRequestsResult;
 import com.amazonaws.services.ec2.model.LaunchSpecification;
 import com.amazonaws.services.ec2.model.RequestSpotInstancesRequest;
 import com.amazonaws.services.ec2.model.RequestSpotInstancesResult;
 import com.amazonaws.services.ec2.model.SpotInstanceRequest;
-import com.amazonaws.services.ec2.model.Tag;
 import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
 
 /**
@@ -54,7 +52,7 @@ import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
  *
  */
 
-public class InlineTaggingCodeSampleApp {
+public class InlineGettingStartedCodeSampleApp {
 
 	/**
 	 * @param args
@@ -68,7 +66,7 @@ public class InlineTaggingCodeSampleApp {
 		AWSCredentials credentials = null;
 		try {
 			credentials = new PropertiesCredentials(
-			           	InlineTaggingCodeSampleApp.class.getResourceAsStream("AwsCredentials.properties"));
+			           	InlineGettingStartedCodeSampleApp.class.getResourceAsStream("AwsCredentials.properties"));
 		} catch (IOException e1) {
 			System.out.println("Credentials were not properly entered into AwsCredentials.properties.");
 			System.out.println(e1.getMessage());
@@ -118,31 +116,6 @@ public class InlineTaggingCodeSampleApp {
     		System.out.println("Created Spot Request: "+requestResponse.getSpotInstanceRequestId());
     		spotInstanceRequestIds.add(requestResponse.getSpotInstanceRequestId());
     	}
-
-    	//============================================================================================//
-    	//====================================== Tag the Spot Requests ===============================// 
-    	//============================================================================================//
-
-    	// Create the list of tags we want to create
-    	ArrayList<Tag> requestTags = new ArrayList<Tag>();
-    	requestTags.add(new Tag("keyname1","value1"));
-    	
-    	// Create a tag request for requests.
-		CreateTagsRequest createTagsRequest_requests = new CreateTagsRequest();
-		createTagsRequest_requests.setResources(spotInstanceRequestIds);
-		createTagsRequest_requests.setTags(requestTags);
-		
-		// Try to tag the Spot request submitted.
-		try {
-			ec2.createTags(createTagsRequest_requests);
-		} catch (AmazonServiceException e) {
-    		// Write out any exceptions that may have occurred.
-            System.out.println("Error terminating instances");
-    		System.out.println("Caught Exception: " + e.getMessage());
-            System.out.println("Reponse Status Code: " + e.getStatusCode());
-            System.out.println("Error Code: " + e.getErrorCode());
-            System.out.println("Request ID: " + e.getRequestId());			
-		}
 
     	//============================================================================================//
     	//=========================== Determining the State of the Spot Request ======================// 
@@ -196,31 +169,6 @@ public class InlineTaggingCodeSampleApp {
 	    } while (anyOpen);
 
     	//============================================================================================//
-    	//====================================== Tag the Spot Instances ===============================// 
-    	//============================================================================================//
-
-    	// Create the list of tags we want to create
-    	ArrayList<Tag> instanceTags = new ArrayList<Tag>();
-    	instanceTags.add(new Tag("keyname1","value1"));
-    	
-    	// Create a tag request for instances.
-		CreateTagsRequest createTagsRequest_instances = new CreateTagsRequest();
-		createTagsRequest_instances.setResources(instanceIds);
-		createTagsRequest_instances.setTags(instanceTags);
-		
-		// Try to tag the Spot instance started.
-		try {
-			ec2.createTags(createTagsRequest_instances);
-		} catch (AmazonServiceException e) {
-    		// Write out any exceptions that may have occurred.
-            System.out.println("Error terminating instances");
-    		System.out.println("Caught Exception: " + e.getMessage());
-            System.out.println("Reponse Status Code: " + e.getStatusCode());
-            System.out.println("Error Code: " + e.getErrorCode());
-            System.out.println("Request ID: " + e.getRequestId());			
-		}
-
-    	//============================================================================================//
     	//====================================== Canceling the Request ==============================// 
     	//============================================================================================//
 
@@ -229,7 +177,7 @@ public class InlineTaggingCodeSampleApp {
         	CancelSpotInstanceRequestsRequest cancelRequest = new CancelSpotInstanceRequestsRequest(spotInstanceRequestIds);
         	ec2.cancelSpotInstanceRequests(cancelRequest);
         } catch (AmazonServiceException e) {
-    	    // Write out any exceptions that may have occurred.
+    	 // Write out any exceptions that may have occurred.
             System.out.println("Error cancelling instances");
             System.out.println("Caught Exception: " + e.getMessage());
             System.out.println("Reponse Status Code: " + e.getStatusCode());
@@ -246,11 +194,11 @@ public class InlineTaggingCodeSampleApp {
         	ec2.terminateInstances(terminateRequest);
     	} catch (AmazonServiceException e) {
     		// Write out any exceptions that may have occurred.
-            System.out.println("Error terminating instances");
+           System.out.println("Error terminating instances");
     		System.out.println("Caught Exception: " + e.getMessage());
-            System.out.println("Reponse Status Code: " + e.getStatusCode());
-            System.out.println("Error Code: " + e.getErrorCode());
-            System.out.println("Request ID: " + e.getRequestId());
+           System.out.println("Reponse Status Code: " + e.getStatusCode());
+           System.out.println("Error Code: " + e.getErrorCode());
+           System.out.println("Request ID: " + e.getRequestId());
         }
 
 	}

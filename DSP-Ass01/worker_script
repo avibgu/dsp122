@@ -1,0 +1,5 @@
+#!/bin/bash          
+apt-get install wget
+# TODO: get worker.jar from s3, using wget
+# TODO: make sure we have java installed
+java -jar worker.jar

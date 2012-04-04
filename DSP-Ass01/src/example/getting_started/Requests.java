@@ -12,7 +12,7 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package getting_started;
+package example.getting_started;
 
 import java.util.ArrayList;
 import java.util.List;
