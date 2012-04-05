@@ -21,12 +21,12 @@ public class S3Controller {
 
 	}
 
-	public File downloadSummaryFile() {
+	public File downloadSummaryFile(String pSummaryFileLocation) {
 		// TODO The application will download the response from S3.
 		return null;
 	}
 
-	public File downloadInputFile() {
+	public File downloadInputFile(String pImagesListFileLocation) {
 		// TODO The Manager Downloads the images list from S3.
 		return null;
 	}
