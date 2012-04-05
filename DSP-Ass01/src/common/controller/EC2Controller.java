@@ -31,7 +31,7 @@ public class EC2Controller {
 
 	}
 
-	public void startWorkers(int pNumOfWorkers) {
+	public void startWorkers(int pNumOfWorkers, int pNumOfURLsPerWorker) {
 		// TODO The manager should create a worker for every n messages.
 		// Note that while the manager creates a node for every n messages, it
 		// does not delegate messages to specific nodes. All of the worker nodes

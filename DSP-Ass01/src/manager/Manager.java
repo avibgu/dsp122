@@ -48,7 +48,7 @@ public class Manager {
 		
 		numOfWorkers += (0 != urls.size() % numOfURLsPerWorker) ? 1 : 0;
 		
-		ec2.startWorkers(numOfWorkers);
+		ec2.startWorkers(numOfWorkers, numOfURLsPerWorker);
 		
 		// Manager reads all the Workers' messages from SQS and creates one
 		// summary file
