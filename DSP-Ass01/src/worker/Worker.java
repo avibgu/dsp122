@@ -35,6 +35,8 @@ public class Worker {
 			// Worker gets an image message from an SQS queue
 			URL url = sqs.receiveMessageAboutURL();
 			
+			if (null == url) break;
+			
 			// Worker downloads the image indicated in the message.
 			Object image = ImageManipulator.downloadImage(url);
 			
