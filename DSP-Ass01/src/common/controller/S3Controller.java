@@ -25,4 +25,16 @@ public class S3Controller {
 		// TODO The application will download the response from S3.
 		return null;
 	}
+
+	public File downloadInputFile() {
+		// TODO The Manager Downloads the images list from S3.
+		return null;
+	}
+
+	public void createAndUploadSummaryFile() {
+		// TODO Once the images queue count is 0, manager should read all the
+		// messages from the results queue, create the output file accordingly,
+		// upload the output file to S3
+
+	}
 }

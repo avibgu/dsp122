@@ -1,5 +1,7 @@
 package common.controller;
 
+import java.net.URL;
+
 public class SQSController {
 
 	private SQSController() {
@@ -22,6 +24,23 @@ public class SQSController {
 	public void checkIfTheProcessIsDone() {
 		// TODO The application will check a specified SQS queue for a message
 		// indicating the process is done and the response is available on S3.
+
+	}
+
+	public void sendMessageAboutThisURL(URL url) {
+		// TODO The Manager creates an SQS message for each URL in the images
+		// list.
+
+	}
+
+	public void waitForWorkersToFinishTheirWork() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void sendMessageAboutTheLocationOfTheSummaryFile() {
+		// TODO The Manager send a message to the user queue with the location
+		// of the file.
 
 	}
 }
