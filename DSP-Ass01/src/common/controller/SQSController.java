@@ -27,6 +27,12 @@ public class SQSController {
 
 	}
 
+	public String receiveMessageAboutTheLocationOfTheImagesListFile() {
+		// TODO The Manager will receive a message from a specified SQS queue,
+		// stating the location of the images list on S3
+		return null;
+	}
+
 	public void sendMessageAboutThisURL(URL url) {
 		// TODO The Manager creates an SQS message for each URL in the images
 		// list.
@@ -50,7 +56,8 @@ public class SQSController {
 		return null;
 	}
 
-	public void sendMessageAboutTheLocationOfTheFaceFile() {
+	public void sendMessageAboutTheLocationOfTheFaceFile(URL url,
+			String faceFileLocation) {
 		// TODO put a message in an SQS queue indicating the original URL of the
 		// image and the S3 url of the new images file.
 

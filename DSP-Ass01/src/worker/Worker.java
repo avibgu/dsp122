@@ -10,9 +10,6 @@ import common.controller.SQSController;
 
 public class Worker {
 
-	//TODO
-	private static final String FACE_FILE_LOCATION = null;
-	
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -44,12 +41,14 @@ public class Worker {
 			// Worker produces face crops and uploads the cropped images to S3
 			Vector<Object> faces = ImageManipulator.cropFacesFromImage(image);
 			
-			for (Object face : faces)
-				s3.uploadFaceImage(face, FACE_FILE_LOCATION);
-			
-			// Worker puts a message in an SQS queue indicating the original URL of
-			// the image and the S3 urls of the new image files
-			sqs.sendMessageAboutTheLocationOfTheFaceFile();
+			for (Object face : faces){
+				
+				String faceFileLocation = s3.uploadFaceImage(face);
+				
+				// Worker puts a message in an SQS queue indicating the original URL of
+				// the image and the S3 urls of the new image files
+				sqs.sendMessageAboutTheLocationOfTheFaceFile(url, faceFileLocation);
+			}
 		}
 	}
 

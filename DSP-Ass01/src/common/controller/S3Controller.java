@@ -4,6 +4,15 @@ import java.io.File;
 
 public class S3Controller {
 
+	//TODO
+	public static final String IMAGES_LIST_FILE_LOCATION = null;
+	
+	//TODO
+	public static final String SUMMARY_FILE_LOCATION = null;
+	
+	//TODO
+	public static final String FACE_FILE_LOCATION = null;
+
 	private S3Controller() {
 	}
 
@@ -15,14 +24,19 @@ public class S3Controller {
 		return S3ControllerHolder.instance;
 	}
 
-	public void uploadInputFile(File pInputFile, String pImagesListFileLocation) {
+	public void uploadInputFile(File pInputFile) {
 		// TODO The application will upload the file with the list of images to
 		// S3.
+		
+		// TODO use: IMAGES_LIST_FILE_LOCATION
 
 	}
 
-	public File downloadSummaryFile(String pSummaryFileLocation) {
+	public File downloadSummaryFile() {
 		// TODO The application will download the response from S3.
+		
+		// TODO use: SUMMARY_FILE_LOCATION
+		
 		return null;
 	}
 
@@ -37,8 +51,8 @@ public class S3Controller {
 
 	}
 
-	public void uploadFaceImage(Object face, String faceFileLocation) {
-		// TODO upload the images file to S3.
-
+	public String uploadFaceImage(Object face) {
+		// TODO upload the images file to S3. (return the location)
+		return null;
 	}
 }

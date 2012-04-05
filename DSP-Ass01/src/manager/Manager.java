@@ -11,9 +11,6 @@ import common.controller.S3Controller;
 import common.controller.SQSController;
 
 public class Manager {
-
-	//TODO
-	private static final String SUMMARY_FILE_LOCATION = null;
 		
 	/**
 	 * @param args
@@ -37,7 +34,10 @@ public class Manager {
 		SQSController sqs = SQSController.getInstance();
 
 		// Manager downloads list of images
-		File listOfImagesFile = s3.downloadInputFile();
+		
+		String imagesListFileLocation = sqs.receiveMessageAboutTheLocationOfTheImagesListFile();
+		
+		File listOfImagesFile = s3.downloadInputFile(imagesListFileLocation);
 		
 		// Manager creates an SQS message for each URL in the list of images
 		Vector<URL> urls = FileManipulator.retrieveURLsFromInputFile(listOfImagesFile);
@@ -60,7 +60,7 @@ public class Manager {
 		ec2.stopWorkers();
 		
 		// Manager uploads summary file to S3
-		s3.createAndUploadSummaryFile(SUMMARY_FILE_LOCATION);
+		s3.createAndUploadSummaryFile(S3Controller.SUMMARY_FILE_LOCATION);
 		
 		// Manager posts an SQS message about summary file
 		sqs.sendMessageAboutTheLocationOfTheSummaryFile();

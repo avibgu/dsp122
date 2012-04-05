@@ -10,9 +10,6 @@ import common.controller.SQSController;
 
 public class Application {
 
-	//TODO
-	private static final String IMAGES_LIST_FILE_LOCATION = null;
-
 	public static void main(String[] args) throws Exception {
 
 		File inputFile = null;
@@ -36,7 +33,7 @@ public class Application {
 		SQSController sqs = SQSController.getInstance();
 
 		// Local Application uploads the file with the list of images to S3
-		s3.uploadInputFile(inputFile, IMAGES_LIST_FILE_LOCATION);
+		s3.uploadInputFile(inputFile);
 
 		// Local Application sends a message (queue) stating of the location of
 		// the images list on S3
