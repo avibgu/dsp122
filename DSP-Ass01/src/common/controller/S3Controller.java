@@ -15,13 +15,13 @@ public class S3Controller {
 		return S3ControllerHolder.instance;
 	}
 
-	public void uploadInputFile(File inputFile) {
+	public void uploadInputFile(File inputFile, String imagesListFileLocation) {
 		// TODO The application will upload the file with the list of images to
 		// S3.
 
 	}
 
-	public Object getTheResponse() {
+	public File downloadSummaryFile() {
 		// TODO The application will download the response from S3.
 		return null;
 	}

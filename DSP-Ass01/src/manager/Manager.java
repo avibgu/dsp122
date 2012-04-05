@@ -22,9 +22,6 @@ public class Manager {
 
 		try {
 
-			if (1 != args.length)
-				throw new Exception();
-
 			numOfURLsPerWorker = Integer.parseInt(args[0]);
 		}
 		catch (Exception e) {

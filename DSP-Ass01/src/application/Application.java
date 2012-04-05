@@ -2,13 +2,16 @@ package application;
 
 import java.io.File;
 
-import utilities.HTMLBuilder;
+import utilities.FileManipulator;
 
 import common.controller.EC2Controller;
 import common.controller.S3Controller;
 import common.controller.SQSController;
 
 public class Application {
+
+	//TODO
+	private static final String IMAGES_LIST_FILE_LOCATION = null;
 
 	public static void main(String[] args) throws Exception {
 
@@ -18,14 +21,12 @@ public class Application {
 		int numOfURLsPerWorker = -1;
 
 		try {
-
-			if (3 != args.length)
-				throw new Exception();
-
+			
 			inputFile = new File(args[0]);
 			outputFile = new File(args[1]);
 			numOfURLsPerWorker = Integer.parseInt(args[2]);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new Exception(
 					"please provide: inputFileName, outputFileName, n");
 		}
@@ -35,7 +36,7 @@ public class Application {
 		SQSController sqs = SQSController.getInstance();
 
 		// Local Application uploads the file with the list of images to S3
-		s3.uploadInputFile(inputFile);
+		s3.uploadInputFile(inputFile, IMAGES_LIST_FILE_LOCATION);
 
 		// Local Application sends a message (queue) stating of the location of
 		// the images list on S3
@@ -50,9 +51,9 @@ public class Application {
 		sqs.checkIfTheProcessIsDone();
 
 		// Local Application downloads summary file from S3
-		Object response = s3.getTheResponse();
+		File summaryFile = s3.downloadSummaryFile();
 
 		// Local Application creates html output files
-		HTMLBuilder.createHTMLFile(response, outputFile);
+		FileManipulator.convertSummaryFileToOutputFile(summaryFile, outputFile);
 	}
 }
