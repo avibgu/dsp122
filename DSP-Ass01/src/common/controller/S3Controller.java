@@ -15,7 +15,7 @@ public class S3Controller {
 		return S3ControllerHolder.instance;
 	}
 
-	public void uploadInputFile(File inputFile, String imagesListFileLocation) {
+	public void uploadInputFile(File pInputFile, String pImagesListFileLocation) {
 		// TODO The application will upload the file with the list of images to
 		// S3.
 
@@ -31,10 +31,14 @@ public class S3Controller {
 		return null;
 	}
 
-	public void createAndUploadSummaryFile() {
-		// TODO Once the images queue count is 0, manager should read all the
-		// messages from the results queue, create the output file accordingly,
-		// upload the output file to S3
+	public void createAndUploadSummaryFile(String pSummaryFileLocation) {
+		// TODO The Manager should read all the messages from the results queue,
+		// create the output file accordingly, upload the output file to S3
+
+	}
+
+	public void uploadFaceImage(Object face, String faceFileLocation) {
+		// TODO upload the images file to S3.
 
 	}
 }

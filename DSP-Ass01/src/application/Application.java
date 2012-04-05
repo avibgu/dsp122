@@ -28,7 +28,7 @@ public class Application {
 		}
 		catch (Exception e) {
 			throw new Exception(
-					"please provide: inputFileName, outputFileName, n");
+					"please provide: inputFileName, outputFileName, numOfURLsPerWorker");
 		}
 
 		EC2Controller ec2 = EC2Controller.getInstance();

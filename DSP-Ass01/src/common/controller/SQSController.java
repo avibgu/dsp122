@@ -34,13 +34,25 @@ public class SQSController {
 	}
 
 	public void waitForWorkersToFinishTheirWork() {
-		// TODO Auto-generated method stub
+		// TODO The Manager waits until the images queue count is 0,
 
 	}
 
 	public void sendMessageAboutTheLocationOfTheSummaryFile() {
-		// TODO The Manager send a message to the user queue with the location
+		// TODO The Manager sends a message to the user queue with the location
 		// of the file.
+
+	}
+
+	public URL receiveMessageAboutURL() {
+		// TODO The Worker gets an image message from an SQS queue.
+		// TODO The Worker removes the image message from the SQS queue.
+		return null;
+	}
+
+	public void sendMessageAboutTheLocationOfTheFaceFile() {
+		// TODO put a message in an SQS queue indicating the original URL of the
+		// image and the S3 url of the new images file.
 
 	}
 }

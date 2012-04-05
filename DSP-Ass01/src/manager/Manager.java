@@ -12,6 +12,9 @@ import common.controller.SQSController;
 
 public class Manager {
 
+	//TODO
+	private static final String SUMMARY_FILE_LOCATION = null;
+		
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -26,7 +29,7 @@ public class Manager {
 		}
 		catch (Exception e) {
 			throw new Exception(
-					"please provide: inputFileName, outputFileName, n");
+					"please provide: numOfURLsPerWorker");
 		}
 
 		EC2Controller ec2 = EC2Controller.getInstance();
@@ -57,7 +60,7 @@ public class Manager {
 		ec2.stopWorkers();
 		
 		// Manager uploads summary file to S3
-		s3.createAndUploadSummaryFile();
+		s3.createAndUploadSummaryFile(SUMMARY_FILE_LOCATION);
 		
 		// Manager posts an SQS message about summary file
 		sqs.sendMessageAboutTheLocationOfTheSummaryFile();
