@@ -78,27 +78,21 @@ public class EC2Controller {
 					.runInstances(request);
 
 			ArrayList<String> ids = new ArrayList<String>();
-			
+
 			for (Instance tInstance : runInstancesResult.getReservation()
 					.getInstances())
 				ids.add(tInstance.getInstanceId());
-			
+
 			ArrayList<Tag> tags = new ArrayList<Tag>();
-			tags.add(new Tag(MANAGER_TAG,""));
-			
-			mAmazonEC2.createTags(new CreateTagsRequest(ids,tags));
+			tags.add(new Tag(MANAGER_TAG, ""));
+
+			mAmazonEC2.createTags(new CreateTagsRequest(ids, tags));
 		}
 
-		else if (!instance.getState().getName()
-				.equals(InstanceStateName.Running.toString())){
-			//TODO
-			System.err.println("MANGER INSTACE EXISTS BUT NOT RUNNING");
-		}
-		
-		else{
-			
-			//TODO
-			System.err.println("MANGER INSTACE EXISTS AND RUNNING");
+		else {
+
+			// TODO: am I right?... 
+			System.out.println("MANAGER INSTACE IS RUNNING - we shouldn't do anything..");
 		}
 	}
 
@@ -115,15 +109,15 @@ public class EC2Controller {
 
 		RunInstancesResult runInstancesResult = mAmazonEC2
 				.runInstances(request);
-		
+
 		ArrayList<Tag> tags = new ArrayList<Tag>();
-		tags.add(new Tag(WORKER_TAG,""));
+		tags.add(new Tag(WORKER_TAG, ""));
 
 		for (Instance tInstance : runInstancesResult.getReservation()
 				.getInstances())
 			mWorkers.add(tInstance.getInstanceId());
-		
-		mAmazonEC2.createTags(new CreateTagsRequest(mWorkers,tags));
+
+		mAmazonEC2.createTags(new CreateTagsRequest(mWorkers, tags));
 	}
 
 	public void stopWorkers() {
@@ -131,6 +125,8 @@ public class EC2Controller {
 		// more work to be done (0 messages).
 
 		mAmazonEC2.terminateInstances(new TerminateInstancesRequest(mWorkers));
+
+		mWorkers.clear();
 	}
 
 	protected Instance getManagerInstance() {
@@ -147,7 +143,9 @@ public class EC2Controller {
 			instances.addAll(reservation.getInstances());
 
 		for (Instance instance : instances)
-			if (instance.getTags().contains(new Tag(MANAGER_TAG,"")))
+			if (instance.getTags().contains(new Tag(MANAGER_TAG, ""))
+					&& instance.getState().getName()
+							.equals(InstanceStateName.Running.toString()))
 				return instance;
 
 		return null;

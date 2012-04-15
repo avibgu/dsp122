@@ -19,6 +19,7 @@ public class SQSController {
 		// TODO The application will send a message to a specified SQS queue,
 		// stating the location of the images list on S3
 
+		// TODO should notify the manager
 	}
 
 	public void checkIfTheProcessIsDone() {
@@ -30,6 +31,9 @@ public class SQSController {
 	public String receiveMessageAboutTheLocationOfTheImagesListFile() {
 		// TODO The Manager will receive a message from a specified SQS queue,
 		// stating the location of the images list on S3
+		
+		// TODO blocking.. wait when the queue is empty
+		
 		return null;
 	}
 
