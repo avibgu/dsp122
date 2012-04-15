@@ -3,10 +3,10 @@ package worker;
 import java.net.URL;
 import java.util.Vector;
 
-import utilities.ImageManipulator;
 
 import common.controller.S3Controller;
 import common.controller.SQSController;
+import common.utilities.ImageManipulator;
 
 public class Worker {
 

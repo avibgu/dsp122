@@ -2,11 +2,11 @@ package application;
 
 import java.io.File;
 
-import utilities.FileManipulator;
 
 import common.controller.EC2Controller;
 import common.controller.S3Controller;
 import common.controller.SQSController;
+import common.utilities.FileManipulator;
 
 public class Application {
 

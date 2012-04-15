@@ -144,11 +144,13 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		lines.add("# TODO: get manager.jar from s3, using wget");
-		lines.add("# TODO: make sure we have java installed");
-		lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
-		lines.add("shutdown -h 0");
+//		lines.add("# TODO: get manager.jar from s3, using wget");
+//		lines.add("# TODO: make sure we have java installed");
+//		lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
+//		lines.add("shutdown -h 0");
 
+		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html");	//TODO: remove
+		
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
 	}
 
@@ -160,10 +162,12 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		lines.add("# TODO: get worker.jar from s3, using wget");
-		lines.add("# TODO: make sure we have java installed");
-		lines.add("java -jar worker.jar " + pNumOfURLs);
-		lines.add("shutdown -h 0");
+//		lines.add("# TODO: get worker.jar from s3, using wget");
+//		lines.add("# TODO: make sure we have java installed");
+//		lines.add("java -jar worker.jar " + pNumOfURLs);
+//		lines.add("shutdown -h 0");
+		
+		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html");	//TODO: remove
 
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
 	}
