@@ -27,13 +27,13 @@ import example.AwsConsoleApp;
 
 public class EC2Controller {
 
-	private AmazonEC2			mAmazonEC2;
-	private ArrayList<String>	mWorkers;
+	private AmazonEC2 mAmazonEC2;
+	private ArrayList<String> mWorkers;
 
 	private EC2Controller() {
 
 		mAmazonEC2 = null;
-		
+
 		try {
 
 			AWSCredentials credentials = new PropertiesCredentials(
@@ -46,7 +46,7 @@ public class EC2Controller {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		mWorkers = new ArrayList<String>();
 	}
 
@@ -59,7 +59,7 @@ public class EC2Controller {
 	}
 
 	public void startTheManager(int numOfURLsPerWorker) {
-		// Checks if a Manager node is active on the EC2 cloud. If it is
+		// TEST Checks if a Manager node is active on the EC2 cloud. If it is
 		// not, the application will start the manager node.
 
 		Instance instance = getManagerInstance();
@@ -81,12 +81,22 @@ public class EC2Controller {
 	}
 
 	public void startWorkers(int pNumOfWorkers, int pNumOfURLsPerWorker) {
-		// TODO The manager should create a worker for every n messages.
+		// TEST The manager should create a worker for every n messages.
 		// Note that while the manager creates a node for every n messages, it
 		// does not delegate messages to specific nodes. All of the worker nodes
 		// take their messages from the same SQS queue, so it might be the case
 		// that with 2n messages and hence two worker nodes, one node processed
 		// n+(n/2) messages, while the other processed only n/2.
+
+		RunInstancesRequest request = prepareWorkerRequest(pNumOfWorkers,
+				pNumOfURLsPerWorker);
+
+		RunInstancesResult runInstancesResult = mAmazonEC2
+				.runInstances(request);
+
+		for (Instance tInstance : runInstancesResult.getReservation()
+				.getInstances())
+			mWorkers.add(tInstance.getInstanceId());
 	}
 
 	public void stopWorkers() {
@@ -117,18 +127,20 @@ public class EC2Controller {
 	}
 
 	protected RunInstancesRequest prepareManagerRequest(int pNumOfURLsPerWorker) {
-		return prepareRequest(getManagerScript(pNumOfURLsPerWorker), 1);
+		return prepareRequest(1, getManagerScript(pNumOfURLsPerWorker));
 	}
 
-	protected RunInstancesRequest prepareWorkerRequest(int pNumOfURLsPerWorker,
-			int pNumOfWorkers) {
-		return prepareRequest(getWorkerScript(pNumOfURLsPerWorker),
-				pNumOfWorkers);
+	protected RunInstancesRequest prepareWorkerRequest(int pNumOfWorkers,
+			int pNumOfURLsPerWorker) {
+		return prepareRequest(pNumOfWorkers,
+				getWorkerScript(pNumOfURLsPerWorker));
 	}
 
 	private String getManagerScript(int pNumOfURLsPerWorker) {
 
 		ArrayList<String> lines = new ArrayList<String>();
+
+		// TODO: make the script
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
@@ -143,6 +155,8 @@ public class EC2Controller {
 	private String getWorkerScript(int pNumOfURLs) {
 
 		ArrayList<String> lines = new ArrayList<String>();
+
+		// TODO: make the script
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
@@ -172,8 +186,8 @@ public class EC2Controller {
 		return builder.toString();
 	}
 
-	protected RunInstancesRequest prepareRequest(String script,
-			int numOfInstances) {
+	protected RunInstancesRequest prepareRequest(int numOfInstances,
+			String script) {
 
 		RunInstancesRequest request = new RunInstancesRequest();
 
