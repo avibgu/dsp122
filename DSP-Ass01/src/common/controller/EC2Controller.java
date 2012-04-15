@@ -31,6 +31,7 @@ public class EC2Controller {
 
 	private static final String KEY_PAIR = "AviKeyPair";
 	private static final String MANAGER_TAG = "MANAGER";
+	private static final String WORKER_TAG = "WORKER";
 
 	private AmazonEC2 mAmazonEC2;
 	private ArrayList<String> mWorkers;
@@ -114,10 +115,15 @@ public class EC2Controller {
 
 		RunInstancesResult runInstancesResult = mAmazonEC2
 				.runInstances(request);
+		
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(new Tag(WORKER_TAG,""));
 
 		for (Instance tInstance : runInstancesResult.getReservation()
 				.getInstances())
 			mWorkers.add(tInstance.getInstanceId());
+		
+		mAmazonEC2.createTags(new CreateTagsRequest(mWorkers,tags));
 	}
 
 	public void stopWorkers() {
