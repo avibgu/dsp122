@@ -14,18 +14,23 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
+import com.amazonaws.services.ec2.model.CreateTagsRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.ec2.model.Instance;
+import com.amazonaws.services.ec2.model.InstanceStateName;
 import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.ec2.model.Reservation;
 import com.amazonaws.services.ec2.model.RunInstancesRequest;
 import com.amazonaws.services.ec2.model.RunInstancesResult;
-import com.amazonaws.services.ec2.model.StopInstancesRequest;
 import com.amazonaws.services.ec2.model.Tag;
+import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
 
 import example.AwsConsoleApp;
 
 public class EC2Controller {
+
+	private static final String KEY_PAIR = "AviKeyPair";
+	private static final String MANAGER_TAG = "MANAGER";
 
 	private AmazonEC2 mAmazonEC2;
 	private ArrayList<String> mWorkers;
@@ -71,12 +76,28 @@ public class EC2Controller {
 			RunInstancesResult runInstancesResult = mAmazonEC2
 					.runInstances(request);
 
-			ArrayList<Tag> tags = new ArrayList<Tag>();
-			tags.add(new Tag("MANAGER"));
-
+			ArrayList<String> ids = new ArrayList<String>();
+			
 			for (Instance tInstance : runInstancesResult.getReservation()
 					.getInstances())
-				tInstance.setTags(tags);
+				ids.add(tInstance.getInstanceId());
+			
+			ArrayList<Tag> tags = new ArrayList<Tag>();
+			tags.add(new Tag(MANAGER_TAG,""));
+			
+			mAmazonEC2.createTags(new CreateTagsRequest(ids,tags));
+		}
+
+		else if (!instance.getState().getName()
+				.equals(InstanceStateName.Running.toString())){
+			//TODO
+			System.err.println("MANGER INSTACE EXISTS BUT NOT RUNNING");
+		}
+		
+		else{
+			
+			//TODO
+			System.err.println("MANGER INSTACE EXISTS AND RUNNING");
 		}
 	}
 
@@ -103,7 +124,7 @@ public class EC2Controller {
 		// TEST The manager should turn off all the workers when there is no
 		// more work to be done (0 messages).
 
-		mAmazonEC2.stopInstances(new StopInstancesRequest(mWorkers));
+		mAmazonEC2.terminateInstances(new TerminateInstancesRequest(mWorkers));
 	}
 
 	protected Instance getManagerInstance() {
@@ -120,7 +141,7 @@ public class EC2Controller {
 			instances.addAll(reservation.getInstances());
 
 		for (Instance instance : instances)
-			if (instance.getTags().contains(new Tag("MANAGER")))
+			if (instance.getTags().contains(new Tag(MANAGER_TAG,"")))
 				return instance;
 
 		return null;
@@ -144,13 +165,14 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-//		lines.add("# TODO: get manager.jar from s3, using wget");
-//		lines.add("# TODO: make sure we have java installed");
-//		lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
-//		lines.add("shutdown -h 0");
+		// lines.add("# TODO: get manager.jar from s3, using wget");
+		// lines.add("# TODO: make sure we have java installed");
+		// lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
+		// lines.add("shutdown -h 0");
 
-		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html");	//TODO: remove
-		
+		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html"); // TODO:
+																			// remove
+
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
 	}
 
@@ -162,12 +184,13 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-//		lines.add("# TODO: get worker.jar from s3, using wget");
-//		lines.add("# TODO: make sure we have java installed");
-//		lines.add("java -jar worker.jar " + pNumOfURLs);
-//		lines.add("shutdown -h 0");
-		
-		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html");	//TODO: remove
+		// lines.add("# TODO: get worker.jar from s3, using wget");
+		// lines.add("# TODO: make sure we have java installed");
+		// lines.add("java -jar worker.jar " + pNumOfURLs);
+		// lines.add("shutdown -h 0");
+
+		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html"); // TODO:
+																			// remove
 
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
 	}
@@ -199,7 +222,7 @@ public class EC2Controller {
 		request.setMinCount(numOfInstances);
 		request.setMaxCount(numOfInstances);
 		request.setImageId("ami-31814f58");
-		request.setKeyName("AviFirstPair");
+		request.setKeyName(KEY_PAIR);
 		request.setUserData(script);
 
 		return request;
