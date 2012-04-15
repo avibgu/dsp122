@@ -1,20 +1,53 @@
 package common.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.PropertiesCredentials;
+import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
+import com.amazonaws.services.ec2.model.DescribeInstancesResult;
+import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.InstanceType;
+import com.amazonaws.services.ec2.model.Reservation;
 import com.amazonaws.services.ec2.model.RunInstancesRequest;
+import com.amazonaws.services.ec2.model.RunInstancesResult;
+import com.amazonaws.services.ec2.model.StopInstancesRequest;
+import com.amazonaws.services.ec2.model.Tag;
+
+import example.AwsConsoleApp;
 
 public class EC2Controller {
 
+	private AmazonEC2			mAmazonEC2;
+	private ArrayList<String>	mWorkers;
+
 	private EC2Controller() {
+
+		mAmazonEC2 = null;
+		
+		try {
+
+			AWSCredentials credentials = new PropertiesCredentials(
+					AwsConsoleApp.class
+							.getResourceAsStream("../AwsCredentials.properties"));
+
+			mAmazonEC2 = new AmazonEC2Client(credentials);
+		}
+
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		mWorkers = new ArrayList<String>();
 	}
 
 	private static class EC2ControllerHolder {
@@ -26,9 +59,25 @@ public class EC2Controller {
 	}
 
 	public void startTheManager(int numOfURLsPerWorker) {
-		// TODO Checks if a Manager node is active on the EC2 cloud. If it is
+		// Checks if a Manager node is active on the EC2 cloud. If it is
 		// not, the application will start the manager node.
 
+		Instance instance = getManagerInstance();
+
+		if (null == instance) {
+
+			RunInstancesRequest request = prepareManagerRequest(numOfURLsPerWorker);
+
+			RunInstancesResult runInstancesResult = mAmazonEC2
+					.runInstances(request);
+
+			ArrayList<Tag> tags = new ArrayList<Tag>();
+			tags.add(new Tag("MANAGER"));
+
+			for (Instance tInstance : runInstancesResult.getReservation()
+					.getInstances())
+				tInstance.setTags(tags);
+		}
 	}
 
 	public void startWorkers(int pNumOfWorkers, int pNumOfURLsPerWorker) {
@@ -41,57 +90,100 @@ public class EC2Controller {
 	}
 
 	public void stopWorkers() {
-		// TODO The manager should turn off all the workers when there is no
+		// TEST The manager should turn off all the workers when there is no
 		// more work to be done (0 messages).
 
+		mAmazonEC2.stopInstances(new StopInstancesRequest(mWorkers));
 	}
 
-	public class AWSTest {
+	protected Instance getManagerInstance() {
 
-		public void test(String[] args) {
+		DescribeInstancesResult describeInstancesRequest = mAmazonEC2
+				.describeInstances();
 
-			AWSCredentials credentials = new BasicAWSCredentials("access-key",
-					"secret-access-key");
-			AmazonEC2Client ec2 = new AmazonEC2Client(credentials);
-			RunInstancesRequest request = new RunInstancesRequest();
+		List<Reservation> reservations = describeInstancesRequest
+				.getReservations();
 
-			request.setInstanceType(InstanceType.M1Small.toString());
-			request.setMinCount(1);
-			request.setMaxCount(1);
-			request.setImageId("ami-84db39ed");
-			request.setKeyName("linux-keypair");
-			request.setUserData(getUserDataScript());
+		Set<Instance> instances = new HashSet<Instance>();
 
-			ec2.runInstances(request);
+		for (Reservation reservation : reservations)
+			instances.addAll(reservation.getInstances());
+
+		for (Instance instance : instances)
+			if (instance.getTags().contains(new Tag("MANAGER")))
+				return instance;
+
+		return null;
+	}
+
+	protected RunInstancesRequest prepareManagerRequest(int pNumOfURLsPerWorker) {
+		return prepareRequest(getManagerScript(pNumOfURLsPerWorker), 1);
+	}
+
+	protected RunInstancesRequest prepareWorkerRequest(int pNumOfURLsPerWorker,
+			int pNumOfWorkers) {
+		return prepareRequest(getWorkerScript(pNumOfURLsPerWorker),
+				pNumOfWorkers);
+	}
+
+	private String getManagerScript(int pNumOfURLsPerWorker) {
+
+		ArrayList<String> lines = new ArrayList<String>();
+
+		lines.add("#! /bin/bash");
+		lines.add("apt-get install wget");
+		lines.add("# TODO: get manager.jar from s3, using wget");
+		lines.add("# TODO: make sure we have java installed");
+		lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
+		lines.add("shutdown -h 0");
+
+		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
+	}
+
+	private String getWorkerScript(int pNumOfURLs) {
+
+		ArrayList<String> lines = new ArrayList<String>();
+
+		lines.add("#! /bin/bash");
+		lines.add("apt-get install wget");
+		lines.add("# TODO: get worker.jar from s3, using wget");
+		lines.add("# TODO: make sure we have java installed");
+		lines.add("java -jar worker.jar " + pNumOfURLs);
+		lines.add("shutdown -h 0");
+
+		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
+	}
+
+	protected String join(Collection<String> s, String delimiter) {
+
+		StringBuilder builder = new StringBuilder();
+		Iterator<String> iter = s.iterator();
+
+		while (iter.hasNext()) {
+
+			builder.append(iter.next());
+
+			if (!iter.hasNext())
+				break;
+
+			builder.append(delimiter);
 		}
 
-		private String getUserDataScript() {
+		return builder.toString();
+	}
 
-			ArrayList<String> lines = new ArrayList<String>();
+	protected RunInstancesRequest prepareRequest(String script,
+			int numOfInstances) {
 
-			lines.add("#! /bin/bash");
-			lines.add("curl http://www.google.com > google.html");
-			lines.add("shutdown -h 0");
+		RunInstancesRequest request = new RunInstancesRequest();
 
-			return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
-		}
+		request.setInstanceType(InstanceType.T1Micro.toString());
+		request.setMinCount(numOfInstances);
+		request.setMaxCount(numOfInstances);
+		request.setImageId("ami-31814f58");
+		request.setKeyName("AviFirstPair");
+		request.setUserData(script);
 
-		private String join(Collection<String> s, String delimiter) {
-
-			StringBuilder builder = new StringBuilder();
-			Iterator<String> iter = s.iterator();
-
-			while (iter.hasNext()) {
-
-				builder.append(iter.next());
-
-				if (!iter.hasNext())
-					break;
-
-				builder.append(delimiter);
-			}
-
-			return builder.toString();
-		}
+		return request;
 	}
 }
