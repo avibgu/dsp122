@@ -22,7 +22,7 @@ public class Main {
 		try {
 
 			InputStream is = Main.class
-					.getResourceAsStream("/jjilexample/haar/HCSB.txt");
+					.getResourceAsStream("/jjilexample/haar/profileface.txt");
 
 			Gray8DetectHaarMultiScale detectHaar = new Gray8DetectHaarMultiScale(
 					is, minScale, maxScale);
@@ -45,7 +45,15 @@ public class Main {
 
 			RgbImageJ2se conv = new RgbImageJ2se();
 
-			conv.toFile((RgbImage) g2rgb.getFront(), output.getCanonicalPath());
+//			conv.toFile((RgbImage) g2rgb.getFront(), output.getCanonicalPath());
+			
+			for (Rect rect : results){
+				
+				BufferedImage tBi = bi.getSubimage(rect.getTopLeft().getX(), rect.getTopLeft().getY(), rect.getWidth(), rect.getHeight());
+				RgbImage face = RgbImageJ2se.toRgbImage(tBi);
+				
+				conv.toFile(face, new File(Double.toString(Math.random()) + ".jpg").getCanonicalPath());
+			}
 		}
 
 		catch (Throwable e) {
@@ -56,9 +64,9 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 
 		BufferedImage bi = ImageIO.read(Main.class
-				.getResourceAsStream("test.jpg"));
+				.getResourceAsStream("image.jpg"));
 
-		findFaces(bi, 1, 40, new File("c:/Temp/result.jpg")); // change as
+		findFaces(bi, 1, 40, new File("result.jpg")); // change as
 																// needed
 	}
 }

@@ -32,6 +32,6 @@ public class MainNoCustom {
 
     public static void main(String[] args) throws Exception {
         BufferedImage bi = ImageIO.read(Main.class.getResourceAsStream("test.jpg"));
-        findFaces(bi, 1, 40, new File("c:/Temp/result.jpg")); // change as needed
+        findFaces(bi, 1, 40, new File("result2.jpg")); // change as needed
     }
 }
