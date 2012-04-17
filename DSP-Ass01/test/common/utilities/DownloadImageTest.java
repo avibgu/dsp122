@@ -1,4 +1,4 @@
-package common.controller;
+package common.utilities;
 
 import static org.junit.Assert.*;
 
