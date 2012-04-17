@@ -1,8 +1,11 @@
 package manager;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Vector;
+
+import com.amazonaws.services.sqs.model.Message;
 
 import common.controller.EC2Controller;
 import common.controller.S3Controller;
@@ -37,7 +40,7 @@ public class Manager {
 			String imagesListFileLocation = sqs
 					.receiveMessageAboutTheLocationOfTheImagesListFile();
 
-			File listOfImagesFile = s3
+			InputStream listOfImagesFile = s3
 					.downloadInputFile(imagesListFileLocation);
 
 			// Manager creates an SQS message for each URL in the list of images
@@ -61,11 +64,15 @@ public class Manager {
 
 			ec2.stopWorkers();
 
+			Vector<Message> facesMessages = sqs.receiveFacesMessages();
+			
+			File summaryFile = FileManipulator.createSummaryFile(facesMessages);
+			
 			// Manager uploads summary file to S3
-			s3.createAndUploadSummaryFile(S3Controller.SUMMARY_FILE_LOCATION);
+			String summaryFileLocation = s3.uploadSummaryFile(summaryFile);
 
 			// Manager posts an SQS message about summary file
-			sqs.sendMessageAboutTheLocationOfTheSummaryFile();
+			sqs.sendMessageAboutTheLocationOfTheSummaryFile(summaryFileLocation);
 		}
 	}
 }

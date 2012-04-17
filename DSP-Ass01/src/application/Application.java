@@ -1,6 +1,7 @@
 package application;
 
 import java.io.File;
+import java.io.InputStream;
 
 
 import common.controller.EC2Controller;
@@ -48,9 +49,9 @@ public class Application {
 		String summaryFileLocation = sqs.checkIfTheProcessIsDone();
 
 		// Local Application downloads summary file from S3
-		File summaryFile = s3.downloadSummaryFile(summaryFileLocation);
+		InputStream summaryFileInputStream = s3.downloadSummaryFile(summaryFileLocation);
 
 		// Local Application creates html output files
-		FileManipulator.convertSummaryFileToOutputFile(summaryFile, outputFile);
+		FileManipulator.convertSummaryFileToOutputFile(summaryFileInputStream, outputFile);
 	}
 }
