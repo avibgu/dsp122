@@ -33,11 +33,11 @@ public class Application {
 		SQSController sqs = SQSController.getInstance();
 
 		// Local Application uploads the file with the list of images to S3
-		s3.uploadInputFile(inputFile);
+		String inputFileLocation = s3.uploadInputFile(inputFile);
 
 		// Local Application sends a message (queue) stating of the location of
 		// the images list on S3
-		sqs.sendMessageAboutTheLocationOfTheImagesListFile();
+		sqs.sendMessageAboutTheLocationOfTheImagesListFile(inputFileLocation);
 
 		// Local Application starts the manager
 		ec2.startTheManager(numOfURLsPerWorker);
@@ -45,10 +45,10 @@ public class Application {
 		// .....
 
 		// Local Application reads SQS message
-		sqs.checkIfTheProcessIsDone();
+		String summaryFileLocation = sqs.checkIfTheProcessIsDone();
 
 		// Local Application downloads summary file from S3
-		File summaryFile = s3.downloadSummaryFile();
+		File summaryFile = s3.downloadSummaryFile(summaryFileLocation);
 
 		// Local Application creates html output files
 		FileManipulator.convertSummaryFileToOutputFile(summaryFile, outputFile);

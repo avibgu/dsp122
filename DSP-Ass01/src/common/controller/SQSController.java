@@ -4,6 +4,18 @@ import java.net.URL;
 
 public class SQSController {
 
+	// TODO
+	private final static String APPLICATION_MANAGER_QUEUE = null;
+
+	// TODO
+	private final static String MANAGER_APPLICATION_QUEUE = null; 
+	
+	// TODO
+	private final static String MANAGER_WORKERS_QUEUE = null;
+	
+	// TODO
+	private final static String WORKER_MANAGER_QUEUE = null;
+	
 	private SQSController() {
 	}
 
@@ -15,17 +27,19 @@ public class SQSController {
 		return SQSControllerHolder.instance;
 	}
 
-	public void sendMessageAboutTheLocationOfTheImagesListFile() {
-		// TODO The application will send a message to a specified SQS queue,
+	public void sendMessageAboutTheLocationOfTheImagesListFile(String pInputFileLocation) {
+		// TODO The Application will send a message to a specified SQS queue,
 		// stating the location of the images list on S3
 
 		// TODO should notify the manager
 	}
 
-	public void checkIfTheProcessIsDone() {
-		// TODO The application will check a specified SQS queue for a message
+	public String checkIfTheProcessIsDone() {
+		// TODO The Application will check a specified SQS queue for a message
 		// indicating the process is done and the response is available on S3.
 
+		// TODO return the location of the summary file
+		return null;
 	}
 
 	public String receiveMessageAboutTheLocationOfTheImagesListFile() {

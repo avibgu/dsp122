@@ -33,8 +33,8 @@ public class EC2Controller {
 	private static final String MANAGER_TAG = "MANAGER";
 	private static final String WORKER_TAG = "WORKER";
 
-	private AmazonEC2 mAmazonEC2;
-	private ArrayList<String> mWorkers;
+	private AmazonEC2			mAmazonEC2;
+	private ArrayList<String>	mWorkers;
 
 	private EC2Controller() {
 
@@ -65,7 +65,7 @@ public class EC2Controller {
 	}
 
 	public void startTheManager(int numOfURLsPerWorker) {
-		// TEST Checks if a Manager node is active on the EC2 cloud. If it is
+		// Checks if a Manager node is active on the EC2 cloud. If it is
 		// not, the application will start the manager node.
 
 		Instance instance = getManagerInstance();
@@ -90,14 +90,13 @@ public class EC2Controller {
 		}
 
 		else {
-
-			// TODO: am I right?... 
+ 
 			System.out.println("MANAGER INSTACE IS RUNNING - we shouldn't do anything..");
 		}
 	}
 
 	public void startWorkers(int pNumOfWorkers, int pNumOfURLsPerWorker) {
-		// TEST The manager should create a worker for every n messages.
+		// The manager should create a worker for every n messages.
 		// Note that while the manager creates a node for every n messages, it
 		// does not delegate messages to specific nodes. All of the worker nodes
 		// take their messages from the same SQS queue, so it might be the case
@@ -121,7 +120,7 @@ public class EC2Controller {
 	}
 
 	public void stopWorkers() {
-		// TEST The manager should turn off all the workers when there is no
+		// The manager should turn off all the workers when there is no
 		// more work to be done (0 messages).
 
 		mAmazonEC2.terminateInstances(new TerminateInstancesRequest(mWorkers));
