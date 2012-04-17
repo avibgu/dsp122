@@ -4,26 +4,30 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
+import com.amazonaws.services.sqs.model.Message;
+
 public class FileManipulator {
 
-	public static void convertSummaryFileToOutputFile(File summaryFile,
+	public static void convertSummaryFileToOutputFile(InputStream pSummaryFileInputStream,
 			File outputFile) {
 
-		writeToFile(convertToHTML(readFromFile(summaryFile)), outputFile);
+		writeToFile(convertToHTML(readFromInputStream(pSummaryFileInputStream)), outputFile);
 		
 	}
 
-	public static Vector<URL> retrieveURLsFromInputFile(File listOfImagesFile) throws MalformedURLException {
+	public static Vector<URL> retrieveURLsFromInputFile(InputStream pListOfImagesFile) throws MalformedURLException {
 
 		Vector<URL> result = new Vector<URL>();
-		Vector<String> urls = readFromFile(listOfImagesFile);
+		Vector<String> urls = readFromInputStream(pListOfImagesFile);
 	
 		for(String str : urls){
 			try{
@@ -38,32 +42,47 @@ public class FileManipulator {
 
 	public static Vector<String> readFromFile(File pFile) {
 
+		FileInputStream fis = null;
+		
+		try {
+			fis = new FileInputStream(pFile);
+		}
+		
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return readFromInputStream(fis);
+	}
+	
+	public static Vector<String> readFromInputStream(
+			InputStream pInputStream) {
+
 		Vector<String> result = new Vector<String>();
 		
-		FileInputStream fis = null;
 		InputStreamReader isr = null;
 		BufferedReader br = null;
 
 		try {
 
-			fis = new FileInputStream(pFile);
-			isr = new InputStreamReader(fis);
+			isr = new InputStreamReader(pInputStream);
 			br = new BufferedReader(isr);		
 			
 			while (br.ready())
 				result.add(br.readLine() + "\n");
 
-			fis.close();
+			pInputStream.close();
 			isr.close();
 			br.close();
-		} catch (Exception e) {
+		}
+		
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return result;
 	}
 	
-	//TODO: test it..
 	public static Vector<String> convertToHTML(Vector<String> x){
 
 		Vector<String> result = new Vector<String>();
@@ -111,5 +130,10 @@ public class FileManipulator {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static File createSummaryFile(Vector<Message> pX) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

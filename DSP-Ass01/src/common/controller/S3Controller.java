@@ -2,6 +2,7 @@ package common.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 import com.amazonaws.auth.PropertiesCredentials;
@@ -43,7 +44,6 @@ public class S3Controller {
 		}
 
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -72,9 +72,14 @@ public class S3Controller {
 	public String uploadInputFile(File pInputFile) {
 		// The application will upload the file with the list of images to S3.
 		// use IMAGES_LIST_FILE_LOCATION as base.
+		return uploadFileToS3(pInputFile, IMAGES_LIST_FILE_LOCATION);
+	}
 
-		String fileLocation = IMAGES_LIST_FILE_LOCATION + "-"
+	private String uploadFileToS3(File pInputFile, String pBaseName) {
+		
+		String fileLocation = pBaseName + "-"
 				+ pInputFile.getName() + UUID.randomUUID();
+
 		fileLocation = fileLocation.replaceAll("/", "-");
 
 		mAmazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileLocation,
@@ -84,28 +89,31 @@ public class S3Controller {
 		return fileLocation;
 	}
 
-	public File downloadSummaryFile(String pSummaryFileLocation) {
-		// TODO The application will download the response from S3.
-
-		// TODO use: SUMMARY_FILE_LOCATION
-
-		S3Object object = mAmazonS3.getObject(new GetObjectRequest(BUCKET_NAME, pSummaryFileLocation));
-		
-		return null;
+	public InputStream downloadSummaryFile(String pSummaryFileLocation) {
+		// The application will download the response from S3.
+		return downloadFileFromS3(pSummaryFileLocation);
 	}
 
-	public File downloadInputFile(String pImagesListFileLocation) {
-		// TODO The Manager Downloads the images list from S3.
-		return null;
+	public InputStream downloadInputFile(String pImagesListFileLocation) {
+		// The Manager Downloads the images list from S3.
+		return downloadFileFromS3(pImagesListFileLocation);
 	}
+	
+	private InputStream downloadFileFromS3(String pFileLocation) {
 
-	public void createAndUploadSummaryFile(String pSummaryFileLocation) {
-		// TODO The Manager should read all the messages from the results queue,
-		// create the output file accordingly, upload the output file to S3
+		S3Object object = mAmazonS3.getObject(new GetObjectRequest(BUCKET_NAME,
+				pFileLocation));
 
+		return object.getObjectContent();
+	}
+	
+	public String uploadSummaryFile(File pSummaryFile) {
+		// upload the output file to S3, and return the location 
+		return uploadFileToS3(pSummaryFile, SUMMARY_FILE_LOCATION);
 	}
 
 	public String uploadFaceImage(Object face) {
+		
 		// TODO upload the images file to S3. (return the location)
 		return null;
 	}

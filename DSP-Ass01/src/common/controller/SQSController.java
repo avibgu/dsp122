@@ -1,6 +1,9 @@
 package common.controller;
 
 import java.net.URL;
+import java.util.Vector;
+
+import com.amazonaws.services.sqs.model.Message;
 
 public class SQSController {
 
@@ -61,8 +64,13 @@ public class SQSController {
 		// TODO The Manager waits until the images queue count is 0,
 
 	}
+	
+	public Vector<Message> receiveFacesMessages() {
+		// TODO The Manager should read all the messages from the results queue
+		return null;
+	}
 
-	public void sendMessageAboutTheLocationOfTheSummaryFile() {
+	public void sendMessageAboutTheLocationOfTheSummaryFile(String pSummaryFileLocation) {
 		// TODO The Manager sends a message to the user queue with the location
 		// of the file.
 
