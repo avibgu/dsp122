@@ -1,9 +1,13 @@
 package common.utilities;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
@@ -15,9 +19,20 @@ public class FileManipulator {
 		writeToFile(convertToHTML(readFromFile(summaryFile)), outputFile);
 	}
 
-	public static Vector<URL> retrieveURLsFromInputFile(File listOfImagesFile) {
-		// TODO Auto-generated method stub
-		return null;
+	public static Vector<URL> retrieveURLsFromInputFile(File listOfImagesFile) throws MalformedURLException {
+
+		Vector<URL> result = new Vector<URL>();
+		Vector<String> urls = readFromFile(listOfImagesFile);
+	
+		for(String str : urls){
+			try{
+				result.add(new URL(str));
+			}catch (MalformedURLException e) {
+				System.out.println("Mal formed url entered");
+			}
+		}
+		
+		return result;
 	}
 
 	public static Vector<String> readFromFile(File pFile) {
@@ -72,6 +87,27 @@ public class FileManipulator {
 	}
 	
 	public static void writeToFile(Vector<String> pContent, File pFile){
-		// TODO Auto-generated method stub
+				
+		FileOutputStream fos = null;
+		OutputStreamWriter osr = null;
+		BufferedWriter bo = null;
+
+		try {
+
+			fos = new FileOutputStream(pFile);
+			osr = new OutputStreamWriter(fos);
+			bo = new BufferedWriter(osr);		
+			
+			for(String str : pContent)
+				bo.write(str + "\n");
+				
+				
+			fos.close();
+			osr.close();
+			bo.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 }
