@@ -17,6 +17,7 @@ public class FileManipulator {
 			File outputFile) {
 
 		writeToFile(convertToHTML(readFromFile(summaryFile)), outputFile);
+		
 	}
 
 	public static Vector<URL> retrieveURLsFromInputFile(File listOfImagesFile) throws MalformedURLException {
@@ -89,22 +90,23 @@ public class FileManipulator {
 	public static void writeToFile(Vector<String> pContent, File pFile){
 				
 		FileOutputStream fos = null;
-		OutputStreamWriter osr = null;
-		BufferedWriter bo = null;
+		OutputStreamWriter osw = null;
+		BufferedWriter bw = null;
 
 		try {
 
 			fos = new FileOutputStream(pFile);
-			osr = new OutputStreamWriter(fos);
-			bo = new BufferedWriter(osr);		
+			osw = new OutputStreamWriter(fos);
+			bw = new BufferedWriter(osw);		
 			
 			for(String str : pContent)
-				bo.write(str + "\n");
+				bw.write(str + "\n");
 				
-				
+			bw.close();	
+			osw.close();
 			fos.close();
-			osr.close();
-			bo.close();
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
