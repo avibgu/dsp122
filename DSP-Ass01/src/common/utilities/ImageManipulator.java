@@ -22,6 +22,12 @@ public class ImageManipulator {
 	private static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 10;
 
+	// private static final String HAAR_FILE = "frontaldefault.txt";		// 0 0
+	// private static final String HAAR_FILE = "frontalfacealt.txt";		// 1 2
+	// private static final String HAAR_FILE = "frontalfacealt2.txt";		// 0 0
+	// private static final String HAAR_FILE = "frontalfacedefault.txt";	// 0 0
+	 private static final String HAAR_FILE = "HCSB.txt";					// 1 2
+
 	public static File downloadImage(URL pUrl) throws IOException {
 		// TEST download the image file indicated in the message (the url
 		// provided).
@@ -65,7 +71,7 @@ public class ImageManipulator {
 			bufferedImage = ImageIO.read(new FileInputStream(pImage));
 
 			inputStream = new FileInputStream(new File(
-					"src/common/utilities/haar/profileface.txt"));
+					"src/common/utilities/haar/" + HAAR_FILE));
 
 			detectHaar = new Gray8DetectHaarMultiScale(inputStream, MIN_SCALE,
 					MAX_SCALE);
