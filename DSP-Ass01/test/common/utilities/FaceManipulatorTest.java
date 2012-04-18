@@ -21,7 +21,7 @@ public class FaceManipulatorTest {
 		File output = new File("face-test.jpg");
 		BufferedImage bi = ImageIO.read(new FileInputStream("nedStarck.jpg"));
 
-		fm.findFaces(bi, 1, 40, output);
+		fm.findFaces(bi, 1, 10, output);
 		
 	}
 }

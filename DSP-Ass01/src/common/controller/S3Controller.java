@@ -18,7 +18,7 @@ import example.S3Sample;
 
 public class S3Controller {
 
-	public static final String BUCKET_NAME = "DSP122-" + new Random(1717).nextLong();
+	public static final String BUCKET_NAME = "DSP122-AVI-BATEL";
 
 	// TODO
 	public static final String IMAGES_LIST_FILE_BASE_NAME = null;
