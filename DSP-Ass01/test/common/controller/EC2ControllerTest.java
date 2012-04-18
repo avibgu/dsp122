@@ -1,16 +1,10 @@
 package common.controller;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class EC2ControllerTest {
 
-	private EC2Controller mEc2Controller;
-	
-	@Before
-	public void setUp() throws Exception {
-		mEc2Controller = EC2Controller.getInstance();
-	}
+	private EC2Controller mEc2Controller = EC2Controller.getInstance();;
 
 	@Test
 	public void startTheManagerTest() throws Exception {
