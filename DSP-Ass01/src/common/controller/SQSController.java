@@ -7,17 +7,10 @@ import com.amazonaws.services.sqs.model.Message;
 
 public class SQSController {
 
-	// TODO
-	private final static String APPLICATION_MANAGER_QUEUE = null;
-
-	// TODO
-	private final static String MANAGER_APPLICATION_QUEUE = null; 
-	
-	// TODO
-	private final static String MANAGER_WORKERS_QUEUE = null;
-	
-	// TODO
-	private final static String WORKER_MANAGER_QUEUE = null;
+	private final static String APPLICATION_MANAGER_QUEUE = "DSP122-AVI-BATEL-APPLICATION-MANAGER";
+	private final static String MANAGER_APPLICATION_QUEUE = "DSP122-AVI-BATEL-MANAGER-APPLICATION"; 
+	private final static String MANAGER_WORKERS_QUEUE = "DSP122-AVI-BATEL-MANAGER-WORKERS";
+	private final static String WORKER_MANAGER_QUEUE = "DSP122-AVI-BATEL-WORKER-MANAGER";
 	
 	private SQSController() {
 	}
