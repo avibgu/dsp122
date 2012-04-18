@@ -3,6 +3,7 @@ package common.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 import java.util.UUID;
 
 import com.amazonaws.auth.PropertiesCredentials;
@@ -17,17 +18,16 @@ import example.S3Sample;
 
 public class S3Controller {
 
-	// TODO
-	public static final String BUCKET_NAME = null;
+	public static final String BUCKET_NAME = "DSP122-" + new Random(1717).nextLong();
 
 	// TODO
-	public static final String IMAGES_LIST_FILE_LOCATION = null;
+	public static final String IMAGES_LIST_FILE_BASE_NAME = null;
 
 	// TODO
-	public static final String SUMMARY_FILE_LOCATION = null;
+	public static final String SUMMARY_FILE_BASE_NAME = null;
 
 	// TODO
-	public static final String FACE_FILE_LOCATION = null;
+	public static final String FACE_FILE_BASE_NAME = null;
 
 	private AmazonS3 mAmazonS3;
 
@@ -72,7 +72,7 @@ public class S3Controller {
 	public String uploadInputFile(File pInputFile) {
 		// The application will upload the file with the list of images to S3.
 		// use IMAGES_LIST_FILE_LOCATION as base.
-		return uploadFileToS3(pInputFile, IMAGES_LIST_FILE_LOCATION);
+		return uploadFileToS3(pInputFile, IMAGES_LIST_FILE_BASE_NAME);
 	}
 
 	private String uploadFileToS3(File pInputFile, String pBaseName) {
@@ -109,7 +109,7 @@ public class S3Controller {
 	
 	public String uploadSummaryFile(File pSummaryFile) {
 		// upload the output file to S3, and return the location 
-		return uploadFileToS3(pSummaryFile, SUMMARY_FILE_LOCATION);
+		return uploadFileToS3(pSummaryFile, SUMMARY_FILE_BASE_NAME);
 	}
 
 	public String uploadFaceImage(Object face) {

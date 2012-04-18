@@ -33,8 +33,8 @@ public class EC2Controller {
 	private static final String MANAGER_TAG = "MANAGER";
 	private static final String WORKER_TAG = "WORKER";
 
-	private AmazonEC2			mAmazonEC2;
-	private ArrayList<String>	mWorkers;
+	private AmazonEC2 mAmazonEC2;
+	private ArrayList<String> mWorkers;
 
 	private EC2Controller() {
 
@@ -90,8 +90,9 @@ public class EC2Controller {
 		}
 
 		else {
- 
-			System.out.println("MANAGER INSTACE IS RUNNING - we shouldn't do anything..");
+
+			System.out
+					.println("MANAGER INSTACE IS RUNNING - we shouldn't do anything..");
 		}
 	}
 
@@ -168,13 +169,10 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		// lines.add("# TODO: get manager.jar from s3, using wget");
+		lines.add(" wget https://s3.amazonaws.com/TEST12345678/manager.jar");
 		// lines.add("# TODO: make sure we have java installed");
-		// lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
-		// lines.add("shutdown -h 0");
-
-		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html"); // TODO:
-																			// remove
+		lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
+		lines.add("shutdown -h 0");
 
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
 	}
@@ -187,13 +185,10 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		// lines.add("# TODO: get worker.jar from s3, using wget");
+		lines.add(" wget https://s3.amazonaws.com/TEST12345678/worker.jar");
 		// lines.add("# TODO: make sure we have java installed");
-		// lines.add("java -jar worker.jar " + pNumOfURLs);
-		// lines.add("shutdown -h 0");
-
-		lines.add("wget http://www.cs.bgu.ac.il/~dsp122/Main -O dsp.html"); // TODO:
-																			// remove
+		lines.add("java -jar worker.jar " + pNumOfURLs);
+		lines.add("shutdown -h 0");
 
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
 	}
