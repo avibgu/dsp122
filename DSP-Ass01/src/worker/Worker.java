@@ -1,5 +1,6 @@
 package worker;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Vector;
 
@@ -37,13 +38,15 @@ public class Worker {
 			
 			if (null == url) break;
 			
+			// TODO: does File is ok?..
+			
 			// Worker downloads the image indicated in the message.
-			Object image = ImageManipulator.downloadImage(url);
+			File image = ImageManipulator.downloadImage(url);
 			
 			// Worker produces face crops and uploads the cropped images to S3
-			Vector<Object> faces = ImageManipulator.cropFacesFromImage(image);
+			Vector<File> faces = ImageManipulator.cropFacesFromImage(image);
 			
-			for (Object face : faces){
+			for (File face : faces){
 				
 				String faceFileLocation = s3.uploadFaceImage(face);
 				

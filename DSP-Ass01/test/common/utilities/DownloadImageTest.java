@@ -1,11 +1,9 @@
 package common.utilities;
 
-import static org.junit.Assert.*;
-
+import java.io.File;
 import java.net.URL;
 
 import org.junit.*;
-import junit.framework.TestCase;
 
 import common.utilities.ImageManipulator;
 
@@ -16,8 +14,7 @@ public class DownloadImageTest {
 	@Test
 	public void ImageManipulatorTest() throws Exception {
 		URL url = new URL("http://www.nlm.nih.gov/medlineplus/images/leg.jpg");
-		String ans = imageManipulator.downloadImage(url);
-		assertTrue(ans.equals("success"));
+		File file = imageManipulator.downloadImage(url);
 	}
 	
 	
