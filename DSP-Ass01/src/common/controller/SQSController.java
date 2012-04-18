@@ -5,12 +5,11 @@ import java.net.URL;
 import java.util.Vector;
 
 import com.amazonaws.auth.PropertiesCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.amazonaws.services.sqs.model.Message;
 
-import example.S3Sample;
 import example.SimpleQueueServiceSample;
 
 public class SQSController {
@@ -19,6 +18,11 @@ public class SQSController {
 	private final static String MANAGER_APPLICATION_QUEUE = "DSP122-AVI-BATEL-MANAGER-APPLICATION";
 	private final static String MANAGER_WORKERS_QUEUE = "DSP122-AVI-BATEL-MANAGER-WORKERS";
 	private final static String WORKER_MANAGER_QUEUE = "DSP122-AVI-BATEL-WORKER-MANAGER";
+
+	private String mApplicationManagerQueueUrl;
+	private String mManagerApplicationQueueUrl;
+	private String mManagerWorkersQueueUrl;
+	private String mWorkerManagerQueueUrl;
 
 	private AmazonSQS mAmazonSQS;
 
@@ -50,13 +54,47 @@ public class SQSController {
 	}
 
 	private void initQueues() {
-		// TODO Auto-generated method stub
 
-		// APPLICATION_MANAGER_QUEUE;
-		// MANAGER_APPLICATION_QUEUE;
-		// MANAGER_WORKERS_QUEUE;
-		// WORKER_MANAGER_QUEUE;
+		boolean amq = false;
+		boolean maq = false;
+		boolean mwq = false;
+		boolean wmq = false;
 
+		for (String queueUrl : mAmazonSQS.listQueues().getQueueUrls()) {
+
+			if (queueUrl.contains(APPLICATION_MANAGER_QUEUE)) {
+				amq = true;
+				mApplicationManagerQueueUrl = queueUrl;
+			} else if (queueUrl.contains(MANAGER_APPLICATION_QUEUE)) {
+				maq = true;
+				mManagerApplicationQueueUrl = queueUrl;
+			} else if (queueUrl.contains(MANAGER_WORKERS_QUEUE)) {
+				mwq = true;
+				mManagerWorkersQueueUrl = queueUrl;
+			} else if (queueUrl.contains(WORKER_MANAGER_QUEUE)) {
+				wmq = true;
+				mWorkerManagerQueueUrl = queueUrl;
+			}
+		}
+
+		if (!amq)
+			mApplicationManagerQueueUrl = mAmazonSQS.createQueue(
+					new CreateQueueRequest(APPLICATION_MANAGER_QUEUE))
+					.getQueueUrl();
+
+		if (!maq)
+			mManagerApplicationQueueUrl = mAmazonSQS.createQueue(
+					new CreateQueueRequest(MANAGER_APPLICATION_QUEUE))
+					.getQueueUrl();
+
+		if (!mwq)
+			mManagerWorkersQueueUrl = mAmazonSQS.createQueue(
+					new CreateQueueRequest(MANAGER_WORKERS_QUEUE))
+					.getQueueUrl();
+
+		if (!wmq)
+			mWorkerManagerQueueUrl = mAmazonSQS.createQueue(
+					new CreateQueueRequest(WORKER_MANAGER_QUEUE)).getQueueUrl();
 	}
 
 	public void sendMessageAboutTheLocationOfTheImagesListFile(
