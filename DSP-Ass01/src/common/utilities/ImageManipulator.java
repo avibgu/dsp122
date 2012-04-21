@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -22,11 +23,13 @@ public class ImageManipulator {
 	private static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 10;
 
-	// private static final String HAAR_FILE = "frontaldefault.txt";		// 0 0
-	// private static final String HAAR_FILE = "frontalfacealt.txt";		// 1 2
-	// private static final String HAAR_FILE = "frontalfacealt2.txt";		// 0 0
-	// private static final String HAAR_FILE = "frontalfacedefault.txt";	// 0 0
-	 private static final String HAAR_FILE = "HCSB.txt";					// 1 2
+	// private static final String HAAR_FILE = "frontaldefault.txt"; // 0 0
+	// private static final String HAAR_FILE = "frontalfacealt.txt"; // 1 2
+	// private static final String HAAR_FILE = "frontalfacealt2.txt"; // 0 0
+	// private static final String HAAR_FILE = "frontalfacedefault.txt"; // 0 0
+	private static final String HAAR_FILE = "HCSB.txt"; // 1 2
+//	private static final String HAAR_FILE_DIR = "src/common/utilities/haar/";
+	private static final String HAAR_FILE_DIR = "";
 
 	public static File downloadImage(URL pUrl) throws IOException {
 		// TEST download the image file indicated in the message (the url
@@ -70,8 +73,8 @@ public class ImageManipulator {
 
 			bufferedImage = ImageIO.read(new FileInputStream(pImage));
 
-			inputStream = new FileInputStream(new File(
-					"src/common/utilities/haar/" + HAAR_FILE));
+			inputStream = new FileInputStream(new File(HAAR_FILE_DIR
+					+ HAAR_FILE));
 
 			detectHaar = new Gray8DetectHaarMultiScale(inputStream, MIN_SCALE,
 					MAX_SCALE);
@@ -82,6 +85,8 @@ public class ImageManipulator {
 
 			rectangles = detectHaar.pushAndReturn(toGray.getFront());
 
+			rectangles = removeDuplicates(rectangles);
+			
 			System.out.println("Found " + rectangles.size() + " faces");
 
 			for (Rect rect : rectangles) {
@@ -105,6 +110,34 @@ public class ImageManipulator {
 		}
 
 		return faces;
+	}
+
+	private static List<Rect> removeDuplicates(List<Rect> rectangles) {
+		
+		List<Rect> uniqueRectangles = new ArrayList<Rect>();
+		
+		for (int i = 0; i < rectangles.size(); i++){
+			
+			Rect x = rectangles.get(i);
+			
+			boolean overlap = false; 
+			
+			for (int j = i + 1; j < rectangles.size(); j++){
+				
+				if (x.overlaps(rectangles.get(j))){
+					
+					overlap = true;
+					break;
+				}	
+			}
+			
+			if (overlap)
+				continue;
+			
+			uniqueRectangles.add(x);
+		}
+		
+		return uniqueRectangles;
 	}
 
 	// // TODO.. change the file path
