@@ -170,6 +170,7 @@ public class EC2Controller {
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
 		lines.add(" wget https://s3.amazonaws.com/TEST12345678/manager.jar");
+		// TODO: download also the credentials?..
 		// lines.add("# TODO: make sure we have java installed");
 		lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
 		lines.add("shutdown -h 0");
