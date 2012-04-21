@@ -186,6 +186,7 @@ public class EC2Controller {
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
 		lines.add(" wget https://s3.amazonaws.com/TEST12345678/worker.jar");
+		// TODO: download also the HCSB file, and maybe the credentials?..
 		// lines.add("# TODO: make sure we have java installed");
 		lines.add("java -jar worker.jar " + pNumOfURLs);
 		lines.add("shutdown -h 0");
