@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Vector;
 
 import com.amazonaws.services.sqs.model.Message;
@@ -132,8 +133,21 @@ public class FileManipulator {
 
 	}
 
-	public static File createSummaryFile(Vector<Message> pX) {
-		// TODO Auto-generated method stub
-		return null;
+	public static File createSummaryFile(List<Message> pMessage, String pFilename) {
+
+		Vector<String> pContent = new Vector<String>(pMessage.size());
+		
+		for (Message message : pMessage){
+			
+			String[] splittedMessage = message.getBody().split("\t");
+			
+			pContent.add(splittedMessage[1] + "\t" + splittedMessage[2]);
+		}
+	
+		File file = new File(pFilename);
+		
+		writeToFile(pContent, file);
+		
+		return file;
 	}
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Vector;
 
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -23,11 +22,13 @@ public class SQSController {
 	private final static String MANAGER_APPLICATION_QUEUE = "DSP122-AVI-BATEL-MANAGER-APPLICATION";
 	private final static String MANAGER_WORKERS_QUEUE = "DSP122-AVI-BATEL-MANAGER-WORKERS";
 	private final static String WORKER_MANAGER_QUEUE = "DSP122-AVI-BATEL-WORKER-MANAGER";
+	private final static String WORKER_DONE_QUEUE = "DSP122-AVI-BATEL-WORKER-DONE";
 
 	private String mApplicationManagerQueueUrl;
 	private String mManagerApplicationQueueUrl;
 	private String mManagerWorkersQueueUrl;
 	private String mWorkerManagerQueueUrl;
+	private String mWorkerDoneQueueUrl;
 
 	private AmazonSQS mAmazonSQS;
 
@@ -64,6 +65,7 @@ public class SQSController {
 		boolean maq = false;
 		boolean mwq = false;
 		boolean wmq = false;
+		boolean wdq = false;
 
 		for (String queueUrl : mAmazonSQS.listQueues().getQueueUrls()) {
 
@@ -79,6 +81,9 @@ public class SQSController {
 			} else if (queueUrl.contains(WORKER_MANAGER_QUEUE)) {
 				wmq = true;
 				mWorkerManagerQueueUrl = queueUrl;
+			} else if (queueUrl.contains(WORKER_DONE_QUEUE)) {
+				wdq = true;
+				mWorkerDoneQueueUrl = queueUrl;
 			}
 		}
 
@@ -100,6 +105,10 @@ public class SQSController {
 		if (!wmq)
 			mWorkerManagerQueueUrl = mAmazonSQS.createQueue(
 					new CreateQueueRequest(WORKER_MANAGER_QUEUE)).getQueueUrl();
+
+		if (!wdq)
+			mWorkerDoneQueueUrl = mAmazonSQS.createQueue(
+					new CreateQueueRequest(WORKER_DONE_QUEUE)).getQueueUrl();
 	}
 
 	public void sendMessageAboutTheLocationOfTheImagesListFile(
@@ -121,11 +130,45 @@ public class SQSController {
 	}
 
 	public String checkIfTheProcessIsDone(String pApplicationId) {
-		// TODO The Application will check a specified SQS queue for a message
+		// TEST The Application will check a specified SQS queue for a message
 		// indicating the process is done and the response is available on S3.
 
-		// TODO return the location of the summary file
-		return null;
+		// TEST return the location of the summary file
+		
+		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
+				mManagerApplicationQueueUrl);
+
+		while (true) {
+
+			List<Message> messages = mAmazonSQS.receiveMessage(
+					receiveMessageRequest).getMessages();
+			
+			for (Message message : messages){
+				
+				String[] splittedMessage = message.getBody().split("\t");
+
+				String applicationId = splittedMessage[1];
+				
+				if (applicationId.equals(pApplicationId)){
+					
+					mAmazonSQS.deleteMessage(new DeleteMessageRequest(
+							mApplicationManagerQueueUrl, message.getReceiptHandle()));
+					
+					return splittedMessage[2];
+				}
+			}
+
+			// TODO blocking.. wait when the queue is empty, BUSY WAIT!!
+			if (messages.isEmpty()) {
+
+				try {
+
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO: handle exception..
+				}
+			}
+		}
 	}
 
 	public List<Message> receiveMessagesAboutTheLocationOfTheImagesListFile() {
@@ -168,26 +211,69 @@ public class SQSController {
 		mAmazonSQS.sendMessage(sendMessageRequest);
 	}
 
-	public void waitForWorkersToFinishTheirWork() {
-		// TODO The Manager waits until the images queue count is 0,
+	public void waitForWorkersToFinishTheirWork(int pNumOfWorkers) {
+		// TEST The Manager waits until the images queue count is 0,
 
+		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
+				mWorkerDoneQueueUrl);
+
+		int counter = 0;
+
+		while (true) {
+
+			List<Message> messages = mAmazonSQS.receiveMessage(
+					receiveMessageRequest).getMessages();
+			
+			for (Message message : messages)
+				mAmazonSQS.deleteMessage(new DeleteMessageRequest(
+					mApplicationManagerQueueUrl, message.getReceiptHandle()));
+
+			counter += messages.size();
+
+			if (counter == pNumOfWorkers)
+				return;
+
+			// TODO blocking.. wait when the queue is empty, BUSY WAIT!!
+			if (messages.isEmpty()) {
+
+				try {
+
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO: handle exception..
+				}
+			}
+		}
 	}
 
-	public Vector<Message> receiveFacesMessages() {
-		// TODO The Manager should read all the messages from the results queue
-		return null;
+	public List<Message> receiveFacesMessages() {
+		// TEST The Manager should read all the messages from the results queue
+
+		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
+				mWorkerManagerQueueUrl);
+
+		return mAmazonSQS.receiveMessage(receiveMessageRequest).getMessages();
 	}
 
 	public void sendMessageAboutTheLocationOfTheSummaryFile(String pTaskId,
 			String pSummaryFileLocation) {
-		// TODO The Manager sends a message to the user queue with the location
+		// TEST The Manager sends a message to the user queue with the location
 		// of the file.
 
+		String message = "DONE_TASK\t" + pTaskId + "\t" + pSummaryFileLocation;
+
+		SendMessageRequest sendMessageRequest = new SendMessageRequest(
+				mManagerApplicationQueueUrl, message);
+
+		mAmazonSQS.sendMessage(sendMessageRequest);
 	}
 
-	public void deleteMessages(List<Message> pMessages) {
-		// TODO The Manager deletes the messages that he handled.
+	public void deleteNewTaskMessages(List<Message> pMessages) {
+		// TEST The Manager deletes the messages that he handled.
 
+		for (Message message : pMessages)
+			mAmazonSQS.deleteMessage(new DeleteMessageRequest(
+					mApplicationManagerQueueUrl, message.getReceiptHandle()));
 	}
 
 	public URL receiveMessageAboutURL() {
@@ -239,12 +325,11 @@ public class SQSController {
 
 	public void sendWorkerFinishMessage() {
 		// TEST The worker tells the Manager that finished his job..
-		
+
 		String message = "WORKER_DONE";
 
-		// TODO: create new queue..
 		SendMessageRequest sendMessageRequest = new SendMessageRequest(
-				null, message);
+				mWorkerDoneQueueUrl, message);
 
 		mAmazonSQS.sendMessage(sendMessageRequest);
 	}
