@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.amazonaws.auth.PropertiesCredentials;
@@ -247,16 +248,27 @@ public class SQSController {
 	public List<Message> receiveFacesMessages() {
 		// TEST The Manager should read all the messages from the results queue
 
+		List<Message> messages = new ArrayList<Message>();
+		
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
 				mWorkerManagerQueueUrl);
+		
+		while (true){
+			
+			List<Message> tMessages = mAmazonSQS.receiveMessage(
+					receiveMessageRequest).getMessages();
 
-		List<Message> messages = mAmazonSQS.receiveMessage(
-				receiveMessageRequest).getMessages();
-
-		for (Message message : messages)
-			mAmazonSQS.deleteMessage(new DeleteMessageRequest(
-					mWorkerManagerQueueUrl, message.getReceiptHandle()));
-
+			for (Message message : messages)
+				mAmazonSQS.deleteMessage(new DeleteMessageRequest(
+						mWorkerManagerQueueUrl, message.getReceiptHandle()));
+			
+			if (tMessages.size() == 0)
+				break;
+			
+			else
+				messages.addAll(tMessages);
+		}
+		
 		return messages;
 	}
 
