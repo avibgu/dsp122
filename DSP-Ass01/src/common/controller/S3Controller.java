@@ -67,7 +67,7 @@ public class S3Controller {
 		return uploadFileToS3(pInputFile, IMAGES_LIST_FILE_BASE_NAME);
 	}
 
-	private String uploadFileToS3(File pInputFile, String pBaseName) {
+	public String uploadFileToS3(File pInputFile, String pBaseName) {
 
 		String fileLocation = pBaseName + "-" + UUID.randomUUID() + ".jpg";
 
@@ -100,7 +100,7 @@ public class S3Controller {
 		return downloadFileFromS3(pImagesListFileLocation);
 	}
 
-	private InputStream downloadFileFromS3(String pFileLocation) {
+	public InputStream downloadFileFromS3(String pFileLocation) {
 
 		S3Object object = mAmazonS3.getObject(new GetObjectRequest(BUCKET_NAME,
 				pFileLocation));
