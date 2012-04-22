@@ -8,13 +8,10 @@ import java.util.UUID;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.GroupGrantee;
-import com.amazonaws.services.s3.model.Permission;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 
 public class S3Controller {
@@ -61,15 +58,7 @@ public class S3Controller {
 				return;
 
 		// in case we don't - create one
-		Bucket b = mAmazonS3.createBucket(BUCKET_NAME);
-
-		AccessControlList acl = mAmazonS3.getBucketAcl(BUCKET_NAME);
-		acl.setOwner(b.getOwner());
-		acl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
-		
-		
-		mAmazonS3.setBucketAcl(BUCKET_NAME, acl);
-
+		mAmazonS3.createBucket(BUCKET_NAME);
 	}
 
 	public String uploadInputFile(File pInputFile) {
@@ -86,8 +75,12 @@ public class S3Controller {
 
 		try {
 
-			PutObjectResult x = mAmazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileLocation,
-					pInputFile));
+			PutObjectRequest putObjectRequest = new PutObjectRequest(
+					BUCKET_NAME, fileLocation, pInputFile);
+
+			putObjectRequest.setCannedAcl(CannedAccessControlList.PublicRead);
+
+			mAmazonS3.putObject(putObjectRequest);
 
 		} catch (Exception e) {
 			// TODO: handle exception, change the name of the file and try again

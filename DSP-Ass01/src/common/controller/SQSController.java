@@ -15,8 +15,6 @@ import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 
-import example.SimpleQueueServiceSample;
-
 public class SQSController {
 
 	private final static String APPLICATION_MANAGER_QUEUE = "DSP122-AVI-BATEL-APPLICATION-MANAGER";
