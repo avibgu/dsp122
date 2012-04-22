@@ -8,19 +8,23 @@ import java.util.UUID;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.GroupGrantee;
+import com.amazonaws.services.s3.model.Permission;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
-
-import example.S3Sample;
 
 public class S3Controller {
 
-	public static final String BUCKET_NAME = "DSP122-AVI-BATEL";
+	public static final String BUCKET_NAME = "dsp122-avi-batel";
 	public static final String IMAGES_LIST_FILE_BASE_NAME = "IMAGES-LIST-FILE";
 	public static final String SUMMARY_FILE_BASE_NAME = "SUMMARY-FILE";
 	public static final String FACE_FILE_BASE_NAME = "FACE-FILE";
+	private static final String S3_URL = "https://s3.amazonaws.com/"
+			+ BUCKET_NAME + "/";
 
 	private AmazonS3 mAmazonS3;
 
@@ -30,10 +34,8 @@ public class S3Controller {
 
 		try {
 
-			mAmazonS3 = new AmazonS3Client(
-					new PropertiesCredentials(
-							S3Sample.class
-									.getResourceAsStream("../AwsCredentials.properties")));
+			mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(new File(
+					"AwsCredentials.properties")));
 		}
 
 		catch (IOException e) {
@@ -59,7 +61,15 @@ public class S3Controller {
 				return;
 
 		// in case we don't - create one
-		mAmazonS3.createBucket(BUCKET_NAME);
+		Bucket b = mAmazonS3.createBucket(BUCKET_NAME);
+
+		AccessControlList acl = mAmazonS3.getBucketAcl(BUCKET_NAME);
+		
+		acl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+//		acl.setOwner(b.getOwner());
+		
+		mAmazonS3.setBucketAcl(BUCKET_NAME, acl);
+
 	}
 
 	public String uploadInputFile(File pInputFile) {
@@ -69,21 +79,19 @@ public class S3Controller {
 	}
 
 	private String uploadFileToS3(File pInputFile, String pBaseName) {
-		
-		String fileLocation = pBaseName + "-"
-				+ pInputFile.getName() + UUID.randomUUID();
+
+		String fileLocation = pBaseName + "-" + UUID.randomUUID() + ".jpg";
 
 		fileLocation = fileLocation.replaceAll("/", "-");
 
-		try{
-		
+		try {
+
 			mAmazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileLocation,
 					pInputFile));
-		}
-		catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO: handle exception, change the name of the file and try again
 		}
-		
 
 		// TODO : return the location
 		return fileLocation;
@@ -98,7 +106,7 @@ public class S3Controller {
 		// The Manager Downloads the images list from S3.
 		return downloadFileFromS3(pImagesListFileLocation);
 	}
-	
+
 	private InputStream downloadFileFromS3(String pFileLocation) {
 
 		S3Object object = mAmazonS3.getObject(new GetObjectRequest(BUCKET_NAME,
@@ -106,14 +114,14 @@ public class S3Controller {
 
 		return object.getObjectContent();
 	}
-	
+
 	public String uploadSummaryFile(File pSummaryFile) {
-		// upload the output file to S3, and return the location 
+		// upload the output file to S3, and return the location
 		return uploadFileToS3(pSummaryFile, SUMMARY_FILE_BASE_NAME);
 	}
 
 	public String uploadFaceImage(File pFace) {
 		// upload the images file to S3. (return the location)
-		return uploadFileToS3(pFace, FACE_FILE_BASE_NAME);
+		return S3_URL + uploadFileToS3(pFace, FACE_FILE_BASE_NAME);
 	}
 }

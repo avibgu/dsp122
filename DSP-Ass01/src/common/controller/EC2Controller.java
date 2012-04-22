@@ -1,5 +1,6 @@
 package common.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,9 +43,8 @@ public class EC2Controller {
 
 		try {
 
-			AWSCredentials credentials = new PropertiesCredentials(
-					AwsConsoleApp.class
-							.getResourceAsStream("../AwsCredentials.properties"));
+			AWSCredentials credentials = new PropertiesCredentials(new File(
+					"AwsCredentials.properties"));
 
 			mAmazonEC2 = new AmazonEC2Client(credentials);
 		}
@@ -144,8 +144,8 @@ public class EC2Controller {
 
 		for (Instance instance : instances)
 			if (instance.getTags().contains(new Tag(MANAGER_TAG, ""))
-					&& instance.getState().getName()
-							.equals(InstanceStateName.Running.toString()))
+					&& instance.getState().getName().equals(
+							InstanceStateName.Running.toString()))
 				return instance;
 
 		return null;
