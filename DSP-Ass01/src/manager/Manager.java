@@ -3,6 +3,7 @@ package manager;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Vector;
 
 import com.amazonaws.services.sqs.model.Message;
@@ -20,15 +21,6 @@ public class Manager {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		int numOfURLsPerWorker = -1;
-
-		try {
-
-			numOfURLsPerWorker = Integer.parseInt(args[0]);
-		} catch (Exception e) {
-			throw new Exception("please provide: numOfURLsPerWorker");
-		}
-
 		EC2Controller ec2 = EC2Controller.getInstance();
 		S3Controller s3 = S3Controller.getInstance();
 		SQSController sqs = SQSController.getInstance();
@@ -36,43 +28,56 @@ public class Manager {
 		while (true) {
 
 			// Manager downloads list of images
+			List<Message> messages = sqs
+					.receiveMessagesAboutTheLocationOfTheImagesListFile();
 
-			String imagesListFileLocation = sqs
-					.receiveMessageAboutTheLocationOfTheImagesListFile();
+			for (Message message : messages) {
 
-			InputStream listOfImagesFile = s3
-					.downloadInputFile(imagesListFileLocation);
+				String[] splittedMessage = message.getBody().split("\t");
 
-			// Manager creates an SQS message for each URL in the list of images
-			Vector<URL> urls = FileManipulator
-					.retrieveURLsFromInputFile(listOfImagesFile);
+				String imagesListFileLocation = splittedMessage[1];
+				String taskId = splittedMessage[2];
+				int numOfURLsPerWorker = Integer.parseInt(splittedMessage[3]);
 
-			for (URL url : urls)
-				sqs.sendMessageAboutThisURL(url);
+				InputStream listOfImagesFile = s3
+						.downloadInputFile(imagesListFileLocation);
 
-			// Manager bootstraps nodes to process messages
+				// Manager creates an SQS message for each URL in the list of
+				// images
+				Vector<URL> urls = FileManipulator
+						.retrieveURLsFromInputFile(listOfImagesFile);
 
-			int numOfWorkers = urls.size() / numOfURLsPerWorker;
+				for (URL url : urls)
+					sqs.sendMessageAboutThisURL(url);
 
-			numOfWorkers += (0 != urls.size() % numOfURLsPerWorker) ? 1 : 0;
+				// Manager bootstraps nodes to process messages
 
-			ec2.startWorkers(numOfWorkers, numOfURLsPerWorker);
+				int numOfWorkers = urls.size() / numOfURLsPerWorker;
 
-			// Manager reads all the Workers' messages from SQS and creates one
-			// summary file
-			sqs.waitForWorkersToFinishTheirWork();
+				numOfWorkers += (0 != urls.size() % numOfURLsPerWorker) ? 1 : 0;
 
-			ec2.stopWorkers();
+				ec2.startWorkers(numOfWorkers, numOfURLsPerWorker);
 
-			Vector<Message> facesMessages = sqs.receiveFacesMessages();
-			
-			File summaryFile = FileManipulator.createSummaryFile(facesMessages);
-			
-			// Manager uploads summary file to S3
-			String summaryFileLocation = s3.uploadSummaryFile(summaryFile);
+				// Manager reads all the Workers' messages from SQS and creates
+				// one summary file
+				sqs.waitForWorkersToFinishTheirWork();
 
-			// Manager posts an SQS message about summary file
-			sqs.sendMessageAboutTheLocationOfTheSummaryFile(summaryFileLocation);
+				ec2.stopWorkers();
+
+				Vector<Message> facesMessages = sqs.receiveFacesMessages();
+
+				File summaryFile = FileManipulator
+						.createSummaryFile(facesMessages);
+
+				// Manager uploads summary file to S3
+				String summaryFileLocation = s3.uploadSummaryFile(summaryFile);
+
+				// Manager posts an SQS message about summary file
+				sqs.sendMessageAboutTheLocationOfTheSummaryFile(taskId,
+						summaryFileLocation);
+			}
+
+			sqs.deleteMessages(messages);
 		}
 	}
 }

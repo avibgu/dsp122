@@ -128,7 +128,7 @@ public class ImageManipulator {
 					
 					overlap = true;
 					break;
-				}	
+				}
 			}
 			
 			if (overlap)
