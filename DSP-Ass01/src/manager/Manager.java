@@ -60,14 +60,14 @@ public class Manager {
 
 				// Manager reads all the Workers' messages from SQS and creates
 				// one summary file
-				sqs.waitForWorkersToFinishTheirWork();
+				sqs.waitForWorkersToFinishTheirWork(numOfWorkers);
 
 				ec2.stopWorkers();
 
-				Vector<Message> facesMessages = sqs.receiveFacesMessages();
+				List<Message> facesMessages = sqs.receiveFacesMessages();
 
-				File summaryFile = FileManipulator
-						.createSummaryFile(facesMessages);
+				File summaryFile = FileManipulator.createSummaryFile(
+						facesMessages, "SF");
 
 				// Manager uploads summary file to S3
 				String summaryFileLocation = s3.uploadSummaryFile(summaryFile);
@@ -77,7 +77,7 @@ public class Manager {
 						summaryFileLocation);
 			}
 
-			sqs.deleteMessages(messages);
+			sqs.deleteNewTaskMessages(messages);
 		}
 	}
 }
