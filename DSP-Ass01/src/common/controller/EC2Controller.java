@@ -186,7 +186,7 @@ public class EC2Controller {
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
 //		lines.add("wget https://s3.amazonaws.com/TEST12345678/worker.jar"); TODO
-		lines.add("wget http://www.cs.bgu.ac.il/~digmia/worker.jar.txt");
+		lines.add("wget http://www.cs.bgu.ac.il/~digmia/worker.jar");
 		lines.add("wget http://www.cs.bgu.ac.il/~digmia/HCSB.txt");
 		lines.add("wget http://www.cs.bgu.ac.il/~digmia/AwsCredentials.properties");
 		// download also the HCSB file and the credentials?..
