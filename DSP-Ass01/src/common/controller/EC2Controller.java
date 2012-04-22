@@ -26,8 +26,6 @@ import com.amazonaws.services.ec2.model.RunInstancesResult;
 import com.amazonaws.services.ec2.model.Tag;
 import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
 
-import example.AwsConsoleApp;
-
 public class EC2Controller {
 
 	private static final String KEY_PAIR = "AviKeyPair";
