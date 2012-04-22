@@ -64,9 +64,9 @@ public class S3Controller {
 		Bucket b = mAmazonS3.createBucket(BUCKET_NAME);
 
 		AccessControlList acl = mAmazonS3.getBucketAcl(BUCKET_NAME);
-		
+		acl.setOwner(b.getOwner());
 		acl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
-//		acl.setOwner(b.getOwner());
+		
 		
 		mAmazonS3.setBucketAcl(BUCKET_NAME, acl);
 
@@ -86,7 +86,7 @@ public class S3Controller {
 
 		try {
 
-			mAmazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileLocation,
+			PutObjectResult x = mAmazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileLocation,
 					pInputFile));
 
 		} catch (Exception e) {
