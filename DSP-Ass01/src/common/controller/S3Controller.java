@@ -64,12 +64,12 @@ public class S3Controller {
 	public String uploadInputFile(File pInputFile) {
 		// The application will upload the file with the list of images to S3.
 		// use IMAGES_LIST_FILE_LOCATION as base.
-		return uploadFileToS3(pInputFile, IMAGES_LIST_FILE_BASE_NAME);
+		return uploadFileToS3(pInputFile, IMAGES_LIST_FILE_BASE_NAME, ".txt");
 	}
 
-	public String uploadFileToS3(File pInputFile, String pBaseName) {
+	public String uploadFileToS3(File pInputFile, String pBaseName, String pFileExtension) {
 
-		String fileLocation = pBaseName + "-" + UUID.randomUUID() + ".jpg";
+		String fileLocation = pBaseName + "-" + UUID.randomUUID() + pFileExtension;
 
 		fileLocation = fileLocation.replaceAll("/", "-");
 
@@ -110,11 +110,11 @@ public class S3Controller {
 
 	public String uploadSummaryFile(File pSummaryFile) {
 		// upload the output file to S3, and return the location
-		return uploadFileToS3(pSummaryFile, SUMMARY_FILE_BASE_NAME);
+		return uploadFileToS3(pSummaryFile, SUMMARY_FILE_BASE_NAME, ".txt");
 	}
 
 	public String uploadFaceImage(File pFace) {
 		// upload the images file to S3. (return the location)
-		return S3_URL + uploadFileToS3(pFace, FACE_FILE_BASE_NAME);
+		return S3_URL + uploadFileToS3(pFace, FACE_FILE_BASE_NAME, ".jpg");
 	}
 }

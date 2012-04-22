@@ -223,10 +223,8 @@ public class SQSController {
 					receiveMessageRequest).getMessages();
 
 			for (Message message : messages)
-				mAmazonSQS
-						.deleteMessage(new DeleteMessageRequest(
-								mApplicationManagerQueueUrl, message
-										.getReceiptHandle()));
+				mAmazonSQS.deleteMessage(new DeleteMessageRequest(
+						mWorkerDoneQueueUrl, message.getReceiptHandle()));
 
 			counter += messages.size();
 
@@ -252,7 +250,14 @@ public class SQSController {
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
 				mWorkerManagerQueueUrl);
 
-		return mAmazonSQS.receiveMessage(receiveMessageRequest).getMessages();
+		List<Message> messages = mAmazonSQS.receiveMessage(
+				receiveMessageRequest).getMessages();
+
+		for (Message message : messages)
+			mAmazonSQS.deleteMessage(new DeleteMessageRequest(
+					mWorkerManagerQueueUrl, message.getReceiptHandle()));
+
+		return messages;
 	}
 
 	public void sendMessageAboutTheLocationOfTheSummaryFile(String pTaskId,
