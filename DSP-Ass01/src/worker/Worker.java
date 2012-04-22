@@ -17,26 +17,13 @@ public class Worker {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		int numOfURLs = -1;
-
-		try {
-
-			numOfURLs = Integer.parseInt(args[0]);
-		}
-		catch (Exception e) {
-			throw new Exception(
-					"please provide: numOfURLs");
-		}
-
 		S3Controller s3 = S3Controller.getInstance();
 		SQSController sqs = SQSController.getInstance();
 		
-		while (numOfURLs-- > 0){
-		
-			// Worker gets an image message from an SQS queue
-			URL url = sqs.receiveMessageAboutURL();
+		URL url = null; 
 			
-			if (null == url) break;
+		// Worker gets an image message from an SQS queue
+		while (null != (url = sqs.receiveMessageAboutURL())){
 			
 			// TODO: does File is ok?..
 			
@@ -55,6 +42,8 @@ public class Worker {
 				sqs.sendMessageAboutTheLocationOfTheFaceFile(url, faceFileLocation);
 			}
 		}
+		
+		sqs.sendWorkerFinishMessage();
 	}
 
 }
