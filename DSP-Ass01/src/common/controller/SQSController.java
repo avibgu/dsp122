@@ -1,5 +1,6 @@
 package common.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,10 +39,8 @@ public class SQSController {
 
 		try {
 
-			mAmazonSQS = new AmazonSQSClient(
-					new PropertiesCredentials(
-							SimpleQueueServiceSample.class
-									.getResourceAsStream("../AwsCredentials.properties")));
+			mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
+					new File("AwsCredentials.properties")));
 		}
 
 		catch (IOException e) {
@@ -134,7 +133,7 @@ public class SQSController {
 		// indicating the process is done and the response is available on S3.
 
 		// TEST return the location of the summary file
-		
+
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
 				mManagerApplicationQueueUrl);
 
@@ -142,18 +141,19 @@ public class SQSController {
 
 			List<Message> messages = mAmazonSQS.receiveMessage(
 					receiveMessageRequest).getMessages();
-			
-			for (Message message : messages){
-				
-				String[] splittedMessage = message.getBody().split("\t");
+
+			for (Message message : messages) {
+
+				String[] splittedMessage = message.getBody().split(" ");
 
 				String applicationId = splittedMessage[1];
-				
-				if (applicationId.equals(pApplicationId)){
-					
+
+				if (applicationId.equals(pApplicationId)) {
+
 					mAmazonSQS.deleteMessage(new DeleteMessageRequest(
-							mApplicationManagerQueueUrl, message.getReceiptHandle()));
-					
+							mApplicationManagerQueueUrl, message
+									.getReceiptHandle()));
+
 					return splittedMessage[2];
 				}
 			}
@@ -203,7 +203,7 @@ public class SQSController {
 		// TEST The Manager creates an SQS message for each URL in the images
 		// list.
 
-		String message = "NEW_IMAGE_TASK\t" + pImageUrl;
+		String message = "NEW_IMAGE_TASK " + pImageUrl;
 
 		SendMessageRequest sendMessageRequest = new SendMessageRequest(
 				mManagerWorkersQueueUrl, message);
@@ -223,10 +223,12 @@ public class SQSController {
 
 			List<Message> messages = mAmazonSQS.receiveMessage(
 					receiveMessageRequest).getMessages();
-			
+
 			for (Message message : messages)
-				mAmazonSQS.deleteMessage(new DeleteMessageRequest(
-					mApplicationManagerQueueUrl, message.getReceiptHandle()));
+				mAmazonSQS
+						.deleteMessage(new DeleteMessageRequest(
+								mApplicationManagerQueueUrl, message
+										.getReceiptHandle()));
 
 			counter += messages.size();
 
@@ -260,7 +262,7 @@ public class SQSController {
 		// TEST The Manager sends a message to the user queue with the location
 		// of the file.
 
-		String message = "DONE_TASK\t" + pTaskId + "\t" + pSummaryFileLocation;
+		String message = "DONE_TASK " + pTaskId + " " + pSummaryFileLocation;
 
 		SendMessageRequest sendMessageRequest = new SendMessageRequest(
 				mManagerApplicationQueueUrl, message);
@@ -299,7 +301,7 @@ public class SQSController {
 									.getReceiptHandle()));
 
 			try {
-				return new URL(messages.get(0).getBody().split("\t")[1]);
+				return new URL(messages.get(0).getBody().split(" ")[1]);
 			}
 
 			catch (MalformedURLException e) {
@@ -314,7 +316,7 @@ public class SQSController {
 		// TEST put a message in an SQS queue indicating the original URL of the
 		// image and the S3 url of the new images file.
 
-		String message = "DONE_IMAGE_TASK\t" + pOriginalImageUrl + "\t"
+		String message = "DONE_IMAGE_TASK " + pOriginalImageUrl + " "
 				+ pFaceFileLocation;
 
 		SendMessageRequest sendMessageRequest = new SendMessageRequest(

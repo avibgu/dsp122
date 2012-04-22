@@ -33,7 +33,7 @@ public class Manager {
 
 			for (Message message : messages) {
 
-				String[] splittedMessage = message.getBody().split("\t");
+				String[] splittedMessage = message.getBody().split(" ");
 
 				String imagesListFileLocation = splittedMessage[1];
 				String taskId = splittedMessage[2];

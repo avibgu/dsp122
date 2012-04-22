@@ -94,7 +94,7 @@ public class FileManipulator {
 		
 		for (String line : x){
 			
-			String[] params = line.split("\t");
+			String[] params = line.split(" ");
 			
 			result.add("<a href=\"" + params[0] + "\">");
 			result.add("<img src=\"" + params[1] + "\"/>");
@@ -139,9 +139,9 @@ public class FileManipulator {
 		
 		for (Message message : pMessage){
 			
-			String[] splittedMessage = message.getBody().split("\t");
+			String[] splittedMessage = message.getBody().split(" ");
 			
-			pContent.add(splittedMessage[1] + "\t" + splittedMessage[2]);
+			pContent.add(splittedMessage[1] + " " + splittedMessage[2]);
 		}
 	
 		File file = new File(pFilename);
