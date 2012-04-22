@@ -115,8 +115,8 @@ public class SQSController {
 		// TEST The Application will send a message to a specified SQS queue,
 		// stating the location of the images list on S3
 
-		String message = "NEW_TASK\t" + pApplicationId + "\t"
-				+ pInputFileLocation + "\t" + pNumOfURLsPerWorker;
+		String message = "NEW_TASK " + pApplicationId + " "
+				+ pInputFileLocation + " " + pNumOfURLsPerWorker;
 
 		SendMessageRequest sendMessageRequest = new SendMessageRequest(
 				mApplicationManagerQueueUrl, message);

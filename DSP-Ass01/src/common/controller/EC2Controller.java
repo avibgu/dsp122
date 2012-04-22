@@ -150,16 +150,15 @@ public class EC2Controller {
 	}
 
 	protected RunInstancesRequest prepareManagerRequest(int pNumOfURLsPerWorker) {
-		return prepareRequest(1, getManagerScript(pNumOfURLsPerWorker));
+		return prepareRequest(1, getManagerScript());
 	}
 
 	protected RunInstancesRequest prepareWorkerRequest(int pNumOfWorkers,
 			int pNumOfURLsPerWorker) {
-		return prepareRequest(pNumOfWorkers,
-				getWorkerScript(pNumOfURLsPerWorker));
+		return prepareRequest(pNumOfWorkers, getWorkerScript());
 	}
 
-	private String getManagerScript(int pNumOfURLsPerWorker) {
+	private String getManagerScript() {
 
 		ArrayList<String> lines = new ArrayList<String>();
 
@@ -167,16 +166,18 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		lines.add(" wget https://s3.amazonaws.com/TEST12345678/manager.jar");
+//		lines.add(" wget https://s3.amazonaws.com/TEST12345678/manager.jar"); TODO
+		lines.add("wget http://www.cs.bgu.ac.il/~digmia/manager.jar");
+		lines.add("wget http://www.cs.bgu.ac.il/~digmia/AwsCredentials.properties");
 		// TODO: download also the credentials?..
 		// lines.add("# TODO: make sure we have java installed");
-		lines.add("java -jar manager.jar " + pNumOfURLsPerWorker);
+		lines.add("java -jar manager.jar");
 		lines.add("shutdown -h 0");
 
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));
 	}
 
-	private String getWorkerScript(int pNumOfURLs) {
+	private String getWorkerScript() {
 
 		ArrayList<String> lines = new ArrayList<String>();
 
@@ -184,10 +185,13 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		lines.add(" wget https://s3.amazonaws.com/TEST12345678/worker.jar");
-		// TODO: download also the HCSB file, and maybe the credentials?..
+//		lines.add("wget https://s3.amazonaws.com/TEST12345678/worker.jar"); TODO
+		lines.add("wget http://www.cs.bgu.ac.il/~digmia/worker.jar.txt");
+		lines.add("wget http://www.cs.bgu.ac.il/~digmia/HCSB.txt");
+		lines.add("wget http://www.cs.bgu.ac.il/~digmia/AwsCredentials.properties");
+		// download also the HCSB file and the credentials?..
 		// lines.add("# TODO: make sure we have java installed");
-		lines.add("java -jar worker.jar " + pNumOfURLs);
+		lines.add("java -jar worker.jar");
 		lines.add("shutdown -h 0");
 
 		return new String(Base64.encodeBase64(join(lines, "\n").getBytes()));

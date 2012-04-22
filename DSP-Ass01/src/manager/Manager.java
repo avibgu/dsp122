@@ -35,8 +35,8 @@ public class Manager {
 
 				String[] splittedMessage = message.getBody().split(" ");
 
-				String imagesListFileLocation = splittedMessage[1];
-				String taskId = splittedMessage[2];
+				String imagesListFileLocation = splittedMessage[2];
+				String taskId = splittedMessage[1];
 				int numOfURLsPerWorker = Integer.parseInt(splittedMessage[3]);
 
 				InputStream listOfImagesFile = s3
