@@ -44,7 +44,7 @@ public class Manager {
 					// images
 					Vector<URL> urls = FileManipulator
 							.retrieveURLsFromInputFile(listOfImagesFile);
-	
+					
 					for (URL url : urls)
 						sqs.sendMessageAboutThisURL(url);
 					
