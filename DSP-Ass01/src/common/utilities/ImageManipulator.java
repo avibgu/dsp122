@@ -40,7 +40,7 @@ public class ImageManipulator {
 		}
 
 		catch (Exception e) {
-			// TODO: handle exception
+			System.err.println(e.getMessage());
 		}
 
 		return file;
