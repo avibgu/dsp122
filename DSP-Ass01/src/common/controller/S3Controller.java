@@ -86,7 +86,6 @@ public class S3Controller {
 			// TODO: handle exception, change the name of the file and try again
 		}
 
-		// TODO : return the location
 		return fileLocation;
 	}
 

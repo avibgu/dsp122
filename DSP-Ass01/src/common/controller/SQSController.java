@@ -24,6 +24,8 @@ public class SQSController {
 	private final static String WORKER_MANAGER_QUEUE = "DSP122-AVI-BATEL-WORKER-MANAGER";
 	private final static String WORKER_DONE_QUEUE = "DSP122-AVI-BATEL-WORKER-DONE";
 
+	private static final int NUM_OF_QUEUES = 5;
+
 	private String mApplicationManagerQueueUrl;
 	private String mManagerApplicationQueueUrl;
 	private String mManagerWorkersQueueUrl;
@@ -39,7 +41,7 @@ public class SQSController {
 		try {
 
 			mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
-					new File("AwsCredentials.properties")));	//TODO
+					new File("AwsCredentials.properties")));
 		}
 
 		catch (IOException e) {
@@ -107,13 +109,23 @@ public class SQSController {
 		if (!wdq)
 			mWorkerDoneQueueUrl = mAmazonSQS.createQueue(
 					new CreateQueueRequest(WORKER_DONE_QUEUE)).getQueueUrl();
+
+		while (mAmazonSQS.listQueues().getQueueUrls().size() != NUM_OF_QUEUES) {
+			
+			try {
+				
+				Thread.sleep(1000);
+			}
+			
+			catch (InterruptedException e) {}
+		}
 	}
 
 	public void sendMessageAboutTheLocationOfTheImagesListFile(
 			String pApplicationId, String pInputFileLocation,
 			int pNumOfURLsPerWorker) {
 
-		// TEST The Application will send a message to a specified SQS queue,
+		// The Application will send a message to a specified SQS queue,
 		// stating the location of the images list on S3
 
 		String message = "NEW_TASK " + pApplicationId + " "
@@ -128,10 +140,10 @@ public class SQSController {
 	}
 
 	public String checkIfTheProcessIsDone(String pApplicationId) {
-		// TEST The Application will check a specified SQS queue for a message
+		// The Application will check a specified SQS queue for a message
 		// indicating the process is done and the response is available on S3.
 
-		// TEST return the location of the summary file
+		// return the location of the summary file
 
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
 				mManagerApplicationQueueUrl);
@@ -171,7 +183,7 @@ public class SQSController {
 	}
 
 	public List<Message> receiveMessagesAboutTheLocationOfTheImagesListFile() {
-		// TEST The Manager will receive a message from a specified SQS queue,
+		// The Manager will receive a message from a specified SQS queue,
 		// stating the location of the images list on S3
 
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
@@ -199,7 +211,7 @@ public class SQSController {
 	}
 
 	public void sendMessageAboutThisURL(URL pImageUrl) {
-		// TEST The Manager creates an SQS message for each URL in the images
+		// The Manager creates an SQS message for each URL in the images
 		// list.
 
 		String message = "NEW_IMAGE_TASK " + pImageUrl;
@@ -211,7 +223,7 @@ public class SQSController {
 	}
 
 	public void waitForWorkersToFinishTheirWork(int pNumOfWorkers) {
-		// TEST The Manager waits until the images queue count is 0,
+		// The Manager waits until the images queue count is 0,
 
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
 				mWorkerDoneQueueUrl);
@@ -246,35 +258,35 @@ public class SQSController {
 	}
 
 	public List<Message> receiveFacesMessages() {
-		// TEST The Manager should read all the messages from the results queue
+		// The Manager should read all the messages from the results queue
 
 		List<Message> messages = new ArrayList<Message>();
-		
+
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
 				mWorkerManagerQueueUrl);
-		
-		while (true){
-			
+
+		while (true) {
+
 			List<Message> tMessages = mAmazonSQS.receiveMessage(
 					receiveMessageRequest).getMessages();
 
 			for (Message message : messages)
 				mAmazonSQS.deleteMessage(new DeleteMessageRequest(
 						mWorkerManagerQueueUrl, message.getReceiptHandle()));
-			
+
 			if (tMessages.size() == 0)
 				break;
-			
+
 			else
 				messages.addAll(tMessages);
 		}
-		
+
 		return messages;
 	}
 
 	public void sendMessageAboutTheLocationOfTheSummaryFile(String pTaskId,
 			String pSummaryFileLocation) {
-		// TEST The Manager sends a message to the user queue with the location
+		// The Manager sends a message to the user queue with the location
 		// of the file.
 
 		String message = "DONE_TASK " + pTaskId + " " + pSummaryFileLocation;
@@ -286,7 +298,7 @@ public class SQSController {
 	}
 
 	public void deleteNewTaskMessages(List<Message> pMessages) {
-		// TEST The Manager deletes the messages that he handled.
+		// The Manager deletes the messages that he handled.
 
 		for (Message message : pMessages)
 			mAmazonSQS.deleteMessage(new DeleteMessageRequest(
@@ -294,8 +306,8 @@ public class SQSController {
 	}
 
 	public URL receiveMessageAboutURL() {
-		// TEST The Worker gets an image message from an SQS queue.
-		// TEST The Worker removes the image message from the SQS queue.
+		// The Worker gets an image message from an SQS queue.
+		// The Worker removes the image message from the SQS queue.
 
 		ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(
 				mManagerWorkersQueueUrl);
@@ -328,7 +340,7 @@ public class SQSController {
 
 	public void sendMessageAboutTheLocationOfTheFaceFile(URL pOriginalImageUrl,
 			String pFaceFileLocation) {
-		// TEST put a message in an SQS queue indicating the original URL of the
+		// put a message in an SQS queue indicating the original URL of the
 		// image and the S3 url of the new images file.
 
 		String message = "DONE_IMAGE_TASK " + pOriginalImageUrl + " "
@@ -341,7 +353,7 @@ public class SQSController {
 	}
 
 	public void sendWorkerFinishMessage() {
-		// TEST The worker tells the Manager that finished his job..
+		// The worker tells the Manager that finished his job..
 
 		String message = "WORKER_DONE";
 

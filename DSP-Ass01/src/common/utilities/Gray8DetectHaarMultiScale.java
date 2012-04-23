@@ -154,8 +154,6 @@ public class Gray8DetectHaarMultiScale extends PipelineStage {
                         result.add(new Rect(nxLastFound*nScale, nyLastFound*nScale,
                                 this.hcc.getWidth()*nScale,
                                 this.hcc.getHeight()*nScale));
-
-                        //TODO: Paint the Rect that we found..
                         
                         Gray8Rect gr = new Gray8Rect(nxLastFound, 
                                 nyLastFound, 

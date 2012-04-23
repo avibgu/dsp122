@@ -49,9 +49,6 @@ public class Manager {
 
 				for (URL url : urls)
 					sqs.sendMessageAboutThisURL(url);
-
-				// TODO: put delay
-				Thread.sleep(5000);
 				
 				// Manager bootstraps nodes to process messages
 
