@@ -39,7 +39,7 @@ public class SQSController {
 		try {
 
 			mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
-					new File("AwsCredentials.properties")));
+					new File("AwsCredentials.properties")));	//TODO
 		}
 
 		catch (IOException e) {
