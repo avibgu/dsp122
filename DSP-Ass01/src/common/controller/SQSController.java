@@ -150,7 +150,7 @@ public class SQSController {
 				if (applicationId.equals(pApplicationId)) {
 
 					mAmazonSQS.deleteMessage(new DeleteMessageRequest(
-							mApplicationManagerQueueUrl, message
+							mManagerApplicationQueueUrl, message
 									.getReceiptHandle()));
 
 					return splittedMessage[2];
