@@ -42,7 +42,7 @@ public class SQSController {
 		}
 
 		catch (IOException e) {
-			
+
 			System.err.println("SQSController wan't created..");
 			return;
 		}
@@ -108,6 +108,16 @@ public class SQSController {
 		if (!wdq)
 			mWorkerDoneQueueUrl = mAmazonSQS.createQueue(
 					new CreateQueueRequest(WORKER_DONE_QUEUE)).getQueueUrl();
+
+		if (!amq || !maq || !mwq || !wmq || !wdq) {
+
+			try {
+				Thread.sleep(7000);
+			}
+
+			catch (InterruptedException e) {
+			}
+		}
 	}
 
 	public void sendMessageAboutTheLocationOfTheImagesListFile(
