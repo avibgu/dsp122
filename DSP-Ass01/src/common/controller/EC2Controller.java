@@ -41,7 +41,6 @@ public class EC2Controller {
 
 		try {
 
-			// TODO: hide the credentials somehow..
 			AWSCredentials credentials = new PropertiesCredentials(new File(
 					"AwsCredentials.properties"));
 
@@ -49,7 +48,7 @@ public class EC2Controller {
 		}
 
 		catch (IOException e) {
-			e.printStackTrace();
+			// TODO: handle exception..
 		}
 
 		mWorkers = new ArrayList<String>();
@@ -143,8 +142,8 @@ public class EC2Controller {
 
 		for (Instance instance : instances)
 			if (instance.getTags().contains(new Tag(MANAGER_TAG, ""))
-					&& instance.getState().getName().equals(
-							InstanceStateName.Running.toString()))
+					&& instance.getState().getName()
+							.equals(InstanceStateName.Running.toString()))
 				return instance;
 
 		return null;
@@ -166,7 +165,7 @@ public class EC2Controller {
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
 		lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/manager.jar");
-		lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/AwsCredentials.properties");
+		// lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/AwsCredentials.properties");
 		lines.add("java -jar manager.jar");
 		lines.add("shutdown -h 0");
 
@@ -179,9 +178,9 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/HCSB.txt");
+		// lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/HCSB.txt");
 		lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/manager.jar");
-		lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/AwsCredentials.properties");
+		// lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/AwsCredentials.properties");
 		lines.add("java -jar worker.jar");
 		lines.add("shutdown -h 0");
 
