@@ -79,7 +79,7 @@ public class ImageManipulator {
 			rectangles = detectHaar.pushAndReturn(toGray.getFront());
 
 			rectangles = removeDuplicates(rectangles);
-			
+
 			System.out.println("Found " + rectangles.size() + " faces");
 
 			for (Rect rect : rectangles) {
@@ -106,50 +106,47 @@ public class ImageManipulator {
 	}
 
 	private static List<Rect> removeDuplicates(List<Rect> rectangles) {
-		
+
 		List<Rect> uniqueRectangles = new ArrayList<Rect>();
 		Rect[][] dupRects = new Rect[rectangles.size()][2];
-		Rect[] unicRects = new Rect[rectangles.size()];
 		int dupCounter = 0;
-		int unicCounter = 0;
-		
-		for (int i = 0; i < rectangles.size(); i++){
-			
+
+		for (int i = 0; i < rectangles.size(); i++) {
+
 			Rect x = rectangles.get(i);
-			
-			boolean overlap = false; 
-			
-			for (int j = i + 1; j < rectangles.size(); j++){
-				
-				if (x.overlaps(rectangles.get(j))){
-					
+
+			boolean overlap = false;
+
+			for (int j = i + 1; j < rectangles.size(); j++) {
+
+				if (x.overlaps(rectangles.get(j))) {
+
 					overlap = true;
 					dupRects[dupCounter][0] = x;
-					dupRects[dupCounter][1] = rectangles.get(j) ;
+					dupRects[dupCounter][1] = rectangles.get(j);
 					dupCounter++;
 					break;
 				}
 			}
-			
-			if (!overlap){
-				unicRects[unicCounter] = x;
-				unicCounter++;
+
+			if (!overlap) {
+				uniqueRectangles.add(x);
 			}
-			
+
 		}
-		
-		for(int i = 0; i < unicCounter; i++)
-			uniqueRectangles.add(unicRects[i]);
-		
-		//prefer the larger rectangle 
-		for(int i = 0; i < dupCounter; i++){
-			if(dupRects[i][0].getArea() > dupRects[i][1].getArea())
+
+		// prefer the larger rectangle
+		for (int i = 0; i < dupCounter; i++) {
+			if (dupRects[i][0].getArea() > dupRects[i][1].getArea()){
 				uniqueRectangles.add(dupRects[i][0]);
-			else
+				uniqueRectangles.remove(dupRects[i][1]);
+			}
+			else{
 				uniqueRectangles.add(dupRects[i][1]);
+				uniqueRectangles.remove(dupRects[i][0]);
+			}
 		}
-			
-	
+
 		return uniqueRectangles;
 	}
 }
