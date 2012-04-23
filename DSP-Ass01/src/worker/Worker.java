@@ -11,10 +11,6 @@ import common.utilities.ImageManipulator;
 
 public class Worker {
 
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */
 	public static void main(String[] args) {
 
 		S3Controller s3 = S3Controller.getInstance();

@@ -15,10 +15,6 @@ import common.utilities.FileManipulator;
 
 public class Manager {
 
-	/**
-	 * @param args
-	 * @throws Exception
-	 */
 	public static void main(String[] args) {
 
 		EC2Controller ec2 = EC2Controller.getInstance();
