@@ -2,7 +2,6 @@ package common.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +23,6 @@ public class SQSController {
 	private final static String WORKER_MANAGER_QUEUE = "DSP122-AVI-BATEL-WORKER-MANAGER";
 	private final static String WORKER_DONE_QUEUE = "DSP122-AVI-BATEL-WORKER-DONE";
 
-	private static final int NUM_OF_QUEUES = 5;
-
 	private String mApplicationManagerQueueUrl;
 	private String mManagerApplicationQueueUrl;
 	private String mManagerWorkersQueueUrl;
@@ -45,7 +42,7 @@ public class SQSController {
 		}
 
 		catch (IOException e) {
-			e.printStackTrace();
+			// TODO: handle exception
 		}
 
 		initQueues();
@@ -109,16 +106,6 @@ public class SQSController {
 		if (!wdq)
 			mWorkerDoneQueueUrl = mAmazonSQS.createQueue(
 					new CreateQueueRequest(WORKER_DONE_QUEUE)).getQueueUrl();
-
-		while (mAmazonSQS.listQueues().getQueueUrls().size() != NUM_OF_QUEUES) {
-			
-			try {
-				
-				Thread.sleep(1000);
-			}
-			
-			catch (InterruptedException e) {}
-		}
 	}
 
 	public void sendMessageAboutTheLocationOfTheImagesListFile(
@@ -175,9 +162,9 @@ public class SQSController {
 				try {
 
 					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO: handle exception..
 				}
+				
+				catch (InterruptedException e) {}
 			}
 		}
 	}
@@ -200,9 +187,9 @@ public class SQSController {
 				try {
 
 					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO: handle exception..
 				}
+				
+				catch (InterruptedException e) {}
 			}
 
 			else
@@ -250,9 +237,9 @@ public class SQSController {
 				try {
 
 					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO: handle exception..
 				}
+				
+				catch (InterruptedException e) {}
 			}
 		}
 	}
@@ -305,7 +292,7 @@ public class SQSController {
 					mApplicationManagerQueueUrl, message.getReceiptHandle()));
 	}
 
-	public URL receiveMessageAboutURL() {
+	public URL receiveMessageAboutURL() throws Exception {
 		// The Worker gets an image message from an SQS queue.
 		// The Worker removes the image message from the SQS queue.
 
@@ -327,14 +314,7 @@ public class SQSController {
 							mManagerWorkersQueueUrl, messages.get(0)
 									.getReceiptHandle()));
 
-			try {
-				return new URL(messages.get(0).getBody().split(" ")[1]);
-			}
-
-			catch (MalformedURLException e) {
-				// TODO handle exception..
-				return null;
-			}
+			return new URL(messages.get(0).getBody().split(" ")[1]);
 		}
 	}
 

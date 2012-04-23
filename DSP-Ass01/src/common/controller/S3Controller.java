@@ -36,7 +36,7 @@ public class S3Controller {
 		}
 
 		catch (IOException e) {
-			e.printStackTrace();
+			// TODO: handle exception..
 		}
 
 		initBacket();
@@ -61,30 +61,26 @@ public class S3Controller {
 		mAmazonS3.createBucket(BUCKET_NAME);
 	}
 
-	public String uploadInputFile(File pInputFile) {
+	public String uploadInputFile(File pInputFile) throws Exception {
 		// The application will upload the file with the list of images to S3.
 		// use IMAGES_LIST_FILE_LOCATION as base.
 		return uploadFileToS3(pInputFile, IMAGES_LIST_FILE_BASE_NAME, ".txt");
 	}
 
-	public String uploadFileToS3(File pInputFile, String pBaseName, String pFileExtension) {
+	public String uploadFileToS3(File pInputFile, String pBaseName,
+			String pFileExtension) throws Exception {
 
-		String fileLocation = pBaseName + "-" + UUID.randomUUID() + pFileExtension;
+		String fileLocation = pBaseName + "-" + UUID.randomUUID()
+				+ pFileExtension;
 
 		fileLocation = fileLocation.replaceAll("/", "-");
 
-		try {
+		PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME,
+				fileLocation, pInputFile);
 
-			PutObjectRequest putObjectRequest = new PutObjectRequest(
-					BUCKET_NAME, fileLocation, pInputFile);
+		putObjectRequest.setCannedAcl(CannedAccessControlList.PublicRead);
 
-			putObjectRequest.setCannedAcl(CannedAccessControlList.PublicRead);
-
-			mAmazonS3.putObject(putObjectRequest);
-
-		} catch (Exception e) {
-			// TODO: handle exception, change the name of the file and try again
-		}
+		mAmazonS3.putObject(putObjectRequest);
 
 		return fileLocation;
 	}
@@ -107,12 +103,12 @@ public class S3Controller {
 		return object.getObjectContent();
 	}
 
-	public String uploadSummaryFile(File pSummaryFile) {
+	public String uploadSummaryFile(File pSummaryFile) throws Exception {
 		// upload the output file to S3, and return the location
 		return uploadFileToS3(pSummaryFile, SUMMARY_FILE_BASE_NAME, ".txt");
 	}
 
-	public String uploadFaceImage(File pFace) {
+	public String uploadFaceImage(File pFace) throws Exception {
 		// upload the images file to S3. (return the location)
 		return S3_URL + uploadFileToS3(pFace, FACE_FILE_BASE_NAME, ".jpg");
 	}
