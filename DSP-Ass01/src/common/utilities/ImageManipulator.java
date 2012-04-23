@@ -23,7 +23,7 @@ public class ImageManipulator {
 	private static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 10;
 
-	private static final String HAAR_FILE = "HCSB.txt"; // 1 2
+	private static final String HAAR_FILE = "HCSB.txt";
 
 	public static File downloadImage(URL pUrl) throws IOException {
 		// download the image file indicated in the message (the url
@@ -67,7 +67,7 @@ public class ImageManipulator {
 
 			bufferedImage = ImageIO.read(new FileInputStream(pImage));
 
-			inputStream = new FileInputStream(new File(HAAR_FILE));
+			inputStream = ImageManipulator.class.getResourceAsStream(HAAR_FILE);
 
 			detectHaar = new Gray8DetectHaarMultiScale(inputStream, MIN_SCALE,
 					MAX_SCALE);
@@ -99,7 +99,7 @@ public class ImageManipulator {
 		}
 
 		catch (Throwable e) {
-			// TODO : handle Exception
+			System.err.println(e.getMessage());
 		}
 
 		return faces;
@@ -108,7 +108,9 @@ public class ImageManipulator {
 	private static List<Rect> removeDuplicates(List<Rect> rectangles) {
 
 		List<Rect> uniqueRectangles = new ArrayList<Rect>();
+
 		Rect[][] dupRects = new Rect[rectangles.size()][2];
+
 		int dupCounter = 0;
 
 		for (int i = 0; i < rectangles.size(); i++) {
@@ -122,17 +124,18 @@ public class ImageManipulator {
 				if (x.overlaps(rectangles.get(j))) {
 
 					overlap = true;
+
 					dupRects[dupCounter][0] = x;
 					dupRects[dupCounter][1] = rectangles.get(j);
+
 					dupCounter++;
+
 					break;
 				}
 			}
 
-			if (!overlap) {
+			if (!overlap)
 				uniqueRectangles.add(x);
-			}
-
 		}
 
 		// prefer the larger rectangle
