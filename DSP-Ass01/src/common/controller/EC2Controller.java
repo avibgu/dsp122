@@ -164,7 +164,6 @@ public class EC2Controller {
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
 		lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/manager.jar");
-		// lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/AwsCredentials.properties");
 		lines.add("java -jar manager.jar");
 		lines.add("shutdown -h 0");
 
@@ -177,9 +176,7 @@ public class EC2Controller {
 
 		lines.add("#! /bin/bash");
 		lines.add("apt-get install wget");
-		// lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/HCSB.txt");
 		lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/manager.jar");
-		// lines.add("wget https://s3.amazonaws.com/dsp122-avi-batel/AwsCredentials.properties");
 		lines.add("java -jar worker.jar");
 		lines.add("shutdown -h 0");
 
