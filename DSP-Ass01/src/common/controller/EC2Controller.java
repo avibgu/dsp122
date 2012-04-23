@@ -1,6 +1,5 @@
 package common.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +10,6 @@ import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
@@ -41,14 +39,15 @@ public class EC2Controller {
 
 		try {
 
-			AWSCredentials credentials = new PropertiesCredentials(new File(
-					"AwsCredentials.properties"));
-
-			mAmazonEC2 = new AmazonEC2Client(credentials);
+			mAmazonEC2 = new AmazonEC2Client(new PropertiesCredentials(
+					EC2Controller.class
+							.getResourceAsStream("AwsCredentials.properties")));
 		}
 
 		catch (IOException e) {
-			// TODO: handle exception..
+
+			System.err.println("EC2Controller wan't created..");
+			return;
 		}
 
 		mWorkers = new ArrayList<String>();

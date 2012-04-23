@@ -1,6 +1,5 @@
 package common.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,11 +37,14 @@ public class SQSController {
 		try {
 
 			mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
-					new File("AwsCredentials.properties")));
+					SQSController.class
+							.getResourceAsStream("AwsCredentials.properties")));
 		}
 
 		catch (IOException e) {
-			// TODO: handle exception
+			
+			System.err.println("SQSController wan't created..");
+			return;
 		}
 
 		initQueues();
@@ -163,8 +165,9 @@ public class SQSController {
 
 					Thread.sleep(5000);
 				}
-				
-				catch (InterruptedException e) {}
+
+				catch (InterruptedException e) {
+				}
 			}
 		}
 	}
@@ -188,8 +191,9 @@ public class SQSController {
 
 					Thread.sleep(5000);
 				}
-				
-				catch (InterruptedException e) {}
+
+				catch (InterruptedException e) {
+				}
 			}
 
 			else
@@ -238,8 +242,9 @@ public class SQSController {
 
 					Thread.sleep(5000);
 				}
-				
-				catch (InterruptedException e) {}
+
+				catch (InterruptedException e) {
+				}
 			}
 		}
 	}

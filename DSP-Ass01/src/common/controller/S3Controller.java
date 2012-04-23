@@ -31,12 +31,15 @@ public class S3Controller {
 
 		try {
 
-			mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(new File(
-					"AwsCredentials.properties")));
+			mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
+					S3Controller.class
+							.getResourceAsStream("AwsCredentials.properties")));
 		}
 
 		catch (IOException e) {
-			// TODO: handle exception..
+
+			System.err.println("S3Controller wan't created..");
+			return;
 		}
 
 		initBacket();
