@@ -23,13 +23,7 @@ public class ImageManipulator {
 	private static final int MIN_SCALE = 1;
 	private static final int MAX_SCALE = 10;
 
-	// private static final String HAAR_FILE = "frontaldefault.txt"; // 0 0
-	// private static final String HAAR_FILE = "frontalfacealt.txt"; // 1 2
-	// private static final String HAAR_FILE = "frontalfacealt2.txt"; // 0 0
-	// private static final String HAAR_FILE = "frontalfacedefault.txt"; // 0 0
 	private static final String HAAR_FILE = "HCSB.txt"; // 1 2
-//	private static final String HAAR_FILE_DIR = "src/common/utilities/haar/";
-	private static final String HAAR_FILE_DIR = "";
 
 	public static File downloadImage(URL pUrl) throws IOException {
 		// TEST download the image file indicated in the message (the url
@@ -73,8 +67,7 @@ public class ImageManipulator {
 
 			bufferedImage = ImageIO.read(new FileInputStream(pImage));
 
-			inputStream = new FileInputStream(new File(HAAR_FILE_DIR
-					+ HAAR_FILE));
+			inputStream = new FileInputStream(new File(HAAR_FILE));
 
 			detectHaar = new Gray8DetectHaarMultiScale(inputStream, MIN_SCALE,
 					MAX_SCALE);
@@ -115,6 +108,10 @@ public class ImageManipulator {
 	private static List<Rect> removeDuplicates(List<Rect> rectangles) {
 		
 		List<Rect> uniqueRectangles = new ArrayList<Rect>();
+		Rect[][] dupRects = new Rect[rectangles.size()][2];
+		Rect[] unicRects = new Rect[rectangles.size()];
+		int dupCounter = 0;
+		int unicCounter = 0;
 		
 		for (int i = 0; i < rectangles.size(); i++){
 			
@@ -127,32 +124,32 @@ public class ImageManipulator {
 				if (x.overlaps(rectangles.get(j))){
 					
 					overlap = true;
+					dupRects[dupCounter][0] = x;
+					dupRects[dupCounter][1] = rectangles.get(j) ;
+					dupCounter++;
 					break;
 				}
 			}
 			
-			if (overlap)
-				continue;
+			if (!overlap){
+				unicRects[unicCounter] = x;
+				unicCounter++;
+			}
 			
-			uniqueRectangles.add(x);
 		}
 		
+		for(int i = 0; i < unicCounter; i++)
+			uniqueRectangles.add(unicRects[i]);
+		
+		//prefer the larger rectangle 
+		for(int i = 0; i < dupCounter; i++){
+			if(dupRects[i][0].getArea() > dupRects[i][1].getArea())
+				uniqueRectangles.add(dupRects[i][0]);
+			else
+				uniqueRectangles.add(dupRects[i][1]);
+		}
+			
+	
 		return uniqueRectangles;
 	}
-
-	// // TODO.. change the file path
-	// String filePath = "out.jpg";
-	// java.io.InputStream in = pUrl.openStream();
-	// OutputStream out = new BufferedOutputStream(new FileOutputStream(
-	// filePath));
-	// for (int b; (b = in.read()) != -1;) {
-	// out.write(b);
-	// System.out.print("check");
-	// }
-	// out.close();
-	// in.close();
-	// String ans = "success";
-	// System.out.println("The image has been successfully downloaded.");
-	//
-	// return ans;
 }
