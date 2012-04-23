@@ -25,8 +25,6 @@ public class Worker {
 		// Worker gets an image message from an SQS queue
 		while (null != (url = sqs.receiveMessageAboutURL())){
 			
-			// TODO: does File is ok?..
-			
 			// Worker downloads the image indicated in the message.
 			File image = ImageManipulator.downloadImage(url);
 			

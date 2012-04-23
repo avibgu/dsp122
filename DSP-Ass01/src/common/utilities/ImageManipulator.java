@@ -26,7 +26,7 @@ public class ImageManipulator {
 	private static final String HAAR_FILE = "HCSB.txt"; // 1 2
 
 	public static File downloadImage(URL pUrl) throws IOException {
-		// TEST download the image file indicated in the message (the url
+		// download the image file indicated in the message (the url
 		// provided).
 
 		BufferedImage image = null;
@@ -47,7 +47,7 @@ public class ImageManipulator {
 	}
 
 	public static Vector<File> cropFacesFromImage(File pImage) {
-		// TEST Identify faces in the image (if any), and save each face found
+		// Identify faces in the image (if any), and save each face found
 		// in a separate image file.
 
 		Vector<File> faces = new Vector<File>();
@@ -137,11 +137,15 @@ public class ImageManipulator {
 
 		// prefer the larger rectangle
 		for (int i = 0; i < dupCounter; i++) {
-			if (dupRects[i][0].getArea() > dupRects[i][1].getArea()){
+
+			if (dupRects[i][0].getArea() > dupRects[i][1].getArea()) {
+
 				uniqueRectangles.add(dupRects[i][0]);
 				uniqueRectangles.remove(dupRects[i][1]);
 			}
-			else{
+
+			else {
+
 				uniqueRectangles.add(dupRects[i][1]);
 				uniqueRectangles.remove(dupRects[i][0]);
 			}

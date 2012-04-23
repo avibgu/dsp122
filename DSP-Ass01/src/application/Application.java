@@ -42,9 +42,6 @@ public class Application {
 		sqs.sendMessageAboutTheLocationOfTheImagesListFile(id,
 				inputFileLocation, numOfURLsPerWorker);
 
-		// TODO: put delay
-		Thread.sleep(5000);
-		
 		// Local Application starts the manager
 		ec2.startTheManager(numOfURLsPerWorker);
 
