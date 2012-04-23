@@ -13,7 +13,7 @@ public class EC2ControllerTest {
 	
 	@Test
 	public void startWorkersTest() throws Exception {
-		mEc2Controller.startWorkers(2, 2);
+		mEc2Controller.startWorkers(2);
 	}
 	
 	@Test

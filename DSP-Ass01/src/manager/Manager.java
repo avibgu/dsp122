@@ -50,11 +50,9 @@ public class Manager {
 					
 					// Manager bootstraps nodes to process messages
 	
-					int numOfWorkers = urls.size() / numOfURLsPerWorker;
+					int numOfWorkers = (int) Math.ceil(urls.size() / numOfURLsPerWorker);
 	
-					numOfWorkers += (0 != urls.size() % numOfURLsPerWorker) ? 1 : 0;
-	
-					ec2.startWorkers(numOfWorkers, numOfURLsPerWorker);
+					ec2.startWorkers(numOfWorkers);
 	
 					// Manager reads all the Workers' messages from SQS and creates
 					// one summary file

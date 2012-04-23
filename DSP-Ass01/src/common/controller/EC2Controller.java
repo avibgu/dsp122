@@ -93,7 +93,7 @@ public class EC2Controller {
 		}
 	}
 
-	public void startWorkers(int pNumOfWorkers, int pNumOfURLsPerWorker) {
+	public void startWorkers(int pNumOfWorkers) {
 		// The manager should create a worker for every n messages.
 		// Note that while the manager creates a node for every n messages, it
 		// does not delegate messages to specific nodes. All of the worker nodes
@@ -101,8 +101,7 @@ public class EC2Controller {
 		// that with 2n messages and hence two worker nodes, one node processed
 		// n+(n/2) messages, while the other processed only n/2.
 
-		RunInstancesRequest request = prepareWorkerRequest(pNumOfWorkers,
-				pNumOfURLsPerWorker);
+		RunInstancesRequest request = prepareWorkerRequest(pNumOfWorkers);
 
 		RunInstancesResult runInstancesResult = mAmazonEC2
 				.runInstances(request);
@@ -152,8 +151,7 @@ public class EC2Controller {
 		return prepareRequest(1, getManagerScript());
 	}
 
-	protected RunInstancesRequest prepareWorkerRequest(int pNumOfWorkers,
-			int pNumOfURLsPerWorker) {
+	protected RunInstancesRequest prepareWorkerRequest(int pNumOfWorkers) {
 		return prepareRequest(pNumOfWorkers, getWorkerScript());
 	}
 
