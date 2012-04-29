@@ -10,7 +10,6 @@ public class ImageManipulatorTest {
 	@Test
 	public void findFacesTest() throws IOException{
 
-		ImageManipulator.cropFacesFromImage(new File("halici.jpg"));
-		ImageManipulator.cropFacesFromImage(new File("nedStarck.jpg"));
+		ImageManipulator.cropFacesFromImage(new File("pic.jpg"));
 	}
 }

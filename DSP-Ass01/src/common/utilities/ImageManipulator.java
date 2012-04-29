@@ -109,49 +109,18 @@ public class ImageManipulator {
 
 		List<Rect> uniqueRectangles = new ArrayList<Rect>();
 
-		Rect[][] dupRects = new Rect[rectangles.size()][2];
-
-		int dupCounter = 0;
-
-		for (int i = 0; i < rectangles.size(); i++) {
+		for (int i = rectangles.size() - 1; i >= 0 ; i--) {
 
 			Rect x = rectangles.get(i);
 
 			boolean overlap = false;
 
-			for (int j = i + 1; j < rectangles.size(); j++) {
-
-				if (x.overlaps(rectangles.get(j))) {
-
+			for (int j = i - 1; j >= 0 && !overlap; j--)
+				if (x.overlaps(rectangles.get(j)))
 					overlap = true;
-
-					dupRects[dupCounter][0] = x;
-					dupRects[dupCounter][1] = rectangles.get(j);
-
-					dupCounter++;
-
-					break;
-				}
-			}
 
 			if (!overlap)
 				uniqueRectangles.add(x);
-		}
-
-		// prefer the larger rectangle
-		for (int i = 0; i < dupCounter; i++) {
-
-			if (dupRects[i][0].getArea() > dupRects[i][1].getArea()) {
-
-				uniqueRectangles.add(dupRects[i][0]);
-				uniqueRectangles.remove(dupRects[i][1]);
-			}
-
-			else {
-
-				uniqueRectangles.add(dupRects[i][1]);
-				uniqueRectangles.remove(dupRects[i][0]);
-			}
 		}
 
 		return uniqueRectangles;
