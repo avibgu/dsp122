@@ -48,8 +48,8 @@ public class Main {
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 				.withInstanceCount(2)
-				.withMasterInstanceType(InstanceType.M1Small.toString())
-				.withSlaveInstanceType(InstanceType.M1Small.toString())
+				.withMasterInstanceType(InstanceType.T1Micro.toString())
+				.withSlaveInstanceType(InstanceType.T1Micro.toString())
 				.withHadoopVersion("0.20").withEc2KeyName("yourkey")
 				.withKeepJobFlowAliveWhenNoSteps(false)
 				.withPlacement(new PlacementType());
