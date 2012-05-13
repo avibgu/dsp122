@@ -42,11 +42,12 @@ public class Main {
 		AmazonElasticMapReduce mapReduce = new AmazonElasticMapReduceClient(
 				credentials);
 
+		// TODO: change to ../5gram/..
 		HadoopJarStepConfig hadoopJarStep = new HadoopJarStepConfig()
 				.withJar("s3n://" + BUCKET_NAME + "/wordcount.jar")
 				// This should be a full map reduce application.
 				.withMainClass("example.WordCount")
-				.withArgs("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/5gram/data",
+				.withArgs("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/1gram/data",
 						"s3n://" + BUCKET_NAME + "/output/");
 
 		StepConfig stepConfig = new StepConfig().withName("stepname")
