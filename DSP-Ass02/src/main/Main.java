@@ -43,10 +43,10 @@ public class Main {
 				credentials);
 
 		HadoopJarStepConfig hadoopJarStep = new HadoopJarStepConfig()
-				.withJar("s3n://" + BUCKET_NAME + "/yourfile.jar")
+				.withJar("s3n://" + BUCKET_NAME + "/wordcount.jar")
 				// This should be a full map reduce application.
-				.withMainClass("some.pack.MainClass")
-				.withArgs("s3n://" + BUCKET_NAME + "/input/",
+				.withMainClass("example.WordCount")
+				.withArgs("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/5gram/data",
 						"s3n://" + BUCKET_NAME + "/output/");
 
 		StepConfig stepConfig = new StepConfig().withName("stepname")
@@ -55,8 +55,8 @@ public class Main {
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 				.withInstanceCount(2)
-				.withMasterInstanceType(InstanceType.T1Micro.toString())
-				.withSlaveInstanceType(InstanceType.T1Micro.toString())
+				.withMasterInstanceType(InstanceType.M1Small.toString())
+				.withSlaveInstanceType(InstanceType.M1Small.toString())
 				.withHadoopVersion("0.20").withEc2KeyName(KEY_PAIR)
 				.withKeepJobFlowAliveWhenNoSteps(false)
 				.withPlacement(new PlacementType());
