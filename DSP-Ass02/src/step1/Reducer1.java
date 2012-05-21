@@ -17,24 +17,22 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 		
 		StringBuilder sb = new StringBuilder();
 	
-		Map<Text, Integer> map = new HashMap<Text, Integer>();
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		
 		for (Text word : values){
 			
-			Integer count = map.get(word);
+			Integer count = map.get(word.toString());
 
 			if (null == count)
 				count = new Integer(0);
 			
-			map.put(word, count + 1);
+			map.put(word.toString(), count + 1);
 		}
 
-		Object[] s = map.keySet().toArray();
+		for (String word : map.keySet()){
 		
-		for (Object word : s){
-		
-			int count = map.get((Text)word);
-			sb.append(((Text)word).toString() + "," + count + " ");
+			int count = map.get(word);
+			sb.append(word + "," + count + " ");
 			sum += count * count;
 		}
 		
