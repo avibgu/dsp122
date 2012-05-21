@@ -2,15 +2,22 @@ package step1;
 
 import java.io.IOException;
 
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class Mapper1 extends Mapper<Text, Text, Text, Text> {
+public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
-	protected void map(Text key, Text value, Context context)
+	protected void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
 
-		context.write(key, value);
+		String[] splitted = value.toString().split("\t");
 
+		Text word = new Text(splitted[2]);
+		
+		context.write(word, new Text(splitted[0]));
+		context.write(word, new Text(splitted[1]));
+		context.write(word, new Text(splitted[3]));
+		context.write(word, new Text(splitted[4]));
 	};
 }
