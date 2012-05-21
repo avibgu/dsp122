@@ -1,0 +1,13 @@
+
+
+Map7:
+
+  in:	w,w1,w2,count1w,count2w
+  out:	<w1,w2> , count1w * count2w
+
+Reduce7:
+  in:	<w1,w2> , [[count1w' * count2w'],[count1w'' * count2w''],...,[count1w''''' * count2w''''']]
+  out:	<w1,w2> , count1w' * count2w' + count1w'' * count2w'' + ... + count1w''''' * count2w'''''	=> MONE..
+
+
+
