@@ -1,8 +1,6 @@
 package step2;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -12,16 +10,17 @@ public class Reducer3 extends Reducer<Text, Text, Text, Text> {
 	protected void reduce(Text key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
 
-		List<String[]> list = new ArrayList<String[]>();
+		String[] splitted = key.toString().split("\t");
 
+		Text w1w2 = new Text(splitted[0] + ", " + splitted[1]);
+		
+		Double mechane = Double.parseDouble(splitted[2].toString());
+		
+		Double mone = 0.0;
+		
 		for (Text value : values)
-			list.add(value.toString().split("\t"));
-
-		for (int i = 0; i < list.size(); i++)
-			for (int j = i + 1; j < list.size(); j++)
-				context.write(key,
-						new Text(list.get(i)[0] + "\t" + list.get(j)[0] + "\t"
-								+ list.get(i)[1] + "\t" + list.get(j)[1] + "\t"
-								+ list.get(i)[2] + "\t" + list.get(j)[2]));
+			mone += Double.parseDouble(value.toString());
+		
+		context.write(w1w2, new Text(Double.toString(mone/mechane)));
 	}
 }
