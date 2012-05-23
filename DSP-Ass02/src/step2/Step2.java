@@ -7,17 +7,17 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class Step3 {
+public class Step2 {
 
 	public static void main(String[] args) throws Exception {
 	
 		Configuration conf = new Configuration();
 
-	    Job job = new Job(conf, "step3");
+	    Job job = new Job(conf, "step2");
 	    
-	    job.setJarByClass(Step3.class);
-	    job.setMapperClass(Mapper3.class);
-	    job.setReducerClass(Reducer3.class);
+	    job.setJarByClass(Step2.class);
+	    job.setMapperClass(Mapper2.class);
+	    job.setReducerClass(Reducer2.class);
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Text.class);
 	    
