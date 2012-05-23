@@ -1,13 +1,14 @@
-package step1;
+package step2;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class Reducer1 extends Reducer<Text, Text, Text, Text> {
+public class Reducer2 extends Reducer<Text, Text, Text, Text> {
 
 	protected void reduce(Text key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {

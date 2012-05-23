@@ -1,4 +1,4 @@
-package step1;
+package step2;
 
 import java.io.IOException;
 
@@ -13,6 +13,6 @@ public class InputFormat1 extends SequenceFileInputFormat<Text, Text> {
 	@Override
 	public RecordReader<Text, Text> createRecordReader(InputSplit split,
 			TaskAttemptContext context) throws IOException {
-		return new RecordReader1();
+		return new RecordReader2();
 	}
 }
