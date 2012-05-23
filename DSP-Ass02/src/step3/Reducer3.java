@@ -7,6 +7,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 public class Reducer3 extends Reducer<Text, Text, Text, Text> {
 
+	private static final int M = 10;
+
 	protected void reduce(Text key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
 
@@ -18,9 +20,15 @@ public class Reducer3 extends Reducer<Text, Text, Text, Text> {
 		
 		Double mone = 0.0;
 		
-		for (Text value : values)
-			mone += Double.parseDouble(value.toString());
+		int counter = 0;
 		
-		context.write(w1w2, new Text(Double.toString(mone/mechane)));
+		for (Text value : values){
+			
+			mone += Double.parseDouble(value.toString());
+			counter++;
+		}
+			
+		if (counter > M)
+			context.write(w1w2, new Text(Double.toString(mone/mechane)));
 	}
 }
