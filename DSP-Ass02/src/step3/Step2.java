@@ -1,4 +1,4 @@
-package step2;
+package step3;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -17,11 +17,9 @@ public class Step2 {
 	    
 	    job.setJarByClass(Step2.class);
 	    job.setMapperClass(Mapper2.class);
-//	    job.setCombinerClass(Reducer1.class);
 	    job.setReducerClass(Reducer2.class);
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Text.class);
-//	    job.setInputFormatClass(InputFormat1.class);
 	    
 	    FileInputFormat.addInputPath(job, new Path(args[0]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[1]));

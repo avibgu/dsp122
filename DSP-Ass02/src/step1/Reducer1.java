@@ -36,5 +36,5 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 		}
 		
 		context.write(new Text(key.toString() + "\t" + Math.sqrt(sum)), new Text(sb.toString()));
-	};
+	}
 }
