@@ -1,4 +1,4 @@
-package step1;
+package step2;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-public class RecordReader1 extends RecordReader<Text, Text> {
+public class RecordReader2 extends RecordReader<Text, Text> {
 
 	@Override
 	public void close() throws IOException {

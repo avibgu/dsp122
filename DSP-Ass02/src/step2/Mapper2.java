@@ -1,4 +1,4 @@
-package step1;
+package step2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
+public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
 
 	protected Set<String> mStopWords;
 	
