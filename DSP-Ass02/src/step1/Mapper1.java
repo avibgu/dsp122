@@ -2,24 +2,26 @@ package step1;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import main.Main;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
+import utilities.FileManipulator;
+
 public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 	protected Set<String> mStopWords;
-	
+
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		
-		mStopWords = new HashSet<String>();
-		
-		loadStopWords();
+
+		mStopWords = FileManipulator.readFromInputStream(Main.class
+				.getResourceAsStream("AwsCredentials.properties"));
 	}
 
 	protected void map(LongWritable key, Text value, Context context)
@@ -45,10 +47,6 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 			context.write(word, new Text(w));
 	}
 
-	private void loadStopWords() {
-		// TODO Auto-generated method stub
-	}
-	
 	private boolean isStopWord(String word) {
 		return mStopWords.contains(word);
 	}
