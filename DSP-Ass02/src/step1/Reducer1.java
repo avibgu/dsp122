@@ -32,10 +32,10 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 		for (String word : map.keySet()){
 		
 			int count = map.get(word);
-			sb.append(word + "," + count + " ");
+			sb.append(word + "\t" + count + "\t");
 			sum += count * count;
 		}
 		
-		context.write(new Text(key.toString() + "," + Math.sqrt(sum)), new Text(sb.toString()));
+		context.write(new Text(key.toString() + "\t" + Math.sqrt(sum)), new Text(sb.toString()));
 	};
 }
