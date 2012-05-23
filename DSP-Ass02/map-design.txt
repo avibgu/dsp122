@@ -1,72 +1,32 @@
 
-RR 1 Input:
-============
-
-['a','b','c','d','e']
-['a','t','c','y','e']
-
-RR 1 Output:
-============
-
-c => a b d e
-c => a t y e
-
-Map 1 Input:
-============
-
-c => a b d e
-c => a t y e
-
-Map 1 Output:
-=============
-
-<'c', ['a','b','d','e']>			=> Local Context of 'c'
-<'c', ['a','t','y','e']>
-
-Reduce 1 Input:
-===============
-
-<'c', [['a','b','d','e'],['a','t','y','e']]>
-
-Reduce 1 Output:
-================
-
-<'c', ['a','b','d','e','t','y']>	=> Context of 'c'
-
-
-
 Map 2 Input:
 ============
 
-['a','b','c','d','e']
-['a','t','c','y','e']
+a	b	c	d	e	?	?	?
+f	g	h	i	j	?	?	?
+a	j	c	d	e	?	?	?
 
 Map 2 Output:
 =============
 
-<'c',<'a','1'>>
-<'c',<'b','1'>>
-<'c',<'d','1'>>
-<'c',<'e','1'>>
-<'c',<'a','1'>>
-<'c',<'t','1'>>
-<'c',<'y','1'>>
-<'c',<'e','1'>>
+<'c','a'>
+<'c','b'>
+<'c','d'>
+<'c','e'>
+<'c','a'>
+<'c','t'>
+<'c','y'>
+<'c','e'>
 
 Reduce 2 Input:
 ===============
 
-<'c', [<'a','1'>,<'b','1'>,<'d','1'>,<'e','1'>,<'a','1'>,<'t','1'>,<'y','1'>,<'e','1'>]>
+<'c', ['a','b','d','e','a','t','y','e']>
 
 Reduce 2 Output:
 ================
 
-<'c', [3.5, 8, <'a','2'>,<'b','1'>,<'d','1'>,<'e','2'>,<'t','1'>,<'y','1'>]>
-
-
-
-
-
+<<'c',3.5>, [<'a','2'>,<'b','1'>,<'d','1'>,<'e','2'>,<'t','1'>,<'y','1'>]>
 
 
 <'w1', [<'a','2'>,<'b','1'>,<'d','1'>,<'e','2'>,<'m','1'>,<'y','3'>]>
@@ -75,10 +35,39 @@ Reduce 2 Output:
 
       count1(b)*count2(b) + count1(d)*count2(d) + count1(y)*count2(y)
 ---------------------------------------------------------------------------
-sqrt(count1(a)^2 + count1(b)^2 + count1(d)^2 + count1(e)^2 + ..) + sqrt(..)
+sqrt(count1(a)^2 + count1(b)^2 + count1(d)^2 + count1(e)^2 + ..) * sqrt(..)
 
 
 
+
+Map4:
+
+	in:		w1		MEHANE		w'	count1(w')	w''		count1(w'')		...		w''''''		count1(w'''''')
+	
+	out:
+			<w',<w1,count1(w')>>
+			<w'',<w1,count1(w'')>>
+			...
+			<w'''',<w1,count1(w'''')>>
+	
+Reduce4:
+
+	in:		<w',[<w1,count1(w')>, <w2,count2(w')>, ..., <wn,count-n(w')>}>
+	
+	out:
+			w',w1,w2,count1w,count2w
+			w',w1,w3,count1w,count3w
+			...
+			w',wn-1,wn-2,count-n-1w,count-n-2w	
+
+Map7:
+
+  in:	w',w1,w2,count1w,count2w
+  out:	<w1,w2> , count1(w') * count2(w')
+
+Reduce7:
+  in:	<w1,w2> , [[count1w' * count2w'],[count1w'' * count2w''],...,[count1w''''' * count2w''''']]
+  out:	<w1,w2> , count1w' * count2w' + count1w'' * count2w'' + ... + count1w''''' * count2w'''''	=> MONE..
 
 
 
