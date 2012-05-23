@@ -13,11 +13,12 @@ public class Mapper3 extends Mapper<LongWritable, Text, Text, Text> {
 
 		String[] splitted = value.toString().split("\t");
 
-		Text word = new Text(splitted[0]);
-		String mehane = splitted[1];
-
-		for (int i = 2; i < splitted.length - 1; i += 2)
-			context.write(new Text(splitted[i]), new Text(word + "\t"
-					+ splitted[i + 1] + "\t" + mehane));
+		String w1 = splitted[1];
+		String w2 = splitted[2];
+		
+		String mehane = Integer.toString(Integer.parseInt(splitted[5]) * Integer.parseInt(splitted[6]));
+		String counts = Integer.toString(Integer.parseInt(splitted[3]) * Integer.parseInt(splitted[4]));
+		
+		context.write(new Text(w1 + "\t" + w2 + "\t" + mehane), new Text(counts));
 	}
 }
