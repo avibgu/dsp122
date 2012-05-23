@@ -18,15 +18,15 @@ import com.amazonaws.services.elasticmapreduce.model.StepConfig;
 public class Main {
 
 	private static final String KEY_PAIR = "AviKeyPair";
-	
-	//TODO: init it if not exist..
+
+	// TODO: init it if not exist..
 	private static final String BUCKET_NAME = "dsp122-avi-batel-ass02";
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+
 		AWSCredentials credentials = null;
 
 		try {
@@ -42,20 +42,48 @@ public class Main {
 		AmazonElasticMapReduce mapReduce = new AmazonElasticMapReduceClient(
 				credentials);
 
-		// TODO: change to ../5gram/..
-		HadoopJarStepConfig hadoopJarStep = new HadoopJarStepConfig()
-				.withJar("s3n://" + BUCKET_NAME + "/wordcount.jar")
-				// This should be a full map reduce application.
-				.withMainClass("example.WordCount")
-				.withArgs("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/1gram/data",
-						"s3n://" + BUCKET_NAME + "/output/");
+		HadoopJarStepConfig hadoopJarStep1 = new HadoopJarStepConfig()
+				.withJar("s3n://" + BUCKET_NAME + "/step1.jar")
+				.withMainClass("step1.Step1")
+				.withArgs(
+						"s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-us-all/5gram/data",
+						"s3n://" + BUCKET_NAME + "/output1/");
 
-		StepConfig stepConfig = new StepConfig().withName("stepname")
-				.withHadoopJarStep(hadoopJarStep)
+		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
+				.withJar("s3n://" + BUCKET_NAME + "/step2.jar")
+				.withMainClass("step2.Step2")
+				.withArgs("s3n://" + BUCKET_NAME + "/output1/",
+						"s3n://" + BUCKET_NAME + "/output2/");
+
+		HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig()
+				.withJar("s3n://" + BUCKET_NAME + "/step3.jar")
+				.withMainClass("step3.Step3")
+				.withArgs("s3n://" + BUCKET_NAME + "/output2/",
+						"s3n://" + BUCKET_NAME + "/output3/");
+
+		HadoopJarStepConfig hadoopJarStep4 = new HadoopJarStepConfig()
+				.withJar("s3n://" + BUCKET_NAME + "/step4.jar")
+				.withMainClass("step3.Step3")
+				.withArgs("s3n://" + BUCKET_NAME + "/output3/", args[1]);
+
+		StepConfig step1Config = new StepConfig().withName("step1")
+				.withHadoopJarStep(hadoopJarStep1)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
+		StepConfig step2Config = new StepConfig().withName("step2")
+				.withHadoopJarStep(hadoopJarStep2)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
+		StepConfig step3Config = new StepConfig().withName("step3")
+				.withHadoopJarStep(hadoopJarStep3)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
+		StepConfig step4Config = new StepConfig().withName("step4")
+				.withHadoopJarStep(hadoopJarStep4)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
-				.withInstanceCount(2)
+				.withInstanceCount(10)
 				.withMasterInstanceType(InstanceType.M1Small.toString())
 				.withSlaveInstanceType(InstanceType.M1Small.toString())
 				.withHadoopVersion("0.20").withEc2KeyName(KEY_PAIR)
@@ -63,13 +91,13 @@ public class Main {
 				.withPlacement(new PlacementType());
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-				.withName("jobname").withInstances(instances)
-				.withSteps(stepConfig)
+				.withName(args[0]).withInstances(instances)
+				.withSteps(step1Config, step2Config, step3Config, step4Config)
 				.withLogUri("s3n://" + BUCKET_NAME + "/logs/");
 
 		RunJobFlowResult runJobFlowResult = mapReduce
 				.runJobFlow(runFlowRequest);
-		
+
 		String jobFlowId = runJobFlowResult.getJobFlowId();
 		System.out.println("Ran job flow with id: " + jobFlowId);
 	}
