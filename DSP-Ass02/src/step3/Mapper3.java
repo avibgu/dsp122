@@ -16,8 +16,8 @@ public class Mapper3 extends Mapper<LongWritable, Text, Text, Text> {
 		String w1 = splitted[1];
 		String w2 = splitted[2];
 		
-		String mehane = Integer.toString(Integer.parseInt(splitted[5]) * Integer.parseInt(splitted[6]));
-		String counts = Integer.toString(Integer.parseInt(splitted[3]) * Integer.parseInt(splitted[4]));
+		String mehane = Double.toString(Double.parseDouble(splitted[5]) * Double.parseDouble(splitted[6]));
+		String counts = Double.toString(Double.parseDouble(splitted[3]) * Double.parseDouble(splitted[4]));
 		
 		context.write(new Text(w1 + "\t" + w2 + "\t" + mehane), new Text(counts));
 	}
