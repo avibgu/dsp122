@@ -61,10 +61,10 @@ public class Main {
 				.withArgs("s3n://" + BUCKET_NAME + "/output2/",
 						"s3n://" + BUCKET_NAME + "/output3/");
 
-		HadoopJarStepConfig hadoopJarStep4 = new HadoopJarStepConfig()
-				.withJar("s3n://" + BUCKET_NAME + "/step4.jar")
-				.withMainClass("step3.Step3")
-				.withArgs("s3n://" + BUCKET_NAME + "/output3/", args[1]);
+//		HadoopJarStepConfig hadoopJarStep4 = new HadoopJarStepConfig()
+//				.withJar("s3n://" + BUCKET_NAME + "/step4.jar")
+//				.withMainClass("step3.Step3")
+//				.withArgs("s3n://" + BUCKET_NAME + "/output3/", args[1]);
 
 		StepConfig step1Config = new StepConfig().withName("step1")
 				.withHadoopJarStep(hadoopJarStep1)
@@ -78,9 +78,9 @@ public class Main {
 				.withHadoopJarStep(hadoopJarStep3)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
-		StepConfig step4Config = new StepConfig().withName("step4")
-				.withHadoopJarStep(hadoopJarStep4)
-				.withActionOnFailure("TERMINATE_JOB_FLOW");
+//		StepConfig step4Config = new StepConfig().withName("step4")
+//				.withHadoopJarStep(hadoopJarStep4)
+//				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 				.withInstanceCount(10)
@@ -92,7 +92,11 @@ public class Main {
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
 				.withName(args[0]).withInstances(instances)
-				.withSteps(step1Config, step2Config, step3Config, step4Config)
+				.withSteps(	step1Config
+							,step2Config
+							,step3Config
+//							,step4Config
+							)
 				.withLogUri("s3n://" + BUCKET_NAME + "/logs/");
 
 		RunJobFlowResult runJobFlowResult = mapReduce
