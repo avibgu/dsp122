@@ -49,17 +49,17 @@ public class Main {
 						"s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-us-all/5gram/data",
 						"s3n://" + BUCKET_NAME + "/output1/");
 
-		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
-				.withJar("s3n://" + BUCKET_NAME + "/step2.jar")
-				.withMainClass("step2.Step2")
-				.withArgs("s3n://" + BUCKET_NAME + "/output1/",
-						"s3n://" + BUCKET_NAME + "/output2/");
+//		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
+//				.withJar("s3n://" + BUCKET_NAME + "/step2.jar")
+//				.withMainClass("step2.Step2")
+//				.withArgs("s3n://" + BUCKET_NAME + "/output1/",
+//						"s3n://" + BUCKET_NAME + "/output2/");
 
-		HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig()
-				.withJar("s3n://" + BUCKET_NAME + "/step3.jar")
-				.withMainClass("step3.Step3")
-				.withArgs("s3n://" + BUCKET_NAME + "/output2/",
-						"s3n://" + BUCKET_NAME + "/output3/");
+//		HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig()
+//				.withJar("s3n://" + BUCKET_NAME + "/step3.jar")
+//				.withMainClass("step3.Step3")
+//				.withArgs("s3n://" + BUCKET_NAME + "/output2/",
+//						"s3n://" + BUCKET_NAME + "/output3/");
 
 //		HadoopJarStepConfig hadoopJarStep4 = new HadoopJarStepConfig()
 //				.withJar("s3n://" + BUCKET_NAME + "/step4.jar")
@@ -70,13 +70,13 @@ public class Main {
 				.withHadoopJarStep(hadoopJarStep1)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
-		StepConfig step2Config = new StepConfig().withName("step2")
-				.withHadoopJarStep(hadoopJarStep2)
-				.withActionOnFailure("TERMINATE_JOB_FLOW");
+//		StepConfig step2Config = new StepConfig().withName("step2")
+//				.withHadoopJarStep(hadoopJarStep2)
+//				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
-		StepConfig step3Config = new StepConfig().withName("step3")
-				.withHadoopJarStep(hadoopJarStep3)
-				.withActionOnFailure("TERMINATE_JOB_FLOW");
+//		StepConfig step3Config = new StepConfig().withName("step3")
+//				.withHadoopJarStep(hadoopJarStep3)
+//				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 //		StepConfig step4Config = new StepConfig().withName("step4")
 //				.withHadoopJarStep(hadoopJarStep4)
@@ -93,8 +93,8 @@ public class Main {
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
 				.withName(args[0]).withInstances(instances)
 				.withSteps(	step1Config
-							,step2Config
-							,step3Config
+//							,step2Config
+//							,step3Config
 //							,step4Config
 							)
 				.withLogUri("s3n://" + BUCKET_NAME + "/logs/");
