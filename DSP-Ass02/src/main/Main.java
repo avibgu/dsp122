@@ -46,7 +46,7 @@ public class Main {
 				.withJar("s3n://" + BUCKET_NAME + "/step1.jar")
 				.withMainClass("step1.Step1")
 				.withArgs(
-						"s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-us-all/5gram/data",
+						"s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data",
 						"s3n://" + BUCKET_NAME + "/output1/");
 
 //		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
@@ -83,7 +83,7 @@ public class Main {
 //				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
-				.withInstanceCount(10)
+				.withInstanceCount(20)
 				.withMasterInstanceType(InstanceType.M1Small.toString())
 				.withSlaveInstanceType(InstanceType.M1Small.toString())
 				.withHadoopVersion("0.20").withEc2KeyName(KEY_PAIR)
