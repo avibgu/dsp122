@@ -29,7 +29,7 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 		String[] splitted = value.toString().split("\t");
 
-		if (isStopWord(splitted[2]))
+		if (splitted.length < 5 || isStopWord(splitted[2]))
 			return;
 
 		Text word = new Text(splitted[2]);
