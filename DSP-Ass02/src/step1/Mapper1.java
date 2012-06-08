@@ -2,6 +2,7 @@ package step1;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,8 +21,9 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
-		mStopWords = FileManipulator.readFromInputStream(Main.class
-				.getResourceAsStream("AwsCredentials.properties"));
+		mStopWords = new HashSet<String>();	//TODO
+//		mStopWords = FileManipulator.readFromInputStream(Mapper1.class
+//				.getResourceAsStream("english-stop-words.txt"));
 	}
 
 	protected void map(LongWritable key, Text value, Context context)
@@ -29,22 +31,30 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 		String[] splitted = value.toString().split("\t");
 
-		if (splitted.length < 5 || isStopWord(splitted[2]))
+		String occurrences = splitted[2];
+		
+		splitted = splitted[0].split(" ");
+				
+		if (splitted.length < 3 || isStopWord(splitted[2]))
 			return;
 
 		Text word = new Text(splitted[2]);
 
 		List<String> list = new ArrayList<String>();
 
-		list.add(splitted[0]);
-		list.add(splitted[1]);
-		list.add(splitted[3]);
-		list.add(splitted[4]);
-
+		try{
+		
+			list.add(splitted[0]);
+			list.add(splitted[1]);
+			list.add(splitted[3]);
+			list.add(splitted[4]);
+		}
+		catch (Exception e) {}
+		
 		list = filterStopWords(list);
 
 		for (String w : list)
-			context.write(word, new Text(w));
+			context.write(word, new Text(w + "\t" + occurrences));
 	}
 
 	private boolean isStopWord(String word) {

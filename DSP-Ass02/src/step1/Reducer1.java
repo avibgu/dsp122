@@ -20,12 +20,14 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 		
 		for (Text word : values){
 			
-			Integer count = map.get(word.toString());
+			String[] splittedWord = word.toString().split("\t");
+			
+			Integer count = map.get(splittedWord[0]);
 
 			if (null == count)
 				count = new Integer(0);
 			
-			map.put(word.toString(), count + 1);
+			map.put(word.toString(), count + Integer.valueOf(splittedWord[1]));
 		}
 
 		for (String word : map.keySet()){
