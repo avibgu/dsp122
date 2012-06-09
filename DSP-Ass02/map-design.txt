@@ -2,9 +2,9 @@
 Map 1 Input:
 ============
 
-a	b	c	d	e	?	?	?
-f	g	h	i	j	?	?	?
-a	j	c	d	e	?	?	?
+a b c d e	?	n	?
+f g h i j	?	n	?
+a j c d e	?	n	?
 
 Map 1 Output:
 =============
