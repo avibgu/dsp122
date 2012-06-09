@@ -14,6 +14,7 @@ import com.amazonaws.services.elasticmapreduce.model.PlacementType;
 import com.amazonaws.services.elasticmapreduce.model.RunJobFlowRequest;
 import com.amazonaws.services.elasticmapreduce.model.RunJobFlowResult;
 import com.amazonaws.services.elasticmapreduce.model.StepConfig;
+import com.amazonaws.services.elasticmapreduce.util.StepFactory;
 
 public class Main {
 
@@ -42,6 +43,11 @@ public class Main {
 		AmazonElasticMapReduce mapReduce = new AmazonElasticMapReduceClient(
 				credentials);
 
+		StepConfig debugConfig = new StepConfig()
+	    	.withName("debug")
+	    	.withHadoopJarStep(new StepFactory().newEnableDebuggingStep())
+	    	.withActionOnFailure("TERMINATE_JOB_FLOW");
+		
 		HadoopJarStepConfig hadoopJarStep1 = new HadoopJarStepConfig()
 				.withJar("s3n://" + BUCKET_NAME + "/step1.jar")
 				.withMainClass("step1.Step1")
@@ -92,7 +98,8 @@ public class Main {
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
 				.withName(args[0]).withInstances(instances)
-				.withSteps(	step1Config
+				.withSteps(	debugConfig
+							,step1Config
 //							,step2Config
 //							,step3Config
 //							,step4Config
