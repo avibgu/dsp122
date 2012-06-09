@@ -8,6 +8,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/avi/hadoop-0.20.2/lib/native"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/avi/hadoop-0.20.2/hadoop-0.20.2-core.jar"/>
+	<classpathentry kind="lib" path="hadoop-0.20.2-core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
