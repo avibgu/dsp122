@@ -51,9 +51,9 @@ public class Main {
 				.withJar("s3n://" + BUCKET_NAME + "/step1.jar")
 				.withMainClass("step1.Step1")
 				.withArgs(
-						// "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data",
+						"s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/5gram/data",
 						// TODO
-						"s3n://dsp122/heb.corpus.10K",
+						// "s3n://dsp122/heb.corpus.10K",
 						"s3n://" + BUCKET_NAME + "/output1/");
 
 		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
