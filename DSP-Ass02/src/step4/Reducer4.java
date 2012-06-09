@@ -9,8 +9,15 @@ import org.apache.hadoop.mapreduce.Reducer;
 public class Reducer4 extends
 		Reducer<DoubleWritable, Text, Text, DoubleWritable> {
 
-	private static final int K = 10;
-	private static int counter = 0;
+	protected int K;
+	protected int counter;
+
+	protected void setup(Context context) throws IOException,
+			InterruptedException {
+		
+		K = context.getConfiguration().getInt("K", 30);
+		counter = 0;
+	};
 
 	protected void reduce(DoubleWritable key, Iterable<Text> values,
 			Context context) throws IOException, InterruptedException {
