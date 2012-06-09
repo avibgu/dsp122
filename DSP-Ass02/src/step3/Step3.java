@@ -8,11 +8,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-
-import step2.Mapper2;
-import step2.Reducer2;
-import step2.Step2;
 
 public class Step3 {
 
@@ -32,8 +27,7 @@ public class Step3 {
 	    job.setOutputValueClass(Text.class);
 	    
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
-//	    job.setOutputFormatClass(SequenceFileOutputFormat.class);	TODO
-		job.setOutputFormatClass(TextOutputFormat.class);
+	    job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 	    FileInputFormat.addInputPath(job, new Path(args[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[2]));
