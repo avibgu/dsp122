@@ -16,6 +16,10 @@ public class Step4 {
 	
 		Configuration conf = new Configuration();
 
+		conf.set("mapred.reduce.tasks","1");
+		
+		conf.setInt("K", Integer.valueOf(args[3]));
+		
 	    Job job = new Job(conf, "step4");
 	    
 	    job.setJarByClass(Step4.class);
