@@ -18,9 +18,9 @@ public class FileManipulator {
 
 		try {
 
-			isr = new InputStreamReader(pInputStream);
-			br = new BufferedReader(isr);		
-			
+			isr = new InputStreamReader(pInputStream, "UTF-8");
+			br = new BufferedReader(isr);
+						
 			while (br.ready())
 				result.add(br.readLine());
 
