@@ -17,13 +17,13 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 	protected Text word;
 	protected Text outValue;
-	
+
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
 		mStopWords = FileManipulator.readFromInputStream(Mapper1.class
 				.getResourceAsStream("hebrew-stop-words.txt"));
-		
+
 		word = new Text();
 		outValue = new Text();
 	}
@@ -35,11 +35,11 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 		if (splitted.length != 5)
 			return;
-		
+
 		String occurrences = splitted[2];
-		
+
 		splitted = splitted[0].split(" ");
-				
+
 		if (splitted.length != 5 || isStopWord(splitted[2]))
 			return;
 
@@ -47,38 +47,50 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 		List<String> list = new ArrayList<String>();
 
-		try{
-		
+		try {
+
 			list.add(splitted[0]);
 			list.add(splitted[1]);
 			list.add(splitted[3]);
 			list.add(splitted[4]);
+		} catch (Exception e) {
 		}
-		catch (Exception e) {}
-		
+
 		list = cleanWords(list);
 		list = filterStopWords(list);
-		
-		for (String w : list){
-		
+
+		for (String w : list) {
+
 			outValue.set(w + "\t" + occurrences);
-			
+
 			context.write(word, outValue);
-		}		
+
+			// System.out.println("word:" + word);
+			// System.out.println("value:" + outValue);
+		}
 	}
 
 	private List<String> cleanWords(List<String> words) {
-		
+
 		List<String> tList = new ArrayList<String>();
-		
+
 		for (String word : words)
 			tList.add(cleanWord(word));
-		
+
 		return tList;
 	}
 
 	private String cleanWord(String word) {
-		return (word.replace('\"', ' ')).trim();
+		
+		if (word.startsWith("\""))
+			word = word.substring(1);
+		
+		if (word.endsWith("\""))
+			word = word.substring(0, word.length()-1);
+		
+		return word;
+				
+//		return (word.replace('\"', ' ')).trim();
 	}
 
 	private boolean isStopWord(String word) {
@@ -92,6 +104,8 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 		for (String word : words)
 			if (!isStopWord(word))
 				tList.add(word);
+		// else
+		// System.out.println("stop:" + word);
 
 		return tList;
 	}
