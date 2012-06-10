@@ -2,47 +2,49 @@ package step3;
 
 import java.io.IOException;
 
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class Reducer3 extends Reducer<Text, Text, Text, Text> {
+public class Reducer3 extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
 	private static final int M = 2;
 
 	protected Text w1w2;
-	protected Text outputValue;
+	protected DoubleWritable outputValue;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
 		w1w2 = new Text();
-		outputValue = new Text();
+		outputValue = new DoubleWritable();
 	}
 
-	protected void reduce(Text key, Iterable<Text> values, Context context)
+	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
 
 		String[] splitted = key.toString().split("\t");
 
 		w1w2.set(splitted[0] + ", " + splitted[1]);
 
-		Double mechane = Double.parseDouble(splitted[2].toString());
+		double mechane = Double.parseDouble(splitted[2].toString());
 
-		Double mone = 0.0;
+		double mone = 0.0;
 
 		int counter = 0;
 
-		for (Text value : values) {
+		for (DoubleWritable value : values) {
 
-			mone += Double.parseDouble(value.toString());
+			mone += value.get();
 			counter++;
 		}
 
 		if (counter > M) {
 
-			outputValue.set(Double.toString(mone / mechane));
+			outputValue.set(mone / mechane);
 
-			context.write(w1w2, outputValue);
+			if (!Double.isNaN(outputValue.get()))
+				context.write(w1w2, outputValue);
 		}
 	}
 }

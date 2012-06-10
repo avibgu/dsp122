@@ -18,7 +18,11 @@ public class Step4 {
 
 		conf.set("mapred.reduce.tasks","1");
 		
-		conf.setInt("K", Integer.valueOf(args[3]));
+		try {
+		
+			conf.setInt("K", Integer.valueOf(args[3]));
+		}
+		catch (Exception e) {}
 		
 	    Job job = new Job(conf, "step4");
 	    
