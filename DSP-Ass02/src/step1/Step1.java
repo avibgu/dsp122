@@ -15,11 +15,8 @@ public class Step1 {
 
 		Configuration conf = new Configuration();
 
-		// TODO
-		// conf.set("mapred.map.tasks","20");
-		// conf.set("mapred.max.split.size","6000000");
-		//
-		// Job job = new Job(conf);
+		// conf.set("mapred.map.tasks","10");
+		// conf.set("mapred.max.split.size","5000000");
 
 		Job job = new Job(conf, "step1");
 

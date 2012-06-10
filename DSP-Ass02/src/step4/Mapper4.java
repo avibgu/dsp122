@@ -6,12 +6,21 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class Mapper4 extends Mapper<Text, Text, DoubleWritable, Text> {
+public class Mapper4 extends Mapper<Text, DoubleWritable, DoubleWritable, Text> {
 
-	protected void map(Text key, Text value, Context context)
+	protected DoubleWritable outputKey; 
+	
+	protected void setup(Context context) throws IOException,
+			InterruptedException {
+		
+		outputKey = new DoubleWritable();
+	}
+
+	protected void map(Text key, DoubleWritable value, Context context)
 			throws IOException, InterruptedException {
 
-		context.write(new DoubleWritable(-Double.parseDouble(value.toString())),
-				key);
+		outputKey.set(-value.get());
+		
+		context.write(outputKey, key);
 	}
 }

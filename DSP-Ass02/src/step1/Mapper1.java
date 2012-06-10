@@ -15,6 +15,10 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 	protected Set<String> mStopWords;
 
+	protected List<String> mListOfWords;
+	protected List<String> mTempList1;
+	protected List<String> mTempList2;
+	
 	protected Text word;
 	protected Text outValue;
 
@@ -24,13 +28,17 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 		mStopWords = FileManipulator.readFromInputStream(Mapper1.class
 				.getResourceAsStream("hebrew-stop-words.txt"));
 
+		mListOfWords = new ArrayList<String>();
+		mTempList1 = new ArrayList<String>();
+		mTempList2 = new ArrayList<String>();
+		
 		word = new Text();
 		outValue = new Text();
 	}
 
 	protected void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
-
+		
 		String[] splitted = value.toString().split("\t");
 
 		if (splitted.length != 5)
@@ -45,39 +53,39 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 		word.set(cleanWord(splitted[2]));
 
-		List<String> list = new ArrayList<String>();
+		mListOfWords.clear();
 
 		try {
 
-			list.add(splitted[0]);
-			list.add(splitted[1]);
-			list.add(splitted[3]);
-			list.add(splitted[4]);
+			mListOfWords.add(splitted[0]);
+			mListOfWords.add(splitted[1]);
+			mListOfWords.add(splitted[3]);
+			mListOfWords.add(splitted[4]);
 		} catch (Exception e) {
 		}
 
-		list = cleanWords(list);
-		list = filterStopWords(list);
+		mListOfWords = cleanWords(mListOfWords);
+		mListOfWords = filterStopWords(mListOfWords);
 
-		for (String w : list) {
+		for (String w : mListOfWords) {
 
 			outValue.set(w + "\t" + occurrences);
 
 			context.write(word, outValue);
 
-			// System.out.println("word:" + word);
-			// System.out.println("value:" + outValue);
+//			 System.out.println("word:" + word);
+//			 System.out.println("value:" + outValue);
 		}
 	}
 
 	private List<String> cleanWords(List<String> words) {
 
-		List<String> tList = new ArrayList<String>();
+		mTempList1.clear();
 
 		for (String word : words)
-			tList.add(cleanWord(word));
+			mTempList1.add(cleanWord(word));
 
-		return tList;
+		return mTempList1;
 	}
 
 	private String cleanWord(String word) {
@@ -99,14 +107,12 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 
 	private List<String> filterStopWords(List<String> words) {
 
-		List<String> tList = new ArrayList<String>();
+		mTempList2.clear();
 
 		for (String word : words)
 			if (!isStopWord(word))
-				tList.add(word);
-		// else
-		// System.out.println("stop:" + word);
+				mTempList2.add(word);
 
-		return tList;
+		return mTempList2;
 	}
 }

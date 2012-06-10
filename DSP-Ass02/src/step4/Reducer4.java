@@ -12,12 +12,16 @@ public class Reducer4 extends
 	protected int K;
 	protected int counter;
 
+	protected DoubleWritable outputValue;
+			
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 		
 		K = context.getConfiguration().getInt("K", 30);
 		counter = 0;
-	};
+		
+		outputValue = new DoubleWritable();
+	}
 
 	protected void reduce(DoubleWritable key, Iterable<Text> values,
 			Context context) throws IOException, InterruptedException {
@@ -27,7 +31,10 @@ public class Reducer4 extends
 			if (counter < K) {
 
 				counter++;
-				context.write(value, new DoubleWritable(-key.get()));
+				
+				outputValue.set(-key.get());
+				
+				context.write(value, outputValue);
 			}
 		}
 	}
