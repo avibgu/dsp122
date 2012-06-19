@@ -1,0 +1,72 @@
+
+Map 1 Input:
+============
+
+a b c d e	?	n	?
+f g h i j	?	n	?
+a j c d e	?	n	?
+
+Map 1 Output:
+=============
+
+<'c','a'>
+<'c','b'>
+<'c','d'>
+<'c','e'>
+<'c','a'>
+<'c','t'>
+<'c','y'>
+<'c','e'>
+
+Reduce 1 Input:
+===============
+
+<'c', ['a','b','d','e','a','t','y','e']>
+
+Reduce 1 Output:
+================
+
+<<'c',3.5>, [<'a','2'>,<'b','1'>,<'d','1'>,<'e','2'>,<'t','1'>,<'y','1'>]>
+
+
+<'w1', [<'a','2'>,<'b','1'>,<'d','1'>,<'e','2'>,<'m','1'>,<'y','3'>]>
+<'w2', [<'u','2'>,<'b','7'>,<'d','1'>,<'g','2'>,<'t','1'>,<'y','1'>]>
+
+
+      count1(b)*count2(b) + count1(d)*count2(d) + count1(y)*count2(y)
+---------------------------------------------------------------------------
+sqrt(count1(a)^2 + count1(b)^2 + count1(d)^2 + count1(e)^2 + ..) * sqrt(..)
+
+
+
+
+Map2:
+
+	in:		w1		MEHANE		w'	count1(w')	w''		count1(w'')		...		w''''''		count1(w'''''')
+	
+	out:
+			<w',<w1,count1(w'),MEHANE>>
+			<w'',<w1,count1(w''),MEHANE>>
+			...
+			<w'''',<w1,count1(w''''),MEHANE>>
+	
+Reduce2:
+
+	in:		<w',[<w1,count1(w'),MEHANE>, <w2,count2(w'),MEHANE>, ..., <wn,count-n(w'),MEHANE>}>
+	
+	out:
+			w',w1,w2,count1w',count2w',MEHANEw1,MEHANEw2
+			w',w1,w3,count1w',count3w',MEHANEw1,MEHANEw3
+			...
+			w',wn-1,wn-2,count-n-1w,count-nw,MEHANEwn-1,MEHANEwn
+
+Map3:
+
+  in:	w',w1,w2,count1w,count2w,MEHANEw1,MEHANEw2
+  out:	<w1,w2,MEHANEw1*MEHANEw2> , count1(w') * count2(w')
+
+Reduce3:
+  in:	<w1,w2,MEHANEw1*MEHANEw2> , [[count1w' * count2w'],[count1w'' * count2w''],...,[count1w''''' * count2w''''']]
+  out:	<w1,w2> , count1w' * count2w' + count1w'' * count2w'' + ... + count1w''''' * count2w''''' / MEHANEw1*MEHANEw2	=> MONE/MEHANEw1*MEHANEw2
+  
+  
