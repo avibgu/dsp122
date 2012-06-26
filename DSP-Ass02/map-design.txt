@@ -1,72 +1,89 @@
 
-Map 1 Input:
-============
+Map1:
 
-a b c d e	?	n	?
-f g h i j	?	n	?
-a j c d e	?	n	?
+	in:		a b c d e	?	n1	?
+			a j c f e	?	n2	?
+			...
 
-Map 1 Output:
-=============
+	out:	<'c', <'a'	n1>>
+			<'c', <'b'	n1>>
+			<'c', <'d'	n1>>
+			<'c', <'e'	n1>>
+			<'c', <'a'	n2>>
+			<'c', <'j'	n2>>
+			<'c', <'f'	n2>>
+			<'c', <'e'	n2>>
 
-<'c','a'>
-<'c','b'>
-<'c','d'>
-<'c','e'>
-<'c','a'>
-<'c','t'>
-<'c','y'>
-<'c','e'>
+Reduce1:
 
-Reduce 1 Input:
-===============
+	in:
+		key		=	'c'
+		values	=	[<'a' n1>,<'b' n1>,<'d' n1>,<'e' n1>,<'a' n2>,<'j' n2>,<'f' n2>,<'e' n2>]>
 
-<'c', ['a','b','d','e','a','t','y','e']>
-
-Reduce 1 Output:
-================
-
-<<'c',3.5>, [<'a','2'>,<'b','1'>,<'d','1'>,<'e','2'>,<'t','1'>,<'y','1'>]>
-
-
-<'w1', [<'a','2'>,<'b','1'>,<'d','1'>,<'e','2'>,<'m','1'>,<'y','3'>]>
-<'w2', [<'u','2'>,<'b','7'>,<'d','1'>,<'g','2'>,<'t','1'>,<'y','1'>]>
-
-
-      count1(b)*count2(b) + count1(d)*count2(d) + count1(y)*count2(y)
----------------------------------------------------------------------------
-sqrt(count1(a)^2 + count1(b)^2 + count1(d)^2 + count1(e)^2 + ..) * sqrt(..)
-
-
-
-
+	out:
+		key		=	'c' MEHANEc
+		values	=	[<'a' n1+n2>,<'b' n1>,<'d' n1>,<'e' n1+n2>,<'j' n2>,<'f' n2>]
+		
+			
+			MEHANEc = sqrt( (n1+n2)^2 + n1^2 + n1^2 + (n1+n2)^2 + n2^2 + n2^2 )
+		
 Map2:
 
-	in:		w1		MEHANE		w'	count1(w')	w''		count1(w'')		...		w''''''		count1(w'''''')
+	in:
+		key		=	w1 MEHANEw1
+		value	=	w' count1(w') w'' count1(w'') ... w'''' count1(w'''')
 	
 	out:
-			<w',<w1,count1(w'),MEHANE>>
-			<w'',<w1,count1(w''),MEHANE>>
-			...
-			<w'''',<w1,count1(w''''),MEHANE>>
+		<w', <w1 count1(w') MEHANEw1>>
+		<w'', <w1 count1(w'') MEHANEw1>>
+		...
+		<w'''', <w1 count1(w'''') MEHANEw1>>
 	
 Reduce2:
 
-	in:		<w',[<w1,count1(w'),MEHANE>, <w2,count2(w'),MEHANE>, ..., <wn,count-n(w'),MEHANE>}>
+	in:
+		key		=	w'
+		value	=	[<w1 count1(w') MEHANEw1>, ... , <w-n count-n(w') MEHANEw-n>]
 	
 	out:
-			w',w1,w2,count1w',count2w',MEHANEw1,MEHANEw2
-			w',w1,w3,count1w',count3w',MEHANEw1,MEHANEw3
-			...
-			w',wn-1,wn-2,count-n-1w,count-nw,MEHANEwn-1,MEHANEwn
+		key		=	w'
+		value	=	w1 w2 count1(w') count2(w') MEHANEw1 MEHANEw2
+		
+		key		=	w'
+		value	=	w1 w3 count1(w') count3(w') MEHANEw1 MEHANEw3
+		
+		...
+		
+		key		=	w'
+		value	=	wn-1 wn count-n-1(w') count-n(w') MEHANEwn-1 MEHANEwn
 
 Map3:
 
-  in:	w',w1,w2,count1w,count2w,MEHANEw1,MEHANEw2
-  out:	<w1,w2,MEHANEw1*MEHANEw2> , count1(w') * count2(w')
+	in:	
+		key		=	w'
+		value	=	w1 w2 count1(w') count2(w') MEHANEw1 MEHANEw2
+
+	out:
+		key		=	w1 w2 (MEHANEw1 * MEHANEw2)
+		value	=	count1(w') * count2(w')
 
 Reduce3:
-  in:	<w1,w2,MEHANEw1*MEHANEw2> , [[count1w' * count2w'],[count1w'' * count2w''],...,[count1w''''' * count2w''''']]
-  out:	<w1,w2> , count1w' * count2w' + count1w'' * count2w'' + ... + count1w''''' * count2w''''' / MEHANEw1*MEHANEw2	=> MONE/MEHANEw1*MEHANEw2
+
+	in:
+		key		=	w1 w2 (MEHANEw1 * MEHANEw2)
+		value	=	[ count1(w') * count2(w'), ..., count1(w') * count2(w') ]
+		
+		<w1,w2,MEHANEw1*MEHANEw2> , [[count1w' * count2w'],[count1w'' * count2w''],...,[count1w''''' * count2w''''']]
+  
+	out:	<w1,w2> , count1w' * count2w' + count1w'' * count2w'' + ... + count1w''''' * count2w''''' / MEHANEw1*MEHANEw2	=> MONE/MEHANEw1*MEHANEw2
+
+Map4:
+
+  in:
+  out:
+
+Reduce4:
+  in:
+  out:
   
   
