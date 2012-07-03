@@ -9,7 +9,7 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class HookCorpus implements WritableComparable<HookCorpus> {
 
-	protected ArrayList<WordContext> mCorpus;
+	protected ArrayList<Pattern> mCorpus;
 	
 	@Override
 	public void readFields(DataInput arg0) throws IOException {
