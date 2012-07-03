@@ -1,31 +1,27 @@
 package step1;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-import utilities.FileManipulator;
+import data.Word;
+import data.WordContext;
 
-public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
+public class Mapper1 extends Mapper<LongWritable, Text, Word, IntWritable> {
 
-	protected Set<String> mStopWords;
-
-	protected Text word;
-	protected Text outValue;
+	protected Word mWord;
+	protected WordContext mOutValue;
+	protected IntWritable mCount;
 	
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
-		mStopWords = FileManipulator.readFromInputStream(Mapper1.class
-				.getResourceAsStream("hebrew-stop-words.txt"));
-		
-		word = new Text();
-		outValue = new Text();
+		mWord = new Word();
+		mOutValue = new WordContext();
+		mCount = new IntWritable();
 	}
 
 	protected void map(LongWritable key, Text value, Context context)
@@ -36,63 +32,17 @@ public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
 		if (splitted.length != 5)
 			return;
 		
-		String occurrences = splitted[2];
+		mCount.set(Integer.parseInt(splitted[2]));
 		
 		splitted = splitted[0].split(" ");
 				
-		if (splitted.length != 5 || isStopWord(splitted[2]))
+		if (splitted.length != 5)
 			return;
 
-		word.set(cleanWord(splitted[2]));
-
-		List<String> list = new ArrayList<String>();
-
-		try{
-		
-			list.add(splitted[0]);
-			list.add(splitted[1]);
-			list.add(splitted[3]);
-			list.add(splitted[4]);
-		}
-		catch (Exception e) {}
-		
-		list = cleanWords(list);
-		list = filterStopWords(list);
-		
-		for (String w : list){
-		
-			outValue.set(w + "\t" + occurrences);
+		for (int i = 0; i < 5; i++){
 			
-			context.write(word, outValue);
-		}		
-	}
-
-	private List<String> cleanWords(List<String> words) {
-		
-		List<String> tList = new ArrayList<String>();
-		
-		for (String word : words)
-			tList.add(cleanWord(word));
-		
-		return tList;
-	}
-
-	private String cleanWord(String word) {
-		return (word.replace('\"', ' ')).trim();
-	}
-
-	private boolean isStopWord(String word) {
-		return word.length() < 2 || mStopWords.contains(word);
-	}
-
-	private List<String> filterStopWords(List<String> words) {
-
-		List<String> tList = new ArrayList<String>();
-
-		for (String word : words)
-			if (!isStopWord(word))
-				tList.add(word);
-
-		return tList;
+			mWord.setWord(splitted[i]);
+			context.write(mWord, mCount);
+		}
 	}
 }
