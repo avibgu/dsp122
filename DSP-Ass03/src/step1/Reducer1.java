@@ -58,8 +58,13 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 			word.setType(WordType.HFW);
 			mHFWs.add(word);
 		}
+		
+		else if (sum < FC) {
+			word.setType(WordType.CW);
+			mCWs.add(word);
+		}
 
-		else if (counter < N && sum < FC && sum > FB) {
+		if (counter < N && sum < FC && sum > FB) {
 			context.getCounter("group", "counter").increment(1);
 			word.setType(WordType.HOOK);
 			mHooks.add(word);
