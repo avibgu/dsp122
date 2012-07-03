@@ -10,13 +10,13 @@ import data.Pattern;
 import data.Word;
 import data.WordContext;
 
-public class Reducer2Test extends Reducer<WordContext, Word, Word, Pattern> {
+public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 
 	protected Set<Word> wordsSet;
 	protected Pattern mPattern;
 	protected WordContext mWordContext;
 
-	public Reducer2Test() {
+	public Reducer2() {
 		wordsSet = new HashSet<Word>();
 		mPattern = new Pattern();
 		mWordContext = new WordContext();

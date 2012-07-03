@@ -10,7 +10,7 @@ import data.Word;
 import data.WordContext;
 import data.WordType;
 
-public class Reducer1Test extends Reducer<Word, WordContext, Word, WordContext> {
+public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 
 	protected static final int FH = 15;
 	protected static final int FB = 5;

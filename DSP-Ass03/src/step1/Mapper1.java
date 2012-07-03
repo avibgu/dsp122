@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import data.Word;
 import data.WordContext;
 
-public class Mapper1Test extends Mapper<LongWritable, Text, Word, WordContext> {
+public class Mapper1 extends Mapper<LongWritable, Text, Word, WordContext> {
 
 	protected Word mWord;
 	protected WordContext mContext;
