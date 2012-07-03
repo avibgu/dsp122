@@ -26,6 +26,32 @@ public class Pattern implements WritableComparable<Pattern> {
 		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, pHook, pTarget);
 	}
 
+	public boolean isLegal() {
+
+		if (mPrefix.getType() == WordType.HFW
+				&& mInfix.getType() == WordType.HFW
+				&& mPostfix.getType() == WordType.HFW) {
+
+			if (mCW1.getType() == WordType.HOOK
+					&& mCW2.getType() == WordType.CW) {
+
+				setHook(mCW2);
+				setTarget(mCW1);
+				return true;
+			}
+
+			else if (mCW1.getType() == WordType.CW
+					&& mCW2.getType() == WordType.HOOK) {
+
+				setHook(mCW2);
+				setTarget(mCW1);
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
 	@Override
 	public void readFields(DataInput arg0) throws IOException {
 		// TODO Auto-generated method stub
@@ -126,31 +152,5 @@ public class Pattern implements WritableComparable<Pattern> {
 	public void set(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
 			Word pPostfix) {
 		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, null, null);
-	}
-
-	public boolean isLegal() {
-
-		if (mPrefix.getType() == WordType.HFW
-				&& mInfix.getType() == WordType.HFW
-				&& mPostfix.getType() == WordType.HFW) {
-
-			if (mCW1.getType() == WordType.HOOK
-					&& mCW2.getType() == WordType.CW) {
-
-				setHook(mCW2);
-				setTarget(mCW1);
-				return true;
-			}
-
-			else if (mCW1.getType() == WordType.CW
-					&& mCW2.getType() == WordType.HOOK) {
-
-				setHook(mCW2);
-				setTarget(mCW1);
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

@@ -68,7 +68,7 @@ public class Main {
 
 		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig().withJar(
 				"s3n://" + BUCKET_NAME + "/step2.jar").withMainClass(
-				"step2.Step2").withArgs(CORPUS_LOCATION,
+				"step2.Step2").withArgs("/output1/",
 				"s3n://" + BUCKET_NAME + "/output2/");
 
 		HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig().withJar(
