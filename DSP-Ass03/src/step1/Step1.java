@@ -10,16 +10,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 public class Step1 {
-
+	
 	public static void main(String[] args) throws Exception {
 
 		Configuration conf = new Configuration();
-
-		// TODO
-		// conf.set("mapred.map.tasks","20");
-		// conf.set("mapred.max.split.size","6000000");
-		//
-		// Job job = new Job(conf);
 
 		Job job = new Job(conf, "step1");
 

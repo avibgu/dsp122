@@ -12,10 +12,12 @@ public class Word implements WritableComparable<Word> {
 
 	protected Text mWord;
 	protected IntWritable mCount;
+	protected WordType mType;
 	
 	public Word() {
 		mWord = new Text();
 		mCount = new IntWritable(-1);
+		mType = WordType.UNKNOWN;
 	}
 	
 	@Override
@@ -54,6 +56,18 @@ public class Word implements WritableComparable<Word> {
 
 	public void setCount(IntWritable pCount) {
 		this.mCount = pCount;
+	}
+
+	public void setCount(int pCount) {
+		this.mCount.set(pCount);
+	}
+
+	public WordType getType() {
+		return mType;
+	}
+
+	public void setType(WordType pType) {
+		this.mType = pType;
 	}
 
 }
