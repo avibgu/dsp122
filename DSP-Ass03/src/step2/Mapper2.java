@@ -7,6 +7,8 @@ import java.io.IOException;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.Counters;
+import org.apache.hadoop.mapred.Counters.Counter;
 import org.apache.hadoop.mapreduce.Mapper;
 
 public class Mapper2 extends Mapper<Text, Text, Text, Text> {
@@ -45,7 +47,9 @@ public class Mapper2 extends Mapper<Text, Text, Text, Text> {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	protected void map(Text key, Text value, Context context)
 			throws IOException, InterruptedException {
+		
 	}
 }

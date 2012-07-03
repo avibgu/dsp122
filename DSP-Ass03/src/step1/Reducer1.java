@@ -13,6 +13,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Word;
@@ -26,9 +27,11 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 	public static final String HOOKs_LIST_LOCAL_PATH_PREFIX = "/home/hadoop/hooks/";
 	public static final String HFWs_LIST_LOCAL_PATH_PREFIX = "/home/hadoop/hfws/";
 
-	protected static final int FH = 0;
-	protected static final int FB = 0;
-	protected static final int FC = 0;
+	protected static final int FH = 15;
+	protected static final int FB = 5;
+	protected static final int FC = 10;
+	
+	private static final long N = 100;
 
 	protected Set<Word> mHooks;
 	protected Set<Word> mHFWs;
@@ -43,6 +46,8 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 	protected void reduce(Word word, Iterable<IntWritable> counts,
 			Context context) throws IOException, InterruptedException {
 
+		long counter = context.getCounter("group", "counter").getValue();
+		                
 		int sum = 0;
 
 		for (IntWritable count : counts)
@@ -55,7 +60,8 @@ public class Reducer1 extends Reducer<Text, Text, Text, Text> {
 			mHFWs.add(word);
 		}
 
-		else if (sum < FC && sum > FB /* TODO && Counter... */) {
+		else if (counter < N && sum < FC && sum > FB) {
+			context.getCounter("group", "counter").increment(1);
 			word.setType(WordType.HOOK);
 			mHooks.add(word);
 		}
