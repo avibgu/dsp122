@@ -8,19 +8,16 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import data.Word;
-import data.WordContext;
 
 public class Mapper1 extends Mapper<LongWritable, Text, Word, IntWritable> {
 
 	protected Word mWord;
-	protected WordContext mOutValue;
 	protected IntWritable mCount;
 	
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
 		mWord = new Word();
-		mOutValue = new WordContext();
 		mCount = new IntWritable();
 	}
 
