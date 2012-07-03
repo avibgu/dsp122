@@ -82,4 +82,13 @@ public class Word implements WritableComparable<Word> {
 	public String toString() {
 		return mWord.toString() + "\t" + mCount.toString();
 	}
+	
+	@Override
+	public boolean equals(Object pObj) {
+		
+		if (!(pObj instanceof Word))
+			return false;
+		
+		return this.compareTo((Word) pObj) == 0;
+	}
 }
