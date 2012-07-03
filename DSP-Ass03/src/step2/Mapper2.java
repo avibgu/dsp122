@@ -13,18 +13,26 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
+import data.Pattern;
 import data.Word;
 
-public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
+public class Mapper2 extends Mapper<LongWritable, Text, Word, Pattern> {
 
 	public static final String HOOKs_LIST_HDFS_PATH_PREFIX = "/hooks/";
+	public static final String HFWs_LIST_HDFS_PATH_PREFIX = "/hfws/";
 
 	protected Set<Word> mHooks;
+	protected Set<Word> mHFWs;
+	protected Word mWord;
+	protected Pattern mPattern;
 
 	@Override
 	public void setup(Context context) {
 
 		mHooks = new HashSet<Word>();
+		mHFWs = new HashSet<Word>();
+		mWord = new Word();
+		mPattern = new Pattern();
 
 		try {
 
@@ -36,15 +44,34 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
 				if (cacheFileURI.getPath()
 						.contains(HOOKs_LIST_HDFS_PATH_PREFIX)) {
 
-					BufferedReader reader = new BufferedReader(
-							new FileReader(new File(cacheFileURI)));
+					BufferedReader reader = new BufferedReader(new FileReader(
+							new File(cacheFileURI)));
 
 					try {
 
 						String line = "";
-						
+
 						while ((line = reader.readLine()) != null)
 							mHooks.add(new Word(line));
+					}
+
+					finally {
+						reader.close();
+					}
+				}
+
+				else if (cacheFileURI.getPath().contains(
+						HFWs_LIST_HDFS_PATH_PREFIX)) {
+
+					BufferedReader reader = new BufferedReader(new FileReader(
+							new File(cacheFileURI)));
+
+					try {
+
+						String line = "";
+
+						while ((line = reader.readLine()) != null)
+							mHFWs.add(new Word(line));
 					}
 
 					finally {
@@ -59,8 +86,36 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
 		}
 	}
 
-	protected void map(Text key, Text value, Context context)
+	@Override
+	protected void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
 
+		String[] splitted = value.toString().split("\t");
+
+		if (splitted.length != 5)
+			return;
+
+		splitted = splitted[0].split(" ");
+
+		if (splitted.length != 5)
+			return;
+
+		if (mHFWs.contains(splitted[0])
+				&& mHFWs.contains(splitted[2])
+				&& mHFWs.contains(splitted[4])){
+			
+			mPattern.set(splitted[0], splitted[1], splitted[2], splitted[3], splitted[4]);
+			
+			if (mHooks.contains(splitted[1])){
+				mWord.setWord(splitted[1]);
+				context.write(mWord, mPattern);
+			}
+			
+			if (mHooks.contains(splitted[3])){
+				mWord.setWord(splitted[3]);
+				context.write(mWord, mPattern);
+			}
+		}
+				
 	}
 }
