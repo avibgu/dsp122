@@ -33,7 +33,7 @@ public class Reducer2Test extends Reducer<WordContext, Word, Word, Pattern> {
 		mPattern.set(getWordAt(0), getWordAt(1), getWordAt(2), getWordAt(3), getWordAt(4));
 
 		if (mPattern.isLegal())
-			;
+			context.write(mPattern.getHook(), mPattern);
 	}
 
 	private Word getWordAt(int pIndex) {
