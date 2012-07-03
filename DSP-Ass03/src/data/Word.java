@@ -19,9 +19,12 @@ public class Word implements WritableComparable<Word> {
 	}
 	
 	public Word(String pWord) {
-		
+		this(pWord, -1);
+	}
+
+	public Word(String pWord, int pCount) {
 		mWord = new Text(pWord);
-		mCount = new IntWritable(-1);
+		mCount = new IntWritable(pCount);
 		mType = WordType.UNKNOWN;
 	}
 
@@ -75,4 +78,8 @@ public class Word implements WritableComparable<Word> {
 		this.mType = pType;
 	}
 
+	@Override
+	public String toString() {
+		return mWord.toString() + "\t" + mCount.toString();
+	}
 }

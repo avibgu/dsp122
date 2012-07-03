@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import data.Pattern;
 import data.Word;
+import data.WordType;
 
 public class Mapper2 extends Mapper<LongWritable, Text, Word, Pattern> {
 
@@ -34,6 +35,9 @@ public class Mapper2 extends Mapper<LongWritable, Text, Word, Pattern> {
 		mWord = new Word();
 		mPattern = new Pattern();
 
+		String[] splitted = null;
+		Word word = null;		
+		
 		try {
 
 			URI[] cacheFilesURI = DistributedCache.getCacheFiles(context
@@ -51,8 +55,13 @@ public class Mapper2 extends Mapper<LongWritable, Text, Word, Pattern> {
 
 						String line = "";
 
-						while ((line = reader.readLine()) != null)
-							mHooks.add(new Word(line));
+						while ((line = reader.readLine()) != null){
+							
+							splitted = line.split("\t");
+							word = new Word(splitted[0], Integer.parseInt(splitted[1]));
+							word.setType(WordType.HOOK);
+							mHooks.add(word);
+						}
 					}
 
 					finally {
@@ -70,8 +79,13 @@ public class Mapper2 extends Mapper<LongWritable, Text, Word, Pattern> {
 
 						String line = "";
 
-						while ((line = reader.readLine()) != null)
-							mHFWs.add(new Word(line));
+						while ((line = reader.readLine()) != null){
+							
+							splitted = line.split("\t");
+							word = new Word(splitted[0], Integer.parseInt(splitted[1]));
+							word.setType(WordType.HFW);
+							mHFWs.add(word);
+						}
 					}
 
 					finally {
