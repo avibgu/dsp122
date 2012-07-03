@@ -59,9 +59,15 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		
 		else
 			return;
+
+		//TODO: for each Hook word, write in the context - how many times
+		//		the target word appeared with me..
+		//		should use Map and 2 fors.. (I think..)
 		
 		// we write just HFW, CW or Hook words
 		for (WordContext wordContext : wordContextsList)
 			context.write(word, wordContext);
+		
+
 	}
 }
