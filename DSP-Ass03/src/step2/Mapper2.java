@@ -1,43 +1,55 @@
 package step2;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.Counters;
-import org.apache.hadoop.mapred.Counters.Counter;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class Mapper2 extends Mapper<Text, Text, Text, Text> {
+import data.Word;
+
+public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
+
+	public static final String HOOKs_LIST_HDFS_PATH_PREFIX = "/hooks/";
+
+	protected Set<Word> mHooks;
 
 	@Override
 	public void setup(Context context) {
+
+		mHooks = new HashSet<Word>();
+
 		try {
-			Path[] cacheFiles = DistributedCache.getLocalCacheFiles(context
+
+			URI[] cacheFilesURI = DistributedCache.getCacheFiles(context
 					.getConfiguration());
 
-			if (cacheFiles != null && cacheFiles.length > 0) {
+			for (URI cacheFileURI : cacheFilesURI) {
 
-				String line;
-				String[] tokens;
+				if (cacheFileURI.getPath()
+						.contains(HOOKs_LIST_HDFS_PATH_PREFIX)) {
 
-				BufferedReader joinReader = new BufferedReader(new FileReader(
-						cacheFiles[0].toString()));
+					BufferedReader reader = new BufferedReader(
+							new FileReader(new File(cacheFileURI)));
 
-				try {
+					try {
 
-					while ((line = joinReader.readLine()) != null) {
-
-						tokens = line.split(",", 2);
-						// joinData.put(tokens[0], tokens[1]);
+						String line = "";
+						
+						while ((line = reader.readLine()) != null)
+							mHooks.add(new Word(line));
 					}
-				}
 
-				finally {
-					joinReader.close();
+					finally {
+						reader.close();
+					}
 				}
 			}
 		}
@@ -47,9 +59,8 @@ public class Mapper2 extends Mapper<Text, Text, Text, Text> {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void map(Text key, Text value, Context context)
 			throws IOException, InterruptedException {
-		
+
 	}
 }
