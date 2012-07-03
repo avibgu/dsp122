@@ -15,11 +15,16 @@ public class Word implements WritableComparable<Word> {
 	protected WordType mType;
 	
 	public Word() {
-		mWord = new Text();
+		this("");
+	}
+	
+	public Word(String pWord) {
+		
+		mWord = new Text(pWord);
 		mCount = new IntWritable(-1);
 		mType = WordType.UNKNOWN;
 	}
-	
+
 	@Override
 	public void readFields(DataInput arg0) throws IOException {
 		// TODO Auto-generated method stub
