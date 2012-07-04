@@ -17,13 +17,18 @@ public class Pattern implements WritableComparable<Pattern> {
 	protected Word mHook;
 	protected Word mTarget;
 
+	protected Integer mHookTargetCount;
+
+	protected Double mPMI;
+
 	public Pattern() {
-		this(null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, 0);
 	}
 
 	public Pattern(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
-			Word pPostfix, Word pHook, Word pTarget) {
-		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, pHook, pTarget);
+			Word pPostfix, Word pHook, Word pTarget, Integer pHookTargetCount) {
+		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, pHook, pTarget,
+				pHookTargetCount);
 	}
 
 	public boolean isLegal() {
@@ -51,7 +56,13 @@ public class Pattern implements WritableComparable<Pattern> {
 
 		return false;
 	}
-	
+
+	public void calcPMI(long pTotal) {
+		mPMI = Math.log(mHookTargetCount) + Math.log(pTotal)
+				- Math.log(mHook.getCount().get())
+				- Math.log(mTarget.getCount().get());
+	}
+
 	@Override
 	public void readFields(DataInput arg0) throws IOException {
 		// TODO Auto-generated method stub
@@ -126,6 +137,14 @@ public class Pattern implements WritableComparable<Pattern> {
 		mTarget = pTarget;
 	}
 
+	public Integer getHookTargetCount() {
+		return mHookTargetCount;
+	}
+
+	public void setHookTargetCount(Integer pHookTargetCount) {
+		mHookTargetCount = pHookTargetCount;
+	}
+
 	public void set(String pPrefix, String pCW1, String pInfix, String pCW2,
 			String pPostfix) {
 
@@ -137,7 +156,7 @@ public class Pattern implements WritableComparable<Pattern> {
 	}
 
 	public void set(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
-			Word pPostfix, Word pHook, Word pTarget) {
+			Word pPostfix, Word pHook, Word pTarget, Integer pHookTargetCount) {
 
 		mPrefix = pPrefix;
 		mCW1 = pCW1;
@@ -147,10 +166,14 @@ public class Pattern implements WritableComparable<Pattern> {
 
 		mHook = pHook;
 		mTarget = pTarget;
+
+		mHookTargetCount = pHookTargetCount;
+
+		mPMI = 0.0;
 	}
 
 	public void set(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
-			Word pPostfix) {
-		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, null, null);
+			Word pPostfix, Integer pHookTargetCount) {
+		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, null, null, pHookTargetCount);
 	}
 }
