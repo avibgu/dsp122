@@ -20,6 +20,8 @@ public class Pattern implements WritableComparable<Pattern> {
 	protected Integer mHookTargetCount;
 
 	protected Double mPMI;
+	
+	protected PatternType mType;
 
 	public Pattern() {
 		this(null, null, null, null, null, null, null, 0);
@@ -185,6 +187,8 @@ public class Pattern implements WritableComparable<Pattern> {
 		mHookTargetCount = pHookTargetCount;
 
 		mPMI = 0.0;
+		
+		mType = PatternType.UNCONFIRMED;
 	}
 
 	public void set(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
