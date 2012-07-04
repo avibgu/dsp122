@@ -1,34 +1,28 @@
 package step4;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class Reducer4 extends
-		Reducer<DoubleWritable, Text, Text, DoubleWritable> {
+import data.Cluster;
+import data.Pattern;
+import data.Word;
 
-	protected int K;
-	protected int counter;
+public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
+
+	Map<Word, Set<Pattern>> mTargetToPatternsMap;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		
-		K = context.getConfiguration().getInt("K", 30);
-		counter = 0;
+
+		mTargetToPatternsMap = new HashMap<Word, Set<Pattern>>();
 	};
 
-	protected void reduce(DoubleWritable key, Iterable<Text> values,
-			Context context) throws IOException, InterruptedException {
+	protected void reduce(Word hookWord, Iterable<Pattern> patterns,
+			Context context) throws java.io.IOException, InterruptedException {
 
-		for (Text value : values) {
-
-			if (counter < K) {
-
-				counter++;
-				context.write(value, new DoubleWritable(-key.get()));
-			}
-		}
-	}
+	};
 }
