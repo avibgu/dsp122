@@ -3,19 +3,20 @@ package data;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Vector;
 
 import org.apache.hadoop.io.WritableComparable;
 
 public class Cluster implements WritableComparable<Cluster> {
 
 	protected Word mHookWord;
-	protected Set<Pattern> mPatters;
+	protected Vector<Pattern> mPatters;
+	private boolean mAllUnconfirmed;
 	
 	public Cluster() {
 		mHookWord = null;
-		mPatters = new HashSet<Pattern>();
+		mPatters = new Vector<Pattern>();
+		mAllUnconfirmed = true;
 	}
 	
 	@Override
@@ -32,15 +33,19 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	@Override
 	public int compareTo(Cluster pO) {
-		// TODO Auto-generated method stub
-		return 0;
+		// TODO check if the order is ok..
+		
+		if (!mAllUnconfirmed)
+			return 1;
+		
+		return mPatters.size() - pO.getPatters().size();
 	}
 
 	public void add(Pattern pPattern) {
 		mPatters.add(pPattern);
 	}
 
-	public int calcSharedPercents(Cluster pCluster) {
+	public int calcSharedPatternsPercents(Cluster pCluster) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -59,12 +64,45 @@ public class Cluster implements WritableComparable<Cluster> {
 		mHookWord = pHookWord;
 	}
 
-	public Set<Pattern> getPatters() {
+	public Vector<Pattern> getPatters() {
 		return mPatters;
 	}
 
-	public void setPatters(Set<Pattern> pPatters) {
+	public void setPatters(Vector<Pattern> pPatters) {
 		mPatters = pPatters;
 	}
 
+	public boolean isAllUnconfirmed() {
+		return mAllUnconfirmed;
+	}
+
+	public void setNotAllUnconformed(){
+		
+		if (mAllUnconfirmed){
+		
+			mAllUnconfirmed = false;
+			//TODO dec the num of clusters counter..
+		}
+	}
+
+	public boolean areSharedAllCorePatterns(Cluster pCluster) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	public void mergeWithOtherClusterAndMarkCorePatterns(Cluster pCluster) {
+		
+		for (Pattern pattern : pCluster.getPatters()){
+			
+			int index = mPatters.indexOf(pattern);
+			
+			if (-1 == index){
+				mPatters.get(index).setType(PatternType.CORE);
+				setNotAllUnconformed();
+			}
+			
+			else
+				mPatters.add(pattern);
+		}
+	}
 }

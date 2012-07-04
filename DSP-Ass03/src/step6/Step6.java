@@ -1,4 +1,4 @@
-package step4;
+package step6;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -10,17 +10,17 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-public class Step4 {
+public class Step6 {
 
 	public static void main(String[] args) throws Exception {
 	
 		Configuration conf = new Configuration();
 
-	    Job job = new Job(conf, "step4");
+	    Job job = new Job(conf, "step6");
 	    
-	    job.setJarByClass(Step4.class);
-	    job.setMapperClass(Mapper4.class);
-	    job.setReducerClass(Reducer4.class);
+	    job.setJarByClass(Step6.class);
+	    job.setMapperClass(Mapper6.class);
+	    job.setReducerClass(Reducer6.class);
 	    
 	    job.setMapOutputKeyClass(DoubleWritable.class);
 		job.setMapOutputValueClass(Text.class);
@@ -33,6 +33,11 @@ public class Step4 {
 	    FileInputFormat.addInputPath(job, new Path(args[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[2]));
 	    
-	    System.exit(job.waitForCompletion(true) ? 0 : 1);
+	    while (true){
+	    	job.waitForCompletion(true);
+	    	//TODO: handle in and out directories..
+	    }
+	    		
+//	    System.exit(0);
 	}
 }

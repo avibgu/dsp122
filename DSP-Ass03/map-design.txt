@@ -1,3 +1,5 @@
 improvements:
 
-MapRed 4 -> split into 2 steps.. Pair<Hook,Target>...
+	MapRed 4 -> split into 2 steps.. Pair<Hook,Target>...
+	
+	Global constants Class..
