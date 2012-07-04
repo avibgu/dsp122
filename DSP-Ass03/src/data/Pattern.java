@@ -77,8 +77,15 @@ public class Pattern implements WritableComparable<Pattern> {
 
 	@Override
 	public int compareTo(Pattern o) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		if (mPMI < o.getPMI())
+			return -1;
+		
+		else if (mPMI > o.getPMI())
+			return 1;
+		
+		else
+			return 0;
 	}
 
 	public Word getPrefix() {
@@ -143,6 +150,14 @@ public class Pattern implements WritableComparable<Pattern> {
 
 	public void setHookTargetCount(Integer pHookTargetCount) {
 		mHookTargetCount = pHookTargetCount;
+	}
+
+	public Double getPMI() {
+		return mPMI;
+	}
+
+	public void setPMI(Double pPMI) {
+		mPMI = pPMI;
 	}
 
 	public void set(String pPrefix, String pCW1, String pInfix, String pCW2,
