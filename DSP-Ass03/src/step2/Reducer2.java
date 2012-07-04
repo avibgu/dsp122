@@ -30,10 +30,14 @@ public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 		for (Word word : words)
 			wordsSet.add(word);
 
-		mPattern.set(getWordAt(0), getWordAt(1), getWordAt(2), getWordAt(3), getWordAt(4));
+		mPattern.set(getWordAt(0), getWordAt(1), getWordAt(2), getWordAt(3),
+				getWordAt(4), mWordContext.getHookTargetCount());
 
-		if (mPattern.isLegal())
+		if (mPattern.isLegal()){
+			
+			mPattern.calcPMI(context.getCounter("group", "totalCounter").getValue());
 			context.write(mPattern.getHook(), mPattern);
+		}
 	}
 
 	private Word getWordAt(int pIndex) {

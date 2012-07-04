@@ -14,6 +14,7 @@ public class WordContext implements WritableComparable<WordContext> {
 	
 	protected Word[] mContext;
 	protected IntWritable mNumOfOccurrences;
+	protected Integer mHookTargetCount;
 	
 	public WordContext() {
 		
@@ -21,6 +22,8 @@ public class WordContext implements WritableComparable<WordContext> {
 		
 		for (int i = 0; i < CONTEXT_LENGTH; i++)
 			mContext[i] = new Word();
+		
+		mHookTargetCount = 0;
 	}
 	
 	@Override
@@ -60,5 +63,13 @@ public class WordContext implements WritableComparable<WordContext> {
 
 	public Word getWordAt(int pIndex) {
 		return mContext[pIndex];
+	}
+
+	public void setHookTargetCount(Integer pCount) {
+		mHookTargetCount = pCount;
+	}
+
+	public Integer getHookTargetCount() {
+		return mHookTargetCount;
 	}
 }

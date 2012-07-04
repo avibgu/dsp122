@@ -2,7 +2,9 @@ package step1;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -15,34 +17,37 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 	protected static final int FH = 15;
 	protected static final int FB = 5;
 	protected static final int FC = 10;
-	
+
 	private static final long N = 100;
-	
+
 	protected List<WordContext> wordContextsList;
+
+	protected Map<Word, Integer> mTargetsMap;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		
+
 		wordContextsList = new ArrayList<WordContext>();
+		mTargetsMap = new HashMap<Word, Integer>();
 	}
 
 	protected void reduce(Word word, Iterable<WordContext> wordContexts,
 			Context context) throws IOException, InterruptedException {
 
 		wordContextsList.clear();
-		
+
 		long counter = context.getCounter("group", "hooksCounter").getValue();
-		                
+
 		int sum = 0;
 
-		for (WordContext wordContext : wordContexts){
-			
+		for (WordContext wordContext : wordContexts) {
+
 			sum += wordContext.getNumOfOccurrences();
 			wordContextsList.add(wordContext);
 		}
 
 		word.setCount(sum);
-		
+
 		// we count every word
 		context.getCounter("group", "totalCounter").increment(sum);
 
@@ -53,21 +58,51 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 			context.getCounter("group", "counter").increment(1);
 			word.setType(WordType.HOOK);
 		}
-		
+
 		else if (sum < FC)
 			word.setType(WordType.CW);
-		
+
 		else
 			return;
 
-		//TODO: for each Hook word, write in the context - how many times
-		//		the target word appeared with me..
-		//		should use Map and 2 fors.. (I think..)
-		
+		// for each Hook word, write in the context - how many times
+		// the target word appeared with me..
+		if (word.getType() == WordType.HOOK) {
+
+			for (WordContext wordContext : wordContextsList) {
+
+				if (wordContext.getWordAt(1).equals(word))
+					incTargetCounter(wordContext.getWordAt(3));
+
+				if (wordContext.getWordAt(3).equals(word))
+					incTargetCounter(wordContext.getWordAt(1));
+			}
+
+			for (WordContext wordContext : wordContextsList) {
+
+				if (wordContext.getWordAt(1).equals(word))
+					wordContext.setHookTargetCount(mTargetsMap.get(wordContext
+							.getWordAt(3)));
+
+				if (wordContext.getWordAt(3).equals(word))
+					wordContext.setHookTargetCount(mTargetsMap.get(wordContext
+							.getWordAt(1)));
+			}
+		}
+
 		// we write just HFW, CW or Hook words
 		for (WordContext wordContext : wordContextsList)
 			context.write(word, wordContext);
-		
 
+	}
+
+	private void incTargetCounter(Word target) {
+
+		Integer count = mTargetsMap.get(target);
+
+		if (null == count)
+			count = 0;
+
+		mTargetsMap.put(target, count + 1);
 	}
 }
