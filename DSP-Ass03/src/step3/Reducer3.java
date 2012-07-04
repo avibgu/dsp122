@@ -1,48 +1,49 @@
 package step3;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.TreeSet;
 
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class Reducer3 extends Reducer<Text, Text, Text, Text> {
+import data.Pattern;
+import data.Word;
 
-	private static final int M = 2;
+public class Reducer3 extends Reducer<Word, Pattern, Word, Pattern> {
 
-	protected Text w1w2;
-	protected Text outputValue;
+	private static final int L = 10;
+
+	protected Set<Pattern> sortedPatterns;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
-		w1w2 = new Text();
-		outputValue = new Text();
+		sortedPatterns = new TreeSet<Pattern>();
 	}
 
-	protected void reduce(Text key, Iterable<Text> values, Context context)
+	protected void reduce(Word hookWord, Iterable<Pattern> patterns, Context context)
 			throws IOException, InterruptedException {
 
-		String[] splitted = key.toString().split("\t");
+		sortedPatterns.clear();
+		
+		for (Pattern pattern : patterns)
+			sortedPatterns.add(pattern);
 
-		w1w2.set(splitted[0] + ", " + splitted[1]);
-
-		Double mechane = Double.parseDouble(splitted[2].toString());
-
-		Double mone = 0.0;
-
-		int counter = 0;
-
-		for (Text value : values) {
-
-			mone += Double.parseDouble(value.toString());
-			counter++;
-		}
-
-		if (counter > M) {
-
-			outputValue.set(Double.toString(mone / mechane));
-
-			context.write(w1w2, outputValue);
+		int filterIndex = sortedPatterns.size() * L / 100;
+		
+		int i = -1;
+		
+		for (Pattern pattern : sortedPatterns){
+			
+			i++;
+			
+			if (i < filterIndex)
+				continue;
+			
+			else if (i > sortedPatterns.size() - filterIndex)
+				break;
+			
+			context.write(hookWord, pattern);
 		}
 	}
 }
