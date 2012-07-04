@@ -16,7 +16,7 @@ public class Reducer5 extends Reducer<Cluster, Word, Word, Cluster> {
 		
 		for (Word hookWord : hookWords){
 			
-			if (size++ > 1){
+			if (++size > 1){
 				context.write(hookWord, cluster);
 				return;
 			}					
