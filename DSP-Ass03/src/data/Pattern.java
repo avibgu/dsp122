@@ -162,6 +162,14 @@ public class Pattern implements WritableComparable<Pattern> {
 		mPMI = pPMI;
 	}
 
+	public PatternType getType() {
+		return mType;
+	}
+
+	public void setType(PatternType pType) {
+		mType = pType;
+	}
+
 	public void set(String pPrefix, String pCW1, String pInfix, String pCW2,
 			String pPostfix) {
 

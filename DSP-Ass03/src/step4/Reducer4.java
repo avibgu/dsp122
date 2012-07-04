@@ -47,16 +47,18 @@ public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
 			
 			for (int j = i + 1; j < clusters.length; j++){
 				
-				if (clusters[i].calcSharedPercents(clusters[j]) > S){
+				if (clusters[i].calcSharedPatternsPercents(clusters[j]) > S){
 					
 					tmpCluster.mergeClusters(clusters[i],clusters[j]);
 					context.write(hookWord, tmpCluster);
+					//TODO: count this cluster
 					merged = true;
 				}
 			}
 			
 			if (!merged)
 				context.write(hookWord, clusters[i]);
+				//TODO: count this cluster
 		}
 	};
 }
