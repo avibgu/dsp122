@@ -30,7 +30,7 @@ public class Reducer6 extends Reducer<Cluster, Word, Word, Cluster> {
 			return;
 
 		if (mCluster.calcSharedPatternsPercents(cluster) >= S
-				&& mCluster.areSharedAllCorePatterns(cluster))
+				&& mCluster.areShareAllCorePatterns(cluster))
 			mCluster.mergeWithOtherClusterAndMarkCorePatterns(cluster);
 		
 		else
@@ -42,7 +42,4 @@ public class Reducer6 extends Reducer<Cluster, Word, Word, Cluster> {
 		if (!mCluster.isAllUnconfirmed())
 			context.write(mCluster.getHookWord(), mCluster);
 	};
-	
-	
-	//TODO: we are now at the algorithm '4'..
 }

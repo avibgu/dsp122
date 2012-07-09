@@ -92,12 +92,7 @@ public class Cluster implements WritableComparable<Cluster> {
 			// TODO dec the num of clusters counter..
 		}
 	}
-
-	public boolean areSharedAllCorePatterns(Cluster pCluster) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
+	
 	public void mergeWithOtherClusterAndMarkCorePatterns(Cluster pCluster) {
 
 		xxx(pCluster.getCorePatters());
@@ -158,5 +153,17 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	public void setAllUnconfirmed(boolean pAllUnconfirmed) {
 		mAllUnconfirmed = pAllUnconfirmed;
+	}
+
+	public boolean areShareAllCorePatterns(Cluster pOtherCluster) {
+		
+		if (pOtherCluster.size() != size())
+			return false;
+		
+		for (Pattern pattern : pOtherCluster.getCorePatters())
+			if (!mCorePatters.contains(pattern))
+				return false;
+		
+		return true;
 	}
 }
