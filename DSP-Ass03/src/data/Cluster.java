@@ -3,22 +3,28 @@ package data;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.hadoop.io.WritableComparable;
 
 public class Cluster implements WritableComparable<Cluster> {
 
+	protected String mId;
+
 	protected Word mHookWord;
-	protected Vector<Pattern> mPatters;
-	private boolean mAllUnconfirmed;
-	
+	protected Vector<Pattern> mCorePatters;
+	protected Vector<Pattern> mUnconfirmedPatters;
+	protected boolean mAllUnconfirmed;
+
 	public Cluster() {
+		mId = UUID.randomUUID().toString();
 		mHookWord = null;
-		mPatters = new Vector<Pattern>();
+		mCorePatters = new Vector<Pattern>();
+		mUnconfirmedPatters = new Vector<Pattern>();
 		mAllUnconfirmed = true;
 	}
-	
+
 	@Override
 	public void readFields(DataInput pArg0) throws IOException {
 		// TODO Auto-generated method stub
@@ -33,16 +39,24 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	@Override
 	public int compareTo(Cluster pO) {
-		// TODO check if the order is ok..
-		
+
 		if (!mAllUnconfirmed)
 			return 1;
-		
-		return mPatters.size() - pO.getPatters().size();
+
+		return size() - pO.size();
+	}
+
+	private int size() {
+		return mCorePatters.size() + mUnconfirmedPatters.size();
 	}
 
 	public void add(Pattern pPattern) {
-		mPatters.add(pPattern);
+		
+		if (pPattern.getType() == PatternType.UNCONFIRMED)
+			mUnconfirmedPatters.add(pPattern);
+		
+		else
+			mCorePatters.add(pPattern);
 	}
 
 	public int calcSharedPatternsPercents(Cluster pCluster) {
@@ -51,9 +65,11 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	public void mergeClusters(Cluster pCluster1, Cluster pCluster2) {
-		mPatters.clear();
-		mPatters.addAll(pCluster1.getPatters());
-		mPatters.addAll(pCluster2.getPatters());
+
+		mCorePatters.clear();
+		mUnconfirmedPatters.clear();
+		mCorePatters.addAll(pCluster1.getCorePatters());
+		mUnconfirmedPatters.addAll(pCluster2.getUnconfirmedPatters());
 	}
 
 	public Word getHookWord() {
@@ -64,24 +80,16 @@ public class Cluster implements WritableComparable<Cluster> {
 		mHookWord = pHookWord;
 	}
 
-	public Vector<Pattern> getPatters() {
-		return mPatters;
-	}
-
-	public void setPatters(Vector<Pattern> pPatters) {
-		mPatters = pPatters;
-	}
-
 	public boolean isAllUnconfirmed() {
 		return mAllUnconfirmed;
 	}
 
-	public void setNotAllUnconformed(){
-		
-		if (mAllUnconfirmed){
-		
+	public void setNotAllUnconformed() {
+
+		if (mAllUnconfirmed) {
+
 			mAllUnconfirmed = false;
-			//TODO dec the num of clusters counter..
+			// TODO dec the num of clusters counter..
 		}
 	}
 
@@ -91,18 +99,64 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	public void mergeWithOtherClusterAndMarkCorePatterns(Cluster pCluster) {
+
+		xxx(pCluster.getCorePatters());
+		xxx(pCluster.getUnconfirmedPatters());
+	}
+
+	protected void xxx(Vector<Pattern> pPatterns) {
 		
-		for (Pattern pattern : pCluster.getPatters()){
+		for (Pattern pattern : pPatterns) {
+
+			int index = mCorePatters.indexOf(pattern);
+
+			if (-1 != index)
+				continue;
 			
-			int index = mPatters.indexOf(pattern);
-			
-			if (-1 == index){
-				mPatters.get(index).setType(PatternType.CORE);
-				setNotAllUnconformed();
+			else{
+				
+				index = mUnconfirmedPatters.indexOf(pattern);
+				
+				if (-1 == index)
+					add(pattern);
+				
+				else{
+					
+					Pattern tmpPattern = mUnconfirmedPatters.remove(index);
+					
+					tmpPattern.setType(PatternType.CORE);
+					
+					mCorePatters.add(tmpPattern);
+				}
 			}
-			
-			else
-				mPatters.add(pattern);
 		}
+	}
+
+	public String getId() {
+		return mId;
+	}
+
+	public void setId(String pId) {
+		mId = pId;
+	}
+
+	public Vector<Pattern> getCorePatters() {
+		return mCorePatters;
+	}
+
+	public void setCorePatters(Vector<Pattern> pCorePatters) {
+		mCorePatters = pCorePatters;
+	}
+
+	public Vector<Pattern> getUnconfirmedPatters() {
+		return mUnconfirmedPatters;
+	}
+
+	public void setUnconfirmedPatters(Vector<Pattern> pUnconfirmedPatters) {
+		mUnconfirmedPatters = pUnconfirmedPatters;
+	}
+
+	public void setAllUnconfirmed(boolean pAllUnconfirmed) {
+		mAllUnconfirmed = pAllUnconfirmed;
 	}
 }
