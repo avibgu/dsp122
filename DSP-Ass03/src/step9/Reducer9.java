@@ -1,45 +1,39 @@
 package step9;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
-import data.Word;
+import data.FeatureVector;
+import data.WordsPair;
 
-public class Reducer9 extends Reducer<Cluster, Cluster, Word, Cluster> {
+public class Reducer9 extends
+		Reducer<WordsPair, Cluster, WordsPair, FeatureVector> {
 
-	private static final int S = 10;
+	protected SortedMap<String, Double> mHitsMap;
+	protected FeatureVector mFeatureVector;
 	
-	protected Set<Cluster> mClusters;
-
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 		
-		mClusters = new HashSet<Cluster>();
+		mHitsMap = new TreeMap<String, Double>();
+		mFeatureVector = new FeatureVector();
 	};
 
-	protected void reduce(Cluster cluster, Iterable<Cluster> clusters,
+	protected void reduce(WordsPair wordsPair, Iterable<Cluster> clusters,
 			Context context) throws IOException, InterruptedException {
-		
-		mClusters.clear();
-		
-		for (Cluster tmpCluster : clusters)
-			mClusters.add(tmpCluster);
 
-		for (Cluster tmpCluster : mClusters){
-			
-			if (null == tmpCluster)
-				continue;
-				
-			if (cluster.calcSharedPatternsPercents(tmpCluster) >= S
-					&& cluster.areShareAllCorePatterns(tmpCluster))
-				cluster.mergeWithOtherClusterAndMarkCorePatterns(tmpCluster);
-		}
+		mHitsMap.clear();
+		mFeatureVector.clear();
 		
-		//TODO: what to write?...
-		context.write(cluster.getHookWord(), cluster);
+		for (Cluster cluster : clusters)
+			mHitsMap.put(cluster.getId(), cluster.clacHits(wordsPair));
+		
+		mFeatureVector.set(mHitsMap);
+		
+		context.write(wordsPair, mFeatureVector);
 	}
 }

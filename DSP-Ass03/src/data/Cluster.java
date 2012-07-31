@@ -126,6 +126,11 @@ public class Cluster implements WritableComparable<Cluster> {
 			}
 		}
 	}
+	
+	public Double clacHits(WordsPair pWordsPair) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public String getId() {
 		return mId;
