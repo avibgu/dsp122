@@ -8,6 +8,7 @@ import data.Cluster;
 
 public class Mapper9 extends Mapper<Cluster, Cluster, Cluster, Cluster> {
 
+	
 	protected void map(Cluster cluster1, Cluster cluster2, Context context)
 			throws IOException, InterruptedException {
 		
