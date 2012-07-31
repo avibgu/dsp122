@@ -1,4 +1,4 @@
-package step8;
+package step9;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -10,17 +10,17 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
-public class Step8 {
+public class Step9 {
 
 	public static void main(String[] args) throws Exception {
 	
 		Configuration conf = new Configuration();
 
-	    Job job = new Job(conf, "step8");
+	    Job job = new Job(conf, "step9");
 	    
-	    job.setJarByClass(Step8.class);
-	    job.setMapperClass(Mapper8.class);
-	    job.setReducerClass(Reducer8.class);
+	    job.setJarByClass(Step9.class);
+	    job.setMapperClass(Mapper9.class);
+	    job.setReducerClass(Reducer9.class);
 	    
 	    job.setMapOutputKeyClass(DoubleWritable.class);
 		job.setMapOutputValueClass(Text.class);
