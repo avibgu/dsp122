@@ -95,11 +95,11 @@ public class Cluster implements WritableComparable<Cluster> {
 	
 	public void mergeWithOtherClusterAndMarkCorePatterns(Cluster pCluster) {
 
-		xxx(pCluster.getCorePatters());
-		xxx(pCluster.getUnconfirmedPatters());
+		mergeAndMark(pCluster.getCorePatters());
+		mergeAndMark(pCluster.getUnconfirmedPatters());
 	}
 
-	protected void xxx(Vector<Pattern> pPatterns) {
+	protected void mergeAndMark(Vector<Pattern> pPatterns) {
 		
 		for (Pattern pattern : pPatterns) {
 
