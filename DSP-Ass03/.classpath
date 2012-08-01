@@ -4,5 +4,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.amazonaws.eclipse.sdk.AWS_JAVA_SDK"/>
 	<classpathentry kind="lib" path="hadoop-0.20.2-core.jar"/>
+	<classpathentry kind="lib" path="weka/weka/weka-src.jar"/>
+	<classpathentry kind="lib" path="weka/weka/lib/java-cup.jar"/>
+	<classpathentry kind="lib" path="weka/weka/lib/JFlex.jar"/>
+	<classpathentry kind="lib" path="weka/weka/weka.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
