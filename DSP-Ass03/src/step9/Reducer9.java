@@ -4,21 +4,21 @@ import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
 import data.FeatureVector;
 import data.WordsPair;
 
-public class Reducer9 extends
-		Reducer<WordsPair, Cluster, WordsPair, FeatureVector> {
+public class Reducer9 extends Reducer<WordsPair, Cluster, WordsPair, Text> {
 
 	protected SortedMap<String, Double> mHitsMap;
 	protected FeatureVector mFeatureVector;
-	
+
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		
+
 		mHitsMap = new TreeMap<String, Double>();
 		mFeatureVector = new FeatureVector();
 	};
@@ -28,12 +28,13 @@ public class Reducer9 extends
 
 		mHitsMap.clear();
 		mFeatureVector.clear();
-		
+
 		for (Cluster cluster : clusters)
 			mHitsMap.put(cluster.getId(), cluster.clacHits(wordsPair));
-		
+
 		mFeatureVector.set(mHitsMap);
-		
-		context.write(wordsPair, mFeatureVector);
+
+		context.write(wordsPair, new Text(mFeatureVector.getAsARFFData() + ","
+				+ wordsPair.getPositivity()));
 	}
 }

@@ -10,10 +10,12 @@ public class WordsPair implements WritableComparable<WordsPair>{
 
 	protected String mW1;
 	protected String mW2;
+	protected String mPositivity;
 	
-	public WordsPair(String pW1, String pW2) {
+	public WordsPair(String pW1, String pW2, String pPositivity) {
 		mW1 = pW1;
 		mW2 = pW2;
+		mPositivity = pPositivity;
 	}
 
 	@Override
@@ -48,5 +50,9 @@ public class WordsPair implements WritableComparable<WordsPair>{
 
 	public void setW2(String pW2) {
 		mW2 = pW2;
+	}
+
+	public String getPositivity() {
+		return mPositivity;
 	}
 }
