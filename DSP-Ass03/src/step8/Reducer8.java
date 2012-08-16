@@ -38,8 +38,7 @@ public class Reducer8 extends Reducer<Cluster, Cluster, Word, Cluster> {
 					&& cluster.areShareAllCorePatterns(tmpCluster))
 				cluster.mergeWithOtherClusterAndMarkCorePatterns(tmpCluster);
 		}
-		
-		//TODO: what to write?...
+
 		context.write(cluster.getHookWord(), cluster);
 	}
 }
