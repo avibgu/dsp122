@@ -10,6 +10,9 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class Cluster implements WritableComparable<Cluster> {
 
+	// TODO change by need
+	protected final double alfa = 0.5;
+
 	protected String mId;
 
 	protected Word mHookWord;
@@ -51,17 +54,28 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	public void add(Pattern pPattern) {
-		
+
 		if (pPattern.getType() == PatternType.UNCONFIRMED)
 			mUnconfirmedPatters.add(pPattern);
-		
+
 		else
 			mCorePatters.add(pPattern);
 	}
 
 	public int calcSharedPatternsPercents(Cluster pCluster) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		Vector<Pattern> allPatterns = new Vector<Pattern>();
+		allPatterns.addAll(pCluster.getCorePatters());
+		allPatterns.addAll(pCluster.getUnconfirmedPatters());
+
+		int sharedPatterns = 0;
+
+		for (Pattern pattern : allPatterns)
+			if (mCorePatters.contains(pattern)
+					|| mUnconfirmedPatters.contains(pattern))
+				sharedPatterns++;
+
+		return (sharedPatterns / this.size()) * 100;
 	}
 
 	public void mergeClusters(Cluster pCluster1, Cluster pCluster2) {
@@ -89,10 +103,10 @@ public class Cluster implements WritableComparable<Cluster> {
 		if (mAllUnconfirmed) {
 
 			mAllUnconfirmed = false;
-			// TODO dec the num of clusters counter..
+			// TODO dec the num of clusters counter.. ???? Who calls it?
 		}
 	}
-	
+
 	public void mergeWithOtherClusterAndMarkCorePatterns(Cluster pCluster) {
 
 		mergeAndMark(pCluster.getCorePatters());
@@ -100,36 +114,61 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	protected void mergeAndMark(Vector<Pattern> pPatterns) {
-		
+
 		for (Pattern pattern : pPatterns) {
 
 			int index = mCorePatters.indexOf(pattern);
 
 			if (-1 != index)
 				continue;
-			
-			else{
-				
+
+			else {
+
 				index = mUnconfirmedPatters.indexOf(pattern);
-				
+
 				if (-1 == index)
 					add(pattern);
-				
-				else{
-					
+
+				else {
+
 					Pattern tmpPattern = mUnconfirmedPatters.remove(index);
-					
+
 					tmpPattern.setType(PatternType.CORE);
-					
+
 					mCorePatters.add(tmpPattern);
 				}
 			}
 		}
 	}
-	
+
+	/*
+	 * n - core patterns size m - unconfirmed patterns size alfa - between
+	 * (0..1), is a parameter that lets us modify the relative weight of core
+	 * and unconfirmed patterns. 
+	 * HITS(C, (w1,w2)) = |{p; (w1,w2) appears in p
+	 * belongs to Pcore}| /n + alfa × |{p; (w1,w2) appears in p belongs to
+	 * Punconf }| /m.
+	 */
+
 	public Double clacHits(WordsPair pWordsPair) {
-		// TODO Auto-generated method stub
-		return null;
+
+		int appearsInPcore = 0;
+		int appearsInPubconf = 0;
+
+		for (Pattern pattern : mCorePatters)
+			if (pattern.isWordContained(pWordsPair.mW1)
+					&& pattern.isWordContained(pWordsPair.mW2))
+				appearsInPcore++;
+
+		for (Pattern pattern : mUnconfirmedPatters)
+			if (pattern.isWordContained(pWordsPair.mW1)
+					&& pattern.isWordContained(pWordsPair.mW2))
+				appearsInPubconf++;
+
+		double hit = (appearsInPcore / mCorePatters.size()) +
+						alfa * (appearsInPubconf / mUnconfirmedPatters.size());
+
+		return hit;
 	}
 
 	public String getId() {
@@ -138,6 +177,16 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	public void setId(String pId) {
 		mId = pId;
+	}
+
+	public Vector<Pattern> getAllPatterns() {
+
+		Vector<Pattern> allPatterns = new Vector<Pattern>();
+		allPatterns.addAll(mCorePatters);
+		allPatterns.addAll(mUnconfirmedPatters);
+
+		return allPatterns;
+
 	}
 
 	public Vector<Pattern> getCorePatters() {
@@ -161,14 +210,17 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	public boolean areShareAllCorePatterns(Cluster pOtherCluster) {
-		
-		if (pOtherCluster.size() != size())
+
+		if (pOtherCluster.getCorePatters().size() != this.mCorePatters.size()) // originally:
+																				// pOtherCluster.size()
+																				// !=
+																				// size()
 			return false;
-		
+
 		for (Pattern pattern : pOtherCluster.getCorePatters())
 			if (!mCorePatters.contains(pattern))
 				return false;
-		
+
 		return true;
 	}
 }

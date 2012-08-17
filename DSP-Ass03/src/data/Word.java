@@ -41,8 +41,11 @@ public class Word implements WritableComparable<Word> {
 	}
 
 	@Override
-	public int compareTo(Word o) {
-		// TODO Auto-generated method stub
+	public int compareTo(Word other) {
+		// check implementation
+		if(this.mWord == other.getWord())
+			return 1;
+		
 		return 0;
 	}
 

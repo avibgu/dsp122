@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import org.apache.hadoop.io.WritableComparable;
 
+	// Consider deleting that class - no one uses it
+
 public class HookCorpus implements WritableComparable<HookCorpus> {
 
 	protected ArrayList<Pattern> mCorpus;

@@ -90,6 +90,20 @@ public class Pattern implements WritableComparable<Pattern> {
 			return 0;
 	}
 
+	public boolean isWordContained(String strWord){
+		
+		Word word = new Word(strWord);
+		
+		if(mPrefix.compareTo(word) == 1 || mCW1.compareTo(word) == 1 ||
+		   mInfix.compareTo(word) == 1 || mCW2.compareTo(word) == 1 ||
+		   mPostfix.compareTo(word) == 1)
+			
+			return true;
+		
+		else return false;
+		
+	}
+	
 	public Word getPrefix() {
 		return mPrefix;
 	}
