@@ -31,8 +31,11 @@ public class WordsPair implements WritableComparable<WordsPair>{
 	}
 
 	@Override
-	public int compareTo(WordsPair pO) {
-		// TODO Auto-generated method stub
+	public int compareTo(WordsPair pOther) {
+		
+		if(mW1 == pOther.getW1() && mW2 == pOther.getW2() && mPositivity == pOther.getPositivity())
+			return 1;
+		
 		return 0;
 	}
 
