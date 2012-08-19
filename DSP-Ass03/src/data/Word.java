@@ -42,11 +42,7 @@ public class Word implements WritableComparable<Word> {
 
 	@Override
 	public int compareTo(Word other) {
-		// check implementation
-		if(this.mWord == other.getWord())
-			return 1;
-		
-		return 0;
+		return this.mWord.compareTo(other.getWord());
 	}
 
 	public Text getWord() {
