@@ -39,6 +39,7 @@ public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
 		
 		Cluster[] clusters = (Cluster[]) mTargetToPatternsMap.values().toArray();
 		
+    //TODO: don't use new
 		Cluster tmpCluster = new Cluster();
 		
 		for (int i = 0; i < clusters.length; i++){
