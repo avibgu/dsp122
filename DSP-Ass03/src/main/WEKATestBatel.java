@@ -1,7 +1,9 @@
 package main;
 
-import java.io.FileReader;
+import java.util.Vector;
 
+import data.WordsPair;
+import utilities.Reader;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -9,7 +11,6 @@ import weka.core.Instances;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.trees.J48;
 
 public class WEKATestBatel {
 
@@ -19,6 +20,14 @@ public class WEKATestBatel {
 	 */
 	public static void main(String[] args) throws Exception {
 		
+		Reader reader = new Reader("try");
+		
+		Vector<WordsPair> wordPairs = reader.readWordPairs();
+		
+		for(WordsPair wp : wordPairs)
+			System.out.println("e1= " + wp.getW1() + " e2 = " + wp.getW2() + " positivity= " + wp.getPositivity());
+		
+	/*
 		FastVector fvNominalVal = new FastVector(3);
 		fvNominalVal.addElement("1");
 		fvNominalVal.addElement("2");
@@ -28,7 +37,7 @@ public class WEKATestBatel {
 		FastVector fvClassVal = new FastVector(2);
 		 fvClassVal.addElement("positive");
 		 fvClassVal.addElement("negative");
-		Attribute ClassAttribute = new Attribute("the calass", fvClassVal);
+		Attribute ClassAttribute = new Attribute("the class", fvClassVal);
 		
 		 FastVector fvWekaAttributes = new FastVector(2);
 		 fvWekaAttributes.addElement(Attribute1);
@@ -49,55 +58,26 @@ public class WEKATestBatel {
 		 Classifier cModel = (Classifier)new NaiveBayes();
 		 cModel.buildClassifier(isTrainingSet);
 		 
+		// Create an empty training set
+		 Instances isTestingSet = new Instances("Rel", fvWekaAttributes, 1);           
+		 // Set class index
+		 isTestingSet.setClassIndex(1);
+		 
+		 Instance iTestExample = new Instance(2);
+		 iTestExample.setValue((Attribute)fvWekaAttributes.elementAt(0), 0.0);
+		 iTestExample.setValue((Attribute)fvWekaAttributes.elementAt(1), "negative");
+		// add the instance
+		 isTestingSet.add(iTestExample);
+		 
 		// Test the model
 		 Evaluation eTest = new Evaluation(isTrainingSet);
-		 eTest.evaluateModel(cModel, isTrainingSet);
+		 eTest.evaluateModel(cModel, isTestingSet);
 		 
 		// Print the result a la Weka explorer:
 		 String strSummary = eTest.toSummaryString();
 		 System.out.println(strSummary);
-		
-		 /*
-//		Instances train = new Instances(new FileReader("train/relation-1-train.txt")); // from somewhere
-//		Instances test = new Instances(new FileReader("test/relation-1-test.txt")); // from somewhere
-//		
-//		// train classifier
-//		Classifier cls = new J48();
-//		cls.buildClassifier(train);
-//		
-//		// evaluate classifier and print some statistics
-//		Evaluation eval = new Evaluation(train);
-//		eval.evaluateModel(cls, test);
-//		System.out.println(eval.toSummaryString("\nResults\n======\n", false));
-
-		
-		 FastVector      atts;
-	     Instances       data;
-	     double[]        vals;
-	 
-	     // 1. set up attributes
-	     atts = new FastVector();
-
-	     atts.addElement(new Attribute("att3", (FastVector) null));
-
-	     // 2. create Instances object
-	     data = new Instances("MyRelation", atts, 0);
-	 
-	     // 3. fill with data
-	     
-	     // first instance
-	     vals = new double[data.numAttributes()];
-	     vals[0] = data.attribute(0).addStringValue("This is a string!");
-	     data.add(new Instance(1.0, vals));
-	 
-	     // second instance
-	     vals = new double[data.numAttributes()];  // important: needs NEW array!
-	     vals[0] = data.attribute(0).addStringValue("And another one!");
-	     data.add(new Instance(1.0, vals));
-	 
-	     // 4. output data
-	     System.out.println(data);
-	     
-	     */
+		 
+		 */
+	
 	}
 }
