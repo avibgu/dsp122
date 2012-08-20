@@ -63,9 +63,8 @@ public class WordContext implements WritableComparable<WordContext> {
 	}
 
 	@Override
-	public int compareTo(WordContext pO) {
-		// TODO can we keep it?..
-		return -1;
+	public int compareTo(WordContext other) {
+		return mContext[0].compareTo(other.getWordAt(0));
 	}
 
 	public void set(String word1, String word2, String word3, String word4, String word5){
