@@ -16,17 +16,9 @@ import com.amazonaws.services.elasticmapreduce.model.RunJobFlowResult;
 import com.amazonaws.services.elasticmapreduce.model.StepConfig;
 import com.amazonaws.services.elasticmapreduce.util.StepFactory;
 
-public class Main {
+import data.Global;
 
-	private static final String KEY_PAIR = "AviKeyPair";
-	private static final String BUCKET_NAME = "dsp122-avi-batel-ass03";
-	private static final Integer NUM_OF_INSTANCES = 20;
-	// private static final String CORPUS_LOCATION =
-	// "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/5gram/data";
-	// private static final String CORPUS_LOCATION =
-	// "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-us-all/5gram/data";
-	private static final String CORPUS_LOCATION = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data";
-	private static final String HADOOP_VERSION = "0.20";
+public class Main {
 
 	/**
 	 * @param args
@@ -62,24 +54,24 @@ public class Main {
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 		HadoopJarStepConfig hadoopJarStep1 = new HadoopJarStepConfig().withJar(
-				"s3n://" + BUCKET_NAME + "/step1.jar").withMainClass(
-				"step1.Step1").withArgs(CORPUS_LOCATION,
-				"s3n://" + BUCKET_NAME + "/output1/");
+				"s3n://" + Global.BUCKET_NAME + "/step1.jar").withMainClass(
+				"step1.Step1").withArgs(Global.CORPUS_LOCATION,
+				"s3n://" + Global.BUCKET_NAME + "/output1/");
 
 		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig().withJar(
-				"s3n://" + BUCKET_NAME + "/step2.jar").withMainClass(
+				"s3n://" + Global.BUCKET_NAME + "/step2.jar").withMainClass(
 				"step2.Step2").withArgs("/output1/",
-				"s3n://" + BUCKET_NAME + "/output2/");
+				"s3n://" + Global.BUCKET_NAME + "/output2/");
 
 		HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig().withJar(
-				"s3n://" + BUCKET_NAME + "/step3.jar").withMainClass(
-				"step3.Step3").withArgs("s3n://" + BUCKET_NAME + "/output2/",
-				"s3n://" + BUCKET_NAME + "/output3/");
+				"s3n://" + Global.BUCKET_NAME + "/step3.jar").withMainClass(
+				"step3.Step3").withArgs("s3n://" + Global.BUCKET_NAME + "/output2/",
+				"s3n://" + Global.BUCKET_NAME + "/output3/");
 
 		HadoopJarStepConfig hadoopJarStep4 = new HadoopJarStepConfig().withJar(
-				"s3n://" + BUCKET_NAME + "/step4.jar").withMainClass(
-				"step4.Step4").withArgs("s3n://" + BUCKET_NAME + "/output3/",
-				"s3n://" + BUCKET_NAME + "/output4/", K);
+				"s3n://" + Global.BUCKET_NAME + "/step4.jar").withMainClass(
+				"step4.Step4").withArgs("s3n://" + Global.BUCKET_NAME + "/output3/",
+				"s3n://" + Global.BUCKET_NAME + "/output4/", K);
 
 		StepConfig step1Config = new StepConfig().withName("step1")
 				.withHadoopJarStep(hadoopJarStep1).withActionOnFailure(
@@ -98,17 +90,17 @@ public class Main {
 						"TERMINATE_JOB_FLOW");
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
-				.withInstanceCount(NUM_OF_INSTANCES).withMasterInstanceType(
+				.withInstanceCount(Global.NUM_OF_INSTANCES).withMasterInstanceType(
 						InstanceType.M1Small.toString()).withSlaveInstanceType(
 						InstanceType.M1Small.toString()).withHadoopVersion(
-						HADOOP_VERSION).withEc2KeyName(KEY_PAIR)
+								Global.HADOOP_VERSION).withEc2KeyName(Global.KEY_PAIR)
 				.withKeepJobFlowAliveWhenNoSteps(false).withPlacement(
 						new PlacementType());
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest().withName(
 				jobName).withInstances(instances).withSteps(debugConfig,
 				step1Config, step2Config, step3Config, step4Config).withLogUri(
-				"s3n://" + BUCKET_NAME + "/logs/");
+				"s3n://" + Global.BUCKET_NAME + "/logs/");
 
 		RunJobFlowResult runJobFlowResult = mapReduce
 				.runJobFlow(runFlowRequest);
