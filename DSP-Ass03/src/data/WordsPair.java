@@ -18,6 +18,12 @@ public class WordsPair implements WritableComparable<WordsPair>{
 		mPositivity = pPositivity;
 	}
 
+	public void revertWords() {
+		String tmp = mW2;
+		mW2 = mW1;
+		mW1 = tmp;
+	}
+	
 	@Override
 	public void readFields(DataInput pArg0) throws IOException {
 		// TODO Auto-generated method stub
@@ -58,4 +64,9 @@ public class WordsPair implements WritableComparable<WordsPair>{
 	public String getPositivity() {
 		return mPositivity;
 	}
+
+	public void setPositivity(String pPositivity) {
+		mPositivity = pPositivity;
+	}
+
 }

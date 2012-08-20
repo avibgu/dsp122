@@ -29,3 +29,5 @@ public class Mapper9 extends Mapper<Word, Cluster, WordsPair, Cluster> {
 			context.write(wordPair, cluster);
 	}
 }
+
+
