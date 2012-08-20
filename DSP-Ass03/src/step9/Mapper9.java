@@ -1,10 +1,11 @@
 package step9;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Vector;
 
 import org.apache.hadoop.mapreduce.Mapper;
+
+import utilities.Reader;
 
 import data.Cluster;
 import data.Word;
@@ -12,14 +13,19 @@ import data.WordsPair;
 
 public class Mapper9 extends Mapper<Word, Cluster, WordsPair, Cluster> {
 
-	protected Set<WordsPair> mTrainingPairs;
+	protected Vector<WordsPair> mTrainingPairs;
 	
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 		
-		mTrainingPairs = new HashSet<WordsPair>();
+		Reader reader = new Reader("try");
 		
-		// TODO: load training pairs..
+		try {
+			mTrainingPairs = reader.readWordPairs();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	};
 
 	protected void map(Word word, Cluster cluster, Context context)
