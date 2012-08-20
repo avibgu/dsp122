@@ -1,5 +1,6 @@
 package main;
 
+import java.io.DataInput;
 import java.io.FileReader;
 
 import data.WordType;
@@ -21,8 +22,6 @@ public class WEKATestAvi {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-
-		System.out.println(WordType.UNKNOWN);
 
 //		 test();
 

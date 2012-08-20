@@ -29,27 +29,34 @@ public class Word implements WritableComparable<Word> {
 	@Override
 	public void readFields(DataInput in) throws IOException {
 
-		String[] splitted = in.readUTF().split("\t");
+		int wordLength = in.readInt();
 
-		mWord = splitted[0];
-		mCount = Integer.valueOf(splitted[1]);
+		for (int i = 0; i < wordLength; i++)
+			mWord += in.readChar();
 
-		if (splitted[2].equals("UNKNOWN"))
+		mCount = in.readInt();
+
+		String type = "" + in.readChar() + in.readChar();
+
+		if (type.equals("UN"))
 			mType = WordType.UNKNOWN;
 
-		else if (splitted[2].equals("HOOK"))
+		else if (type.equals("HO"))
 			mType = WordType.HOOK;
 
-		else if (splitted[2].equals("CW"))
+		else if (type.equals("CW"))
 			mType = WordType.CW;
 
-		else if (splitted[2].equals("HFW"))
+		else if (type.equals("HF"))
 			mType = WordType.HFW;
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		out.writeUTF(mWord + "\t" + mCount + "\t" + mType);
+		out.writeInt(mWord.length());
+		out.writeChars(mWord);
+		out.writeInt(mCount);
+		out.writeChars(mType.toString().substring(0, 1));
 	}
 
 	@Override
