@@ -27,12 +27,29 @@ public class WordContext implements WritableComparable<WordContext> {
 	@Override
 	public void readFields(DataInput in) throws IOException {
 
+		// TODO: DEBUG
+		System.out.println("Context Start");
+		System.out.flush();
+		
 		for (int i = 0; i < Global.CONTEXT_LENGTH; i++){
 			mContext[i].readFields(in);
+			
+			// TODO: DEBUG
+			System.out.println(mContext[i]);
+			System.out.flush();
 		}
 
 		mNumOfOccurrences = in.readInt();
+		
+		// TODO: DEBUG
+		System.out.println(mNumOfOccurrences);
+		System.out.flush();
+		
 		mHookTargetCount = in.readInt();
+		
+		// TODO: DEBUG
+		System.out.println(mHookTargetCount);
+		System.out.flush();
 	}
 
 	@Override
@@ -48,7 +65,7 @@ public class WordContext implements WritableComparable<WordContext> {
 	@Override
 	public int compareTo(WordContext pO) {
 		// TODO can we keep it?..
-		return 0;
+		return -1;
 	}
 
 	public void set(String word1, String word2, String word3, String word4, String word5){
