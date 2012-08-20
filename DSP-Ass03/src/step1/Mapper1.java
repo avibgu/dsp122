@@ -52,11 +52,11 @@ public class Mapper1 extends Mapper<LongWritable, Text, Word, WordContext> {
 
 	private String cleanWord(String word) {
 
-		if (word.startsWith("\""))
-			word = word.substring(1);
-
-		if (word.endsWith("\""))
-			word = word.substring(0, word.length() - 1);
+//		if (word.startsWith("\""))
+//			word = word.substring(1);
+//
+//		if (word.endsWith("\""))
+//			word = word.substring(0, word.length() - 1);
 
 		return word;
 	}
