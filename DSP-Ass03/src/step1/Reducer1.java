@@ -22,20 +22,12 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
-		// TODO: DEBUG
-		System.out.println("REDUCER-1-setup");
-		System.out.flush();
-		
 		wordContextsList = new ArrayList<WordContext>();
 		mTargetsMap = new HashMap<Word, Integer>();
 	}
 
 	protected void reduce(Word word, Iterable<WordContext> wordContexts,
 			Context context) throws IOException, InterruptedException {
-
-		// TODO: Debug
-		System.out.println("REDUCER-1-1: " + word);
-		System.out.flush();
 		
 		wordContextsList.clear();
 
@@ -50,11 +42,7 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		}
 
 		word.setCount(sum);
-		
-		// TODO: Debug
-		System.out.println("REDUCER-1-2: " + word);
-		System.out.flush();
-		
+
 		// we count every word
 		context.getCounter("group", "totalCounter").increment(sum);
 
@@ -100,10 +88,6 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		// we write just HFW, CW or Hook words
 		for (WordContext wordContext : wordContextsList)
 			context.write(word, wordContext);
-		
-		// TODO: Debug
-		System.out.println("REDUCER-1-3: " + word);
-		System.out.flush();
 	}
 
 	private void incTargetCounter(Word target) {

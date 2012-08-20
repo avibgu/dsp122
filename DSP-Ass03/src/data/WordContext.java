@@ -27,29 +27,11 @@ public class WordContext implements WritableComparable<WordContext> {
 	@Override
 	public void readFields(DataInput in) throws IOException {
 
-		// TODO: DEBUG
-		System.out.println("Context Start");
-		System.out.flush();
-		
-		for (int i = 0; i < Global.CONTEXT_LENGTH; i++){
+		for (int i = 0; i < Global.CONTEXT_LENGTH; i++)
 			mContext[i].readFields(in);
-			
-			// TODO: DEBUG
-			System.out.println(mContext[i]);
-			System.out.flush();
-		}
 
-		mNumOfOccurrences = in.readInt();
-		
-		// TODO: DEBUG
-		System.out.println(mNumOfOccurrences);
-		System.out.flush();
-		
+		mNumOfOccurrences = in.readInt();		
 		mHookTargetCount = in.readInt();
-		
-		// TODO: DEBUG
-		System.out.println(mHookTargetCount);
-		System.out.flush();
 	}
 
 	@Override
