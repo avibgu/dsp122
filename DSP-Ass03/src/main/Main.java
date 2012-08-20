@@ -92,7 +92,7 @@ public class Main {
 						InstanceType.M1Small.toString()).withSlaveInstanceType(
 						InstanceType.M1Small.toString()).withHadoopVersion(
 								Global.HADOOP_VERSION).withEc2KeyName(Global.KEY_PAIR)
-				.withKeepJobFlowAliveWhenNoSteps(false).withPlacement(
+				.withKeepJobFlowAliveWhenNoSteps(true).withPlacement(
 						new PlacementType());
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest().withName(
