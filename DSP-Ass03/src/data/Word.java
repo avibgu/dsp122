@@ -29,34 +29,49 @@ public class Word implements WritableComparable<Word> {
 	@Override
 	public void readFields(DataInput in) throws IOException {
 
-		int wordLength = in.readInt();
-
-		for (int i = 0; i < wordLength; i++)
-			mWord += in.readChar();
-
+		mWord = in.readUTF();
+		
 		mCount = in.readInt();
-
-		String type = "" + in.readChar() + in.readChar();
-
-		if (type.equals("UN"))
+		
+		int type = in.readInt();
+		
+		switch (type){
+		
+		case 0:
 			mType = WordType.UNKNOWN;
-
-		else if (type.equals("HO"))
+			break;
+			
+		case 1:
 			mType = WordType.HOOK;
-
-		else if (type.equals("CW"))
+			break;
+			
+		case 2:
 			mType = WordType.CW;
-
-		else if (type.equals("HF"))
+			break;
+			
+		case 3:
 			mType = WordType.HFW;
+			break;
+		}
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		out.writeInt(mWord.length());
-		out.writeChars(mWord);
+
+		out.writeUTF(mWord);
 		out.writeInt(mCount);
-		out.writeChars(mType.toString().substring(0, 1));
+		
+		if (mType == WordType.UNKNOWN)
+			out.writeInt(0);
+
+		else if (mType == WordType.HOOK)
+			out.writeInt(1);
+
+		else if (mType == WordType.CW)
+			out.writeInt(2);
+
+		else if (mType == WordType.HFW)
+			out.writeInt(3);
 	}
 
 	@Override
@@ -90,7 +105,7 @@ public class Word implements WritableComparable<Word> {
 
 	@Override
 	public String toString() {
-		return mWord.toString() + "\t" + mCount;
+		return mWord + "\t" + mCount +"\t" + mType;
 	}
 
 	@Override

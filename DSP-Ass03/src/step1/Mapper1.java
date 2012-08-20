@@ -38,13 +38,26 @@ public class Mapper1 extends Mapper<LongWritable, Text, Word, WordContext> {
 		if (splitted.length != 5)
 			return;
 
-		mContext.set(splitted[0], splitted[1], splitted[2], splitted[3], splitted[4]);
+		mContext.set(cleanWord(splitted[0]), cleanWord(splitted[1]),
+				cleanWord(splitted[2]), cleanWord(splitted[3]),
+				cleanWord(splitted[4]));
 		mContext.setNumOfOccurrences(mCount);
 
-		for (int i = 0; i < 5; i++){
+		for (int i = 0; i < 5; i++) {
 
 			mWord.setWord(splitted[i]);
 			context.write(mWord, mContext);
 		}
+	}
+
+	private String cleanWord(String word) {
+
+		if (word.startsWith("\""))
+			word = word.substring(1);
+
+		if (word.endsWith("\""))
+			word = word.substring(0, word.length() - 1);
+
+		return word;
 	}
 }
