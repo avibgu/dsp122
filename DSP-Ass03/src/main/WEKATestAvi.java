@@ -2,6 +2,8 @@ package main;
 
 import java.io.FileReader;
 
+import data.WordType;
+
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -20,16 +22,18 @@ public class WEKATestAvi {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		// test();
+		System.out.println(WordType.UNKNOWN);
 
-		fileCreator();
+//		 test();
+
+//		fileCreator();
 	}
 
 	protected static void test() throws Exception {
-		Instances train = new DataSource("/train/relation-1-train.txt")
+		Instances train = new DataSource("train/relation-1-train.txt")
 				.getDataSet();
 
-		Instances test = new DataSource("/test/relation-1-test.txt")
+		Instances test = new DataSource("test/relation-1-test.txt")
 				.getDataSet();
 
 		if (train.classIndex() == -1)
