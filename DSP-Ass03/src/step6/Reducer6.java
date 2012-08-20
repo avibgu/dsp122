@@ -5,11 +5,10 @@ import java.io.IOException;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
+import data.Global;
 import data.Word;
 
 public class Reducer6 extends Reducer<Cluster, Word, Word, Cluster> {
-
-	private static final int S = 10;
 
 	protected Cluster mCluster;
 
@@ -29,7 +28,7 @@ public class Reducer6 extends Reducer<Cluster, Word, Word, Cluster> {
 		if (mCluster.getHookWord().equals(cluster.getHookWord()))
 			return;
 
-		if (mCluster.calcSharedPatternsPercents(cluster) >= S
+		if (mCluster.calcSharedPatternsPercents(cluster) >= Global.S
 				&& mCluster.areShareAllCorePatterns(cluster))
 			mCluster.mergeWithOtherClusterAndMarkCorePatterns(cluster);
 		

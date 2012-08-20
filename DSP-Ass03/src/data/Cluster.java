@@ -10,9 +10,6 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class Cluster implements WritableComparable<Cluster> {
 
-	// TODO change by need
-	protected final double alfa = 0.5;
-
 	protected String mId;
 
 	protected Word mHookWord;
@@ -166,7 +163,7 @@ public class Cluster implements WritableComparable<Cluster> {
 				appearsInPubconf++;
 
 		double hit = (appearsInPcore / mCorePatters.size()) +
-						alfa * (appearsInPubconf / mUnconfirmedPatters.size());
+						Global.alfa * (appearsInPubconf / mUnconfirmedPatters.size());
 
 		return hit;
 	}

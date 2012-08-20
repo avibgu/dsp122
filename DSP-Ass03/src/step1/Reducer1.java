@@ -8,17 +8,12 @@ import java.util.Map;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
+import data.Global;
 import data.Word;
 import data.WordContext;
 import data.WordType;
 
 public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
-
-	protected static final int FH = 15;
-	protected static final int FB = 5;
-	protected static final int FC = 10;
-
-	private static final long N = 100;
 
 	protected List<WordContext> wordContextsList;
 
@@ -51,15 +46,15 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		// we count every word
 		context.getCounter("group", "totalCounter").increment(sum);
 
-		if (sum > FH)
+		if (sum > Global.FH)
 			word.setType(WordType.HFW);
 
-		else if (counter < N && sum < FC && sum > FB) {
+		else if (counter < Global.N && sum < Global.FC && sum > Global.FB) {
 			context.getCounter("group", "counter").increment(1);
 			word.setType(WordType.HOOK);
 		}
 
-		else if (sum < FC)
+		else if (sum < Global.FC)
 			word.setType(WordType.CW);
 
 		else

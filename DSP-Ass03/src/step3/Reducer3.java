@@ -6,12 +6,12 @@ import java.util.TreeSet;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
+import data.Global;
 import data.Pattern;
 import data.Word;
 
 public class Reducer3 extends Reducer<Word, Pattern, Word, Pattern> {
 
-	private static final int L = 10;
 
 	protected Set<Pattern> sortedPatterns;
 
@@ -29,7 +29,7 @@ public class Reducer3 extends Reducer<Word, Pattern, Word, Pattern> {
 		for (Pattern pattern : patterns)
 			sortedPatterns.add(pattern);
 
-		int filterIndex = sortedPatterns.size() * L / 100;
+		int filterIndex = sortedPatterns.size() * Global.L / 100;
 		
 		int i = -1;
 		

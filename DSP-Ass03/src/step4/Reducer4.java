@@ -7,13 +7,12 @@ import java.util.Map;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
+import data.Global;
 import data.Pattern;
 import data.Word;
 
 public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
 
-	private static final int S = 10;
-	
 	protected Map<Word, Cluster> mTargetToPatternsMap;
 
 	protected void setup(Context context) throws IOException,
@@ -48,7 +47,7 @@ public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
 			
 			for (int j = i + 1; j < clusters.length; j++){
 				
-				if (clusters[i].calcSharedPatternsPercents(clusters[j]) > S){
+				if (clusters[i].calcSharedPatternsPercents(clusters[j]) > Global.S){
 					
 					tmpCluster.mergeClusters(clusters[i],clusters[j]);
 					context.write(hookWord, tmpCluster);
