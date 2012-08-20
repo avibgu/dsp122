@@ -27,7 +27,7 @@ public class WEKATestBatel {
 		for(WordsPair wp : wordPairs)
 			System.out.println("e1= " + wp.getW1() + " e2 = " + wp.getW2() + " positivity= " + wp.getPositivity());
 		
-	/*
+	
 		FastVector fvNominalVal = new FastVector(3);
 		fvNominalVal.addElement("1");
 		fvNominalVal.addElement("2");
@@ -77,7 +77,5 @@ public class WEKATestBatel {
 		 String strSummary = eTest.toSummaryString();
 		 System.out.println(strSummary);
 		 
-		 */
-	
 	}
 }
