@@ -20,7 +20,7 @@ public class Pattern implements WritableComparable<Pattern> {
 	protected Integer mHookTargetCount;
 
 	protected Double mPMI;
-	
+
 	protected PatternType mType;
 
 	public Pattern() {
@@ -61,8 +61,8 @@ public class Pattern implements WritableComparable<Pattern> {
 
 	public void calcPMI(long pTotal) {
 		mPMI = Math.log(mHookTargetCount) + Math.log(pTotal)
-				- Math.log(mHook.getCount().get())
-				- Math.log(mTarget.getCount().get());
+				- Math.log(mHook.getCount())
+				- Math.log(mTarget.getCount());
 	}
 
 	@Override
@@ -82,28 +82,28 @@ public class Pattern implements WritableComparable<Pattern> {
 
 		if (mPMI < o.getPMI())
 			return -1;
-		
+
 		else if (mPMI > o.getPMI())
 			return 1;
-		
+
 		else
 			return 0;
 	}
 
 	public boolean isWordContained(String strWord){
-		
+
 		Word word = new Word(strWord);
-		
+
 		if(mPrefix.compareTo(word) == 1 || mCW1.compareTo(word) == 1 ||
 		   mInfix.compareTo(word) == 1 || mCW2.compareTo(word) == 1 ||
 		   mPostfix.compareTo(word) == 1)
-			
+
 			return true;
-		
+
 		else return false;
-		
+
 	}
-	
+
 	public Word getPrefix() {
 		return mPrefix;
 	}
@@ -209,7 +209,7 @@ public class Pattern implements WritableComparable<Pattern> {
 		mHookTargetCount = pHookTargetCount;
 
 		mPMI = 0.0;
-		
+
 		mType = PatternType.UNCONFIRMED;
 	}
 
