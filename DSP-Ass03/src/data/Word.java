@@ -116,4 +116,9 @@ public class Word implements WritableComparable<Word> {
 
 		return this.compareTo((Word) pObj) == 0;
 	}
+	
+	@Override
+	public int hashCode() {
+		return mWord.hashCode();
+	}
 }

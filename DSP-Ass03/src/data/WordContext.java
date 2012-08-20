@@ -66,6 +66,20 @@ public class WordContext implements WritableComparable<WordContext> {
 	public int compareTo(WordContext other) {
 		return mContext[0].compareTo(other.getWordAt(0));
 	}
+	
+	@Override
+	public boolean equals(Object pObj) {
+
+		if (!(pObj instanceof WordContext))
+			return false;
+
+		return this.compareTo((WordContext) pObj) == 0;
+	}
+	
+	@Override
+	public int hashCode() {
+		return mContext[0].hashCode();
+	}
 
 	public void set(String word1, String word2, String word3, String word4, String word5){
 
