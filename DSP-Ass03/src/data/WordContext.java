@@ -9,37 +9,45 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class WordContext implements WritableComparable<WordContext> {
 
-	private static final int CONTEXT_LENGTH = 5;
-
 	protected Word[] mContext;
 	protected int mNumOfOccurrences;
 	protected int mHookTargetCount;
 
 	public WordContext() {
 
-		mContext = new Word[CONTEXT_LENGTH];
+		mContext = new Word[Global.CONTEXT_LENGTH];
 
-		for (int i = 0; i < CONTEXT_LENGTH; i++)
+		for (int i = 0; i < Global.CONTEXT_LENGTH; i++)
 			mContext[i] = new Word();
 
+		mNumOfOccurrences = 0;
 		mHookTargetCount = 0;
 	}
 
 	@Override
-	public void readFields(DataInput pArg0) throws IOException {
-		// TODO Auto-generated method stub
+	public void readFields(DataInput in) throws IOException {
 
+		for (int i = 0; i < Global.CONTEXT_LENGTH; i++){
+			mContext[i].readFields(in);
+		}
+
+		mNumOfOccurrences = in.readInt();
+		mHookTargetCount = in.readInt();
 	}
 
 	@Override
-	public void write(DataOutput pArg0) throws IOException {
-		// TODO Auto-generated method stub
+	public void write(DataOutput out) throws IOException {
 
+		for (Word word : mContext)
+			word.write(out);
+
+		out.writeInt(mNumOfOccurrences);
+		out.writeInt(mHookTargetCount);
 	}
 
 	@Override
 	public int compareTo(WordContext pO) {
-		// TODO Auto-generated method stub
+		// TODO can we keep it?..
 		return 0;
 	}
 
