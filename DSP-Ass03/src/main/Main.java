@@ -47,9 +47,9 @@ public class Main {
 		AmazonElasticMapReduce mapReduce = new AmazonElasticMapReduceClient(
 				credentials);
 
-		StepConfig debugConfig = new StepConfig().withName("debug")
-				.withHadoopJarStep(new StepFactory().newEnableDebuggingStep())
-				.withActionOnFailure("TERMINATE_JOB_FLOW");
+//		StepConfig debugConfig = new StepConfig().withName("debug")
+//				.withHadoopJarStep(new StepFactory().newEnableDebuggingStep())
+//				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 		HadoopJarStepConfig hadoopJarStep1 = new HadoopJarStepConfig().withJar(
 				"s3n://" + Global.BUCKET_NAME + "/step1.jar").withMainClass(
@@ -96,7 +96,8 @@ public class Main {
 						new PlacementType());
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest().withName(
-				jobName).withInstances(instances).withSteps(debugConfig,
+				jobName).withInstances(instances).withSteps(
+//						debugConfig,
 				step1Config
 //				,
 //				step2Config,
