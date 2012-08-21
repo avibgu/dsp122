@@ -25,7 +25,7 @@ public class WEKATestAvi {
 
 //		 test();
 
-//		fileCreator();
+		fileCreator();
 	}
 
 	protected static void test() throws Exception {
