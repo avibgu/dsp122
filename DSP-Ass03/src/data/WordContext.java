@@ -78,10 +78,6 @@ public class WordContext implements WritableComparable<WordContext> {
 				mContext[3].equals(other.getWordAt(3)) &&
 				mContext[4].equals(other.getWordAt(4));
 	}
-	
-	public void setHookTargetCount(int pHookTargetCount) {
-		mHookTargetCount = pHookTargetCount;
-	}
 
 	@Override
 	public int hashCode() {
@@ -104,17 +100,17 @@ public class WordContext implements WritableComparable<WordContext> {
 	public int getNumOfOccurrences() {
 		return mNumOfOccurrences;
 	}
+	
+	public void setHookTargetCount(int pHookTargetCount) {
+		mHookTargetCount = pHookTargetCount;
+	}
+	
+	public int getHookTargetCount() {
+		return mHookTargetCount;
+	}
 
 	public Word getWordAt(int pIndex) {
 		return mContext[pIndex];
-	}
-
-	public void setHookTargetCount(Integer pCount) {
-		mHookTargetCount = pCount;
-	}
-
-	public Integer getHookTargetCount() {
-		return mHookTargetCount;
 	}
 	
 	@Override

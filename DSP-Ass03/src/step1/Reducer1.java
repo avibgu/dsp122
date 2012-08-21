@@ -102,6 +102,8 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		if (null == count)
 			count = 0;
 
+		//TODO: I added 'remove' - test it..
+		mTargetsMap.remove(target);
 		mTargetsMap.put(target, count + 1);
 	}
 }

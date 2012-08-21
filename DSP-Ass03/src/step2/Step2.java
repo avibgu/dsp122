@@ -17,7 +17,13 @@ public class Step2 {
 	public static void main(String[] args) throws Exception {
 	
 		Configuration conf = new Configuration();
-
+		
+		try{
+		
+			conf.setLong("totalCounter", Long.parseLong(args[3]));
+		}
+		catch(Exception e){}
+		
 	    Job job = new Job(conf, "step2");
 	    
 	    job.setJarByClass(Step2.class);
