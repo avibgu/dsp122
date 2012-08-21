@@ -1,7 +1,8 @@
 package step2;
 
 import java.io.IOException;
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -11,12 +12,12 @@ import data.WordContext;
 
 public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 
-	protected Vector<Word> wordsSet;
+	protected Set<Word> wordsSet;
 	protected Pattern mPattern;
 	protected WordContext mWordContext;
 
 	public Reducer2() {
-		wordsSet = new Vector<Word>();
+		wordsSet = new HashSet<Word>();
 		mPattern = new Pattern();
 		mWordContext = new WordContext();
 	}
@@ -24,41 +25,26 @@ public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 	protected void reduce(WordContext wordContext, Iterable<Word> words,
 			Context context) throws IOException, InterruptedException {
 
+		wordsSet.clear();
+
 		mWordContext = wordContext;
 
-		for (Word word : words){
-			
-			// TODO: DEBUG
-			System.out.print(word.getWord() + "\t");
-			System.out.flush();
-			
-			if (!wordsSet.contains(word))
-				wordsSet.add(word);
-		}
-			
+		for (Word word : words) {
 
-		// TODO: DEBUG
-		System.out.println("\nwords:");
-		System.out.flush();
-		for (Word word : wordsSet){
-			System.out.println(word);
-			System.out.flush();
+			try {
+				wordsSet.add((Word) word.clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		// TODO: DEBUG
-		System.out.println("mWordContext:\n" + mWordContext);
-		System.out.flush();
-		
+
 		mPattern.set(getWordAt(0), getWordAt(1), getWordAt(2), getWordAt(3),
 				getWordAt(4), mWordContext.getHookTargetCount());
 
-		// TODO: DEBUG
-		System.out.println("mPattern:\n" + mPattern);
-		System.out.flush();
-					
-		if (mPattern.isLegal()){
-			
-			mPattern.calcPMI(context.getCounter("group", "totalCounter").getValue());
+		if (mPattern.isLegal()) {
+
+			mPattern.calcPMI(context.getCounter("group", "totalCounter")
+					.getValue());
 			context.write(mPattern.getHook(), mPattern);
 		}
 	}

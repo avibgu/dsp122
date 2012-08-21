@@ -2,21 +2,21 @@ package data;
 
 public class Global {
 
-	public static final int FH = 15;
+	public static final int FH = 50;					//	10 - 100
 
-	public static final int FB = 5;
+	public static final int FB = 25;					//	1 - 50
 
-	public static final int FC = 10;
+	public static final int FC = 1000;				//	100 - 5000
 
-	public static final long N = 100;
+	public static final long N = 500;					//	100 - 1000
 
-	public static final int L = 10;
+	public static final int L = 25;					//	1/3 - 1/5
 
-	public static final int S = 10;
+	public static final int S = 66;					//	2/3
 
-	public final static double alfa = 0.5;
+	public final static double alfa = 0.05;			//	0.1 - 0.01
 
-	public static final int CONTEXT_LENGTH = 5;
+	public static final int CONTEXT_LENGTH = 5;		//	5
 
 	// public static final String KEY_PAIR = "AviKeyPair";
 	public static final String KEY_PAIR = "batelKey";

@@ -113,12 +113,22 @@ public class Word implements WritableComparable<Word> {
 
 		if (!(pObj instanceof Word))
 			return false;
-
-		return this.compareTo((Word) pObj) == 0;
+		
+		return this.mWord.equals(((Word)pObj).getWord());
 	}
 	
 	@Override
 	public int hashCode() {
 		return mWord.hashCode();
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		
+		Word word = new Word(mWord, mCount);
+		
+		word.setType(mType);
+		
+		return word;
 	}
 }

@@ -8,7 +8,6 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import data.Word;
 import data.WordContext;
@@ -31,7 +30,7 @@ public class Step1 {
 		job.setOutputValueClass(WordContext.class);
 
 		job.setInputFormatClass(TextInputFormat.class);			//TODO: change it back to SequenceFileInputFormat
-		job.setOutputFormatClass(SequenceFileOutputFormat.class);		//TODO: change it back to SequenceFileOutputFormat
+		job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 		FileInputFormat.addInputPath(job, new Path(args[1]));
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
