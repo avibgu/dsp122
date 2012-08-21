@@ -2,12 +2,17 @@ package step2;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+import data.Pattern;
+import data.Word;
+import data.WordContext;
 
 public class Step2 {
 
@@ -21,14 +26,14 @@ public class Step2 {
 	    job.setMapperClass(Mapper2.class);
 	    job.setReducerClass(Reducer2.class);
 	    
-	    job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(Text.class);
-	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(Text.class);
+	    job.setMapOutputKeyClass(WordContext.class);
+		job.setMapOutputValueClass(Word.class);
+	    job.setOutputKeyClass(Word.class);
+	    job.setOutputValueClass(Pattern.class);
 	    
-	    job.setInputFormatClass(SequenceFileInputFormat.class);
-	    job.setOutputFormatClass(SequenceFileOutputFormat.class);
-	    
+	    job.setInputFormatClass(TextInputFormat.class);			//TODO: change it back to SequenceFileInputFormat
+		job.setOutputFormatClass(TextOutputFormat.class);		//TODO: change it back to SequenceFileOutputFormat
+
 	    FileInputFormat.addInputPath(job, new Path(args[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[2]));
 	    
