@@ -35,12 +35,11 @@ public class Mapper1 extends Mapper<LongWritable, Text, Word, WordContext> {
 
 		splitted = splitted[0].split(" ");
 
-		if (splitted.length != 5)
+		if (!isSentenceLegal(splitted))
 			return;
 
-		mContext.set(cleanWord(splitted[0]), cleanWord(splitted[1]),
-				cleanWord(splitted[2]), cleanWord(splitted[3]),
-				cleanWord(splitted[4]));
+		mContext.set(splitted[0], splitted[1], splitted[2], splitted[3],
+				splitted[4]);
 		mContext.setNumOfOccurrences(mCount);
 
 		for (int i = 0; i < 5; i++) {
@@ -50,13 +49,25 @@ public class Mapper1 extends Mapper<LongWritable, Text, Word, WordContext> {
 		}
 	}
 
+	private boolean isSentenceLegal(String[] splitted) {
+
+		if (splitted.length != 5)
+			return false;
+
+		for (String word : splitted)
+			if (cleanWord(word).length() < 2)
+				return false;
+
+		return true;
+	}
+
 	private String cleanWord(String word) {
 
-//		if (word.startsWith("\""))
-//			word = word.substring(1);
-//
-//		if (word.endsWith("\""))
-//			word = word.substring(0, word.length() - 1);
+		if (word.startsWith("\""))
+			word = word.substring(1);
+
+		if (word.endsWith("\""))
+			word = word.substring(0, word.length() - 1);
 
 		return word;
 	}

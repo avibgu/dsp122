@@ -86,8 +86,13 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		}
 
 		// we write just HFW, CW or Hook words
-		for (WordContext wordContext : wordContextsList)
+		for (WordContext wordContext : wordContextsList){
 			context.write(word, wordContext);
+			
+			// TODO: DEBUG
+			System.out.println("reducer1-wordContext:\n" + wordContext);
+			System.out.flush();
+		}
 	}
 
 	private void incTargetCounter(Word target) {

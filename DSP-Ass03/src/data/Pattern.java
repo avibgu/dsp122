@@ -43,8 +43,8 @@ public class Pattern implements WritableComparable<Pattern> {
 			if (mCW1.getType() == WordType.HOOK
 					&& mCW2.getType() == WordType.CW) {
 
-				setHook(mCW2);
-				setTarget(mCW1);
+				setHook(mCW1);
+				setTarget(mCW2);
 				return true;
 			}
 
@@ -257,5 +257,26 @@ public class Pattern implements WritableComparable<Pattern> {
 	public void set(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
 			Word pPostfix, Integer pHookTargetCount) {
 		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, null, null, pHookTargetCount);
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		stringBuilder.append(mPrefix + "\t");
+		stringBuilder.append(mCW1 + "\t");
+		stringBuilder.append(mInfix + "\t");
+		stringBuilder.append(mCW2 + "\t");
+		stringBuilder.append(mPostfix + "\n");
+		
+		stringBuilder.append(mHook + "\t");
+		stringBuilder.append(mTarget + "\n");
+		
+		stringBuilder.append(mHookTargetCount + "\t");
+		stringBuilder.append(mPMI + "\t");
+		stringBuilder.append(mType + "\n\n");
+		
+		return stringBuilder.toString();
 	}
 }

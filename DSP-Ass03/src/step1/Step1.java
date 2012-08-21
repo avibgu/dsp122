@@ -31,7 +31,7 @@ public class Step1 {
 		job.setOutputValueClass(WordContext.class);
 
 		job.setInputFormatClass(TextInputFormat.class);			//TODO: change it back to SequenceFileInputFormat
-		job.setOutputFormatClass(TextOutputFormat.class);		//TODO: change it back to SequenceFileOutputFormat
+		job.setOutputFormatClass(SequenceFileOutputFormat.class);		//TODO: change it back to SequenceFileOutputFormat
 
 		FileInputFormat.addInputPath(job, new Path(args[1]));
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
