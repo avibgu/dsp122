@@ -11,7 +11,7 @@ import data.Cluster;
 import data.FeatureVector;
 import data.WordsPair;
 
-public class Reducer9 extends Reducer<WordsPair, Cluster, WordsPair, Text> {
+public class Reducer9 extends Reducer<WordsPair, Cluster, Text, Text> {
 
 	protected SortedMap<String, Double> mHitsMap;
 	protected FeatureVector mFeatureVector;
@@ -34,7 +34,7 @@ public class Reducer9 extends Reducer<WordsPair, Cluster, WordsPair, Text> {
 
 		mFeatureVector.set(mHitsMap);
 
-		context.write(wordsPair, new Text(mFeatureVector.getAsARFFData() + ","
-				+ wordsPair.getPositivity()));
+		context.write(new Text(mFeatureVector.getAsARFFData() + ","
+				+ wordsPair.getPositivity()), new Text());
 	}
 }

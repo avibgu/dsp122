@@ -3,6 +3,8 @@ package data;
 import java.util.Collection;
 import java.util.SortedMap;
 
+//TODO: consider delete this class
+
 public class FeatureVector {
 
 	private Collection<Double> mHitsVector;
