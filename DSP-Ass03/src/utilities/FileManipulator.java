@@ -8,7 +8,7 @@ import java.util.Vector;
 public class FileManipulator {
 	
 	public static Vector<String> readFromInputStream(
-			InputStream pInputStream) {
+			InputStream pInputStream, boolean limited) {
 
 		Vector<String> result = new Vector<String>();
 		
@@ -20,10 +20,13 @@ public class FileManipulator {
 			isr = new InputStreamReader(pInputStream);
 			br = new BufferedReader(isr);		
 			
-			while (br.ready())
-				result.add(br.readLine());
+			if(!limited)
+				while (br.ready())
+					result.add(br.readLine());
+			else
+				for(int i = 0; i < 1000000 && br.ready(); i++)
+					result.add(br.readLine());
 
-			pInputStream.close();
 			isr.close();
 			br.close();
 		}
