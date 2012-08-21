@@ -22,6 +22,12 @@ public class Step9 {
 
 		Configuration conf = new Configuration();
 
+		try {
+			// 0 - train, 1 - test
+			conf.setInt("fileIndex", Integer.valueOf(args[3]));
+		} 
+		catch (Exception e) {}
+
 		Job job = new Job(conf, "step9");
 
 		job.setJarByClass(Step9.class);

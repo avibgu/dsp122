@@ -32,25 +32,32 @@ public class WEKATestBatel {
 		fvNominalVal.addElement("1");
 		fvNominalVal.addElement("2");
 		fvNominalVal.addElement("3");
-		Attribute Attribute1 = new Attribute("nominal", fvNominalVal);
+		Attribute Attribute1 = new Attribute("Boolean", fvNominalVal);
+		
+		FastVector fvNominalVal2 = new FastVector(3);
+		fvNominalVal2.addElement("1");
+		fvNominalVal2.addElement("2");
+		fvNominalVal2.addElement("3");
+		Attribute Attribute2 = new Attribute("Boolean", fvNominalVal2);
 		
 		FastVector fvClassVal = new FastVector(2);
-		 fvClassVal.addElement("positive");
-		 fvClassVal.addElement("negative");
+		 fvClassVal.addElement("true");
+		 fvClassVal.addElement("false");
 		Attribute ClassAttribute = new Attribute("the class", fvClassVal);
 		
-		 FastVector fvWekaAttributes = new FastVector(2);
+		 FastVector fvWekaAttributes = new FastVector(3);
 		 fvWekaAttributes.addElement(Attribute1);
+		 fvWekaAttributes.addElement(Attribute2);
 		 fvWekaAttributes.addElement(ClassAttribute); 
 
 		 // Create an empty training set
 		 Instances isTrainingSet = new Instances("Rel", fvWekaAttributes, 1);           
 		 // Set class index
-		 isTrainingSet.setClassIndex(1);
+		 isTrainingSet.setClassIndex(2);
 		 
 		 Instance iExample = new Instance(2);
 		 iExample.setValue((Attribute)fvWekaAttributes.elementAt(0), 1.0);
-		 iExample.setValue((Attribute)fvWekaAttributes.elementAt(1), "positive");
+		 iExample.setValue((Attribute)fvWekaAttributes.elementAt(1), "true");
 		// add the instance
 		 isTrainingSet.add(iExample);
 		 
@@ -65,7 +72,7 @@ public class WEKATestBatel {
 		 
 		 Instance iTestExample = new Instance(2);
 		 iTestExample.setValue((Attribute)fvWekaAttributes.elementAt(0), 0.0);
-		 iTestExample.setValue((Attribute)fvWekaAttributes.elementAt(1), "negative");
+		 iTestExample.setValue((Attribute)fvWekaAttributes.elementAt(1), "flase");
 		// add the instance
 		 isTestingSet.add(iTestExample);
 		 

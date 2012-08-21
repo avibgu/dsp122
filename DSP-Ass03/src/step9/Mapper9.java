@@ -14,18 +14,27 @@ import data.WordsPair;
 public class Mapper9 extends Mapper<Word, Cluster, WordsPair, Cluster> {
 
 	protected Vector<WordsPair> mTrainingPairs;
-	
+	protected int mFileIndex;
+	protected String mFileName;
+
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		
-		Reader reader = new Reader("try");
-		
+
+		mFileIndex = context.getConfiguration().getInt("fileIndex", 0);
+
+		if (mFileIndex == 0)
+			mFileName = "train/relation-1-train.txt";
+		else
+			mFileName = "test/relation-1-test.txt";
+
+		Reader reader = new Reader(mFileName);
+
 		try {
 			mTrainingPairs = reader.readWordPairs();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	};
 
 	protected void map(Word word, Cluster cluster, Context context)
@@ -35,5 +44,3 @@ public class Mapper9 extends Mapper<Word, Cluster, WordsPair, Cluster> {
 			context.write(wordPair, cluster);
 	}
 }
-
-
