@@ -61,8 +61,13 @@ public class Pattern implements WritableComparable<Pattern> {
 	}
 
 	public void calcPMI(long pTotal) {
+		
 		mPMI = Math.log(mHookTargetCount) + Math.log(pTotal)
 				- Math.log(mHook.getCount()) - Math.log(mTarget.getCount());
+		
+		// TODO: Debug
+		System.out.println(mHookTargetCount + "\t" + pTotal + "\t" + mHook.getCount()+ "\t" + mTarget.getCount() + "\t = \t" + mPMI);
+		System.out.flush();
 	}
 
 	@Override
