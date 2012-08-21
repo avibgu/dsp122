@@ -24,7 +24,8 @@ public class Pattern implements WritableComparable<Pattern> {
 	protected PatternType mType;
 
 	public Pattern() {
-		this(null, null, null, null, null, null, null, 0);
+		this(new Word(), new Word(), new Word(), new Word(), new Word(),
+				new Word(), new Word(), 0);
 	}
 
 	public Pattern(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
@@ -61,20 +62,45 @@ public class Pattern implements WritableComparable<Pattern> {
 
 	public void calcPMI(long pTotal) {
 		mPMI = Math.log(mHookTargetCount) + Math.log(pTotal)
-				- Math.log(mHook.getCount())
-				- Math.log(mTarget.getCount());
+				- Math.log(mHook.getCount()) - Math.log(mTarget.getCount());
 	}
 
 	@Override
-	public void readFields(DataInput arg0) throws IOException {
-		// TODO Auto-generated method stub
+	public void readFields(DataInput in) throws IOException {
 
+		mPrefix.readFields(in);
+		mCW1.readFields(in);
+		mInfix.readFields(in);
+		mCW2.readFields(in);
+		mPostfix.readFields(in);
+
+		mHook.readFields(in);
+		mTarget.readFields(in);
+
+		mHookTargetCount = in.readInt();
+
+		mPMI = in.readDouble();
+
+		mType = in.readBoolean() ? PatternType.CORE : PatternType.UNCONFIRMED;
 	}
 
 	@Override
-	public void write(DataOutput arg0) throws IOException {
-		// TODO Auto-generated method stub
+	public void write(DataOutput out) throws IOException {
 
+		mPrefix.write(out);
+		mCW1.write(out);
+		mInfix.write(out);
+		mCW2.write(out);
+		mPostfix.write(out);
+
+		mHook.write(out);
+		mTarget.write(out);
+
+		out.writeInt(mHookTargetCount);
+
+		out.writeDouble(mPMI);
+
+		out.writeBoolean((PatternType.CORE == mType) ? true : false);
 	}
 
 	@Override
@@ -90,17 +116,32 @@ public class Pattern implements WritableComparable<Pattern> {
 			return 0;
 	}
 
-	public boolean isWordContained(String strWord){
+	@Override
+	public int hashCode() {
+		return mHook.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object pObj) {
+
+		if (!(pObj instanceof Pattern))
+			return false;
+
+		return this.compareTo((Pattern) pObj) == 0;
+	}
+
+	public boolean isWordContained(String strWord) {
 
 		Word word = new Word(strWord);
 
-		if(mPrefix.compareTo(word) == 1 || mCW1.compareTo(word) == 1 ||
-		   mInfix.compareTo(word) == 1 || mCW2.compareTo(word) == 1 ||
-		   mPostfix.compareTo(word) == 1)
+		if (mPrefix.compareTo(word) == 1 || mCW1.compareTo(word) == 1
+				|| mInfix.compareTo(word) == 1 || mCW2.compareTo(word) == 1
+				|| mPostfix.compareTo(word) == 1)
 
 			return true;
 
-		else return false;
+		else
+			return false;
 
 	}
 
