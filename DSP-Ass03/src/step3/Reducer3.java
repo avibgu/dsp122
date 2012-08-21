@@ -26,8 +26,14 @@ public class Reducer3 extends Reducer<Word, Pattern, Word, Pattern> {
 
 		sortedPatterns.clear();
 		
-		for (Pattern pattern : patterns)
-			sortedPatterns.add(pattern);
+		for (Pattern pattern : patterns){
+			
+			try {
+				sortedPatterns.add((Pattern)pattern.clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}	
+		}
 
 		int filterIndex = sortedPatterns.size() * Global.L / 100;
 		

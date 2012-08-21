@@ -70,9 +70,19 @@ public class WordContext implements WritableComparable<WordContext> {
 		if (!(pObj instanceof WordContext))
 			return false;
 
-		return this.compareTo((WordContext) pObj) == 0;
+		WordContext other = (WordContext) pObj;
+		
+		return mContext[0].equals(other.getWordAt(0)) &&
+				mContext[1].equals(other.getWordAt(1)) &&
+				mContext[2].equals(other.getWordAt(2)) &&
+				mContext[3].equals(other.getWordAt(3)) &&
+				mContext[4].equals(other.getWordAt(4));
 	}
 	
+	public void setHookTargetCount(int pHookTargetCount) {
+		mHookTargetCount = pHookTargetCount;
+	}
+
 	@Override
 	public int hashCode() {
 		return mContext[0].hashCode();
@@ -118,5 +128,23 @@ public class WordContext implements WritableComparable<WordContext> {
 		builder.append(mNumOfOccurrences +"\t" + mHookTargetCount + "\n");
 		
 		return builder.toString();
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		
+		WordContext wordContext = new WordContext();
+		
+		for (int i = 0; i < Global.CONTEXT_LENGTH; i++)
+			wordContext.setWordAt(i, (Word)mContext[i].clone());
+
+		wordContext.setNumOfOccurrences(mNumOfOccurrences);
+		wordContext.setHookTargetCount(mHookTargetCount);
+		
+		return wordContext;
+	}
+
+	public void setWordAt(int i, Word word) {
+		mContext[i] = word;
 	}
 }

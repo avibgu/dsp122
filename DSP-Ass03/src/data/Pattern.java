@@ -127,7 +127,14 @@ public class Pattern implements WritableComparable<Pattern> {
 		if (!(pObj instanceof Pattern))
 			return false;
 
-		return this.compareTo((Pattern) pObj) == 0;
+		Pattern other = (Pattern) pObj;
+
+		return mPrefix.equals(other.mPrefix) && mCW1.equals(other.mCW1)
+				&& mInfix.equals(other.mInfix) && mCW2.equals(other.mCW2)
+				&& mPostfix.equals(other.mPostfix) && mHook.equals(other.mHook)
+				&& mTarget.equals(other.mTarget)
+				&& mHookTargetCount == other.mHookTargetCount
+				&& mPMI == other.mPMI && mType == other.mType;
 	}
 
 	public boolean isWordContained(String strWord) {
@@ -258,25 +265,39 @@ public class Pattern implements WritableComparable<Pattern> {
 			Word pPostfix, Integer pHookTargetCount) {
 		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, null, null, pHookTargetCount);
 	}
-	
+
 	@Override
 	public String toString() {
-		
+
 		StringBuilder stringBuilder = new StringBuilder();
-		
+
 		stringBuilder.append(mPrefix + "\t");
 		stringBuilder.append(mCW1 + "\t");
 		stringBuilder.append(mInfix + "\t");
 		stringBuilder.append(mCW2 + "\t");
 		stringBuilder.append(mPostfix + "\n");
-		
+
 		stringBuilder.append(mHook + "\t");
 		stringBuilder.append(mTarget + "\n");
-		
+
 		stringBuilder.append(mHookTargetCount + "\t");
 		stringBuilder.append(mPMI + "\t");
 		stringBuilder.append(mType + "\n\n");
-		
+
 		return stringBuilder.toString();
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+
+		Pattern pattern = new Pattern((Word) mPrefix.clone(),
+				(Word) mCW1.clone(), (Word) mInfix.clone(),
+				(Word) mCW2.clone(), (Word) mPostfix.clone(),
+				(Word) mHook.clone(), (Word) mTarget.clone(), mHookTargetCount);
+
+		pattern.setPMI(mPMI);
+		pattern.setType(mType);
+
+		return pattern;
 	}
 }

@@ -31,7 +31,12 @@ public class Mapper1 extends Mapper<LongWritable, Text, Word, WordContext> {
 		if (splitted.length != 5)
 			return;
 
-		mCount = Integer.parseInt(splitted[2]);
+		try{
+			mCount = Integer.parseInt(splitted[2]);
+		}
+		catch (Exception e) {
+			mCount = 1;
+		}
 
 		splitted = splitted[0].split(" ");
 
