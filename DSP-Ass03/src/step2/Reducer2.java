@@ -15,11 +15,19 @@ public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 	protected Set<Word> wordsSet;
 	protected Pattern mPattern;
 	protected WordContext mWordContext;
+	protected long mTotalCounter;
 
-	public Reducer2() {
+	@Override
+	protected void setup(Context pContext)
+			throws IOException, InterruptedException {
+		
 		wordsSet = new HashSet<Word>();
 		mPattern = new Pattern();
 		mWordContext = new WordContext();
+		mTotalCounter = pContext.getCounter("group", "totalCounter").getValue();
+		
+		if (0 == mTotalCounter)
+			mTotalCounter = pContext.getConfiguration().getLong("totalCounter", 5000);
 	}
 
 	protected void reduce(WordContext wordContext, Iterable<Word> words,
@@ -43,8 +51,7 @@ public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 
 		if (mPattern.isLegal()) {
 
-			mPattern.calcPMI(context.getCounter("group", "totalCounter")
-					.getValue());
+			mPattern.calcPMI(mTotalCounter);
 			context.write(mPattern.getHook(), mPattern);
 		}
 	}
