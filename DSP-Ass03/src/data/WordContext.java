@@ -46,7 +46,22 @@ public class WordContext implements WritableComparable<WordContext> {
 
 	@Override
 	public int compareTo(WordContext other) {
-		return mContext[0].compareTo(other.getWordAt(0));
+		
+		int result = mContext[0].compareTo(other.getWordAt(0));
+		if (0 != result) return result;
+				
+		result = mContext[1].compareTo(other.getWordAt(1));
+		if (0 != result) return result;
+		
+		result = mContext[2].compareTo(other.getWordAt(2));
+		if (0 != result) return result;
+		
+		result = mContext[3].compareTo(other.getWordAt(3));
+		if (0 != result) return result;
+		
+		result = mContext[4].compareTo(other.getWordAt(4));
+
+		return result;
 	}
 	
 	@Override
@@ -90,5 +105,18 @@ public class WordContext implements WritableComparable<WordContext> {
 
 	public Integer getHookTargetCount() {
 		return mHookTargetCount;
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder builder = new StringBuilder();
+
+		for (Word word : mContext)
+			builder.append(word +"\n");
+
+		builder.append(mNumOfOccurrences +"\t" + mHookTargetCount + "\n");
+		
+		return builder.toString();
 	}
 }
