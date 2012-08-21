@@ -31,10 +31,10 @@ public class WekaMain {
 		Vector<String> trainLines = readFilesFromFolder(trainFolder);
 		Vector<String> testLines = readFilesFromFolder(testFolder);
 
-		int size = trainLines.get(0).split(",").length - 1;
+		int clusterSize = trainLines.get(0).split(",").length - 1;
 		
-		Instances isTrainingSet = createFeatureVector(trainLines, size-1);
-		Instances isTestingSet = createFeatureVector(testLines, size-1);
+		Instances isTrainingSet = createFeatureVector(trainLines, clusterSize-1);
+		Instances isTestingSet = createFeatureVector(testLines, clusterSize-1);
 		
 		 // Create a naive bayes classifier 
 		 Classifier cModel = (Classifier)new NaiveBayes();
@@ -78,10 +78,10 @@ public class WekaMain {
 			String[] splitted = line.split(",");
 
 			for (int i = 0; i < splitted.length - 1; i++)
-				featureVector.setValue((Attribute) attributes.elementAt(0),
+				featureVector.setValue((Attribute) attributes.elementAt(i),
 						Double.parseDouble(splitted[i]));
 
-			featureVector.setValue((Attribute) attributes.elementAt(0),
+			featureVector.setValue((Attribute) attributes.elementAt(splitted.length - 1),
 					splitted[splitted.length - 1]);
 
 			data.add(featureVector);
@@ -100,14 +100,15 @@ public class WekaMain {
 
 		for (String fileName : trainFileNames) {
 
-			File gf = new File(fileName);
-			InputStream fis = new FileInputStream(gf);
-
-			Vector<String> lines = FileManipulator.readFromInputStream(fis,
-					false);
-
-			result.addAll(lines);
-
+			if(!fileName.equals(".svn")){
+				
+				File gf = new File(folder + "/" + fileName);
+				InputStream fis = new FileInputStream(gf);
+	
+				Vector<String> lines = FileManipulator.readFromInputStream(fis, false);
+	
+				result.addAll(lines);
+			}
 		}
 
 		return result;
