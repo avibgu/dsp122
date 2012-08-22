@@ -1,0 +1,18 @@
+
+Results:
+
+Precision			Recall			F-score			Accuracy
+
+		
+Accuracy = (TP + TN) / N 
+Recall = TP / (TP + FN) 
+Precision = TP / (TP + FP) 
+F-score = 2 * ((Precision * Recall) \ (Precision + Recall))
+N = Total Number of Instances  
+									 				
+1. True Negative (TN): case negative and system can predict as negative.
+2. False Negative (FN): case positive but system predicted as negative.
+3. False Positive (FP): case negative but system predicted as positive.
+4. True Positive (TP): case positive and system can predict as positive.					
+
+				 	
