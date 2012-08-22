@@ -19,7 +19,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	public Cluster() {
 		mId = UUID.randomUUID().toString();
-		mHookWord = null;
+		mHookWord = new Word();
 		mCorePatters = new Vector<Pattern>();
 		mUnconfirmedPatters = new Vector<Pattern>();
 		mAllUnconfirmed = true;
