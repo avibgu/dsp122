@@ -19,7 +19,7 @@ public class Step5 {
 		Configuration conf = new Configuration();
 
 		// TODO: why?..
-		conf.set("mapred.reduce.tasks","1");
+//		conf.set("mapred.reduce.tasks","1");
 
 	    Job job = new Job(conf, "step5");
 	    
