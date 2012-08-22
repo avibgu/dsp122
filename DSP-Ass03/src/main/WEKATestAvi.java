@@ -1,10 +1,5 @@
 package main;
 
-import java.io.DataInput;
-import java.io.FileReader;
-
-import data.WordType;
-
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
