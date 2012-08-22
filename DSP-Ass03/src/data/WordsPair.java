@@ -12,6 +12,10 @@ public class WordsPair implements WritableComparable<WordsPair>{
 	protected String mW2;
 	protected String mPositivity;
 	
+	public WordsPair() {
+		this("","","");
+	}
+	
 	public WordsPair(String pW1, String pW2, String pPositivity) {
 		mW1 = pW1;
 		mW2 = pW2;
