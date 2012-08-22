@@ -2,9 +2,10 @@ package step1;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -17,19 +18,20 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 
 	protected List<WordContext> wordContextsList;
 
-	protected Map<Word, Integer> mTargetsMap;
+	protected ConcurrentMap<Word, AtomicInteger> mTargetsMap;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
 		wordContextsList = new ArrayList<WordContext>();
-		mTargetsMap = new HashMap<Word, Integer>();
+		mTargetsMap = new ConcurrentHashMap<Word, AtomicInteger>();
 	}
 
 	protected void reduce(Word word, Iterable<WordContext> wordContexts,
 			Context context) throws IOException, InterruptedException {
 		
 		wordContextsList.clear();
+		mTargetsMap.clear();
 
 		long counter = context.getCounter("group", "hooksCounter").getValue();
 
@@ -68,7 +70,7 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		// for each Hook word, write in the context - how many times
 		// the target word appeared with me..
 		if (word.getType() == WordType.HOOK) {
-
+				
 			for (WordContext wordContext : wordContextsList) {
 
 				if (wordContext.getWordAt(1).equals(word))
@@ -77,16 +79,16 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 				if (wordContext.getWordAt(3).equals(word))
 					incTargetCounter(wordContext.getWordAt(1));
 			}
-
+						
 			for (WordContext wordContext : wordContextsList) {
 
 				if (wordContext.getWordAt(1).equals(word))
 					wordContext.setHookTargetCount(mTargetsMap.get(wordContext
-							.getWordAt(3)));
+							.getWordAt(3)).get());
 
 				if (wordContext.getWordAt(3).equals(word))
 					wordContext.setHookTargetCount(mTargetsMap.get(wordContext
-							.getWordAt(1)));
+							.getWordAt(1)).get());
 			}
 		}
 
@@ -97,13 +99,7 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 
 	private void incTargetCounter(Word target) {
 
-		Integer count = mTargetsMap.get(target);
-
-		if (null == count)
-			count = 0;
-
-		//TODO: I added 'remove' - test it..
-		mTargetsMap.remove(target);
-		mTargetsMap.put(target, count + 1);
+		mTargetsMap.putIfAbsent(target, new AtomicInteger(0));
+		mTargetsMap.get(target).incrementAndGet();
 	}
 }
