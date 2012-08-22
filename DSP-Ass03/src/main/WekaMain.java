@@ -21,7 +21,7 @@ public class WekaMain {
 
 	/**
 	 * @param args
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 
@@ -32,22 +32,26 @@ public class WekaMain {
 		Vector<String> testLines = readFilesFromFolder(testFolder);
 
 		int clusterSize = trainLines.get(0).split(",").length - 1;
-		
-		Instances isTrainingSet = createFeatureVector(trainLines, clusterSize-1);
-		Instances isTestingSet = createFeatureVector(testLines, clusterSize-1);
-		
-		 // Create a naive bayes classifier 
-		 Classifier cModel = (Classifier)new NaiveBayes();
-		 cModel.buildClassifier(isTrainingSet);
-		 
+
+		Instances isTrainingSet = createFeatureVector(trainLines, clusterSize);
+		Instances isTestingSet = createFeatureVector(testLines, clusterSize);
+
+		// Create a naive bayes classifier
+		Classifier cModel = (Classifier) new NaiveBayes();
+		cModel.buildClassifier(isTrainingSet);
+
 		// Test the model
-		 Evaluation eTest = new Evaluation(isTrainingSet);
-		 eTest.evaluateModel(cModel, isTestingSet);
-		 
+		Evaluation eTest = new Evaluation(isTrainingSet);
+		eTest.evaluateModel(cModel, isTestingSet);
+
 		// Print the result a la Weka explorer:
-		 String strSummary = eTest.toSummaryString();
-		 System.out.println(strSummary);
-		 
+		double accuracy = eTest.pctCorrect();
+		String statistics = eTest.toClassDetailsString("Statistics") + "\nAccuracy: " + accuracy;
+		System.out.println(statistics);
+
+		//String strSummary = eTest.toSummaryString();
+		//System.out.println(strSummary);
+
 	}
 
 	private static Instances createFeatureVector(Vector<String> lines, int size) {
@@ -66,7 +70,7 @@ public class WekaMain {
 		attributes.addElement(classAttribute);
 
 		// 2. create Instances object
-		Instances data = new Instances("HITS Vecotrs", attributes, attributes.size());
+		Instances data = new Instances("HITS Vecotrs", attributes, lines.size());
 
 		data.setClassIndex(attributes.size() - 1);
 
@@ -74,15 +78,15 @@ public class WekaMain {
 
 		for (String line : lines) {
 
-			Instance featureVector = new Instance(size);
+			Instance featureVector = new Instance(size + 1);
 			String[] splitted = line.split(",");
 
 			for (int i = 0; i < splitted.length - 1; i++)
 				featureVector.setValue((Attribute) attributes.elementAt(i),
 						Double.parseDouble(splitted[i]));
 
-			featureVector.setValue((Attribute) attributes.elementAt(splitted.length - 1),
-					splitted[splitted.length - 1]);
+			featureVector.setValue((Attribute) attributes.elementAt(size),
+					(String) splitted[splitted.length - 1]);
 
 			data.add(featureVector);
 
@@ -90,7 +94,7 @@ public class WekaMain {
 
 		return data;
 	}
-	
+
 	private static Vector<String> readFilesFromFolder(File folder)
 			throws FileNotFoundException {
 
@@ -100,13 +104,14 @@ public class WekaMain {
 
 		for (String fileName : trainFileNames) {
 
-			if(!fileName.equals(".svn")){
-				
+			if (!fileName.equals(".svn")) {
+
 				File gf = new File(folder + "/" + fileName);
 				InputStream fis = new FileInputStream(gf);
-	
-				Vector<String> lines = FileManipulator.readFromInputStream(fis, false);
-	
+
+				Vector<String> lines = FileManipulator.readFromInputStream(fis,
+						false);
+
 				result.addAll(lines);
 			}
 		}
