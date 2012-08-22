@@ -1,6 +1,7 @@
 package step4;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,41 +25,61 @@ public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
 	protected void reduce(Word hookWord, Iterable<Pattern> patterns,
 			Context context) throws IOException, InterruptedException {
 
-		for (Pattern pattern : patterns){
+		mTargetToPatternsMap.clear();
+		
+		for (Pattern pattern : patterns) {
 
-			Cluster cluster = mTargetToPatternsMap.get(pattern.getTarget());
-			
-			if (null == cluster){
+			Cluster cluster = null;
+
+			try {
+				cluster = mTargetToPatternsMap.get(pattern.getTarget().clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+
+			if (null == cluster) {
 				cluster = new Cluster();
+				cluster.setHookWord(hookWord);
 				mTargetToPatternsMap.put(pattern.getTarget(), cluster);
 			}
-			
-			cluster.add(pattern);
+
+			try {
+				cluster.add((Pattern) pattern.clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 		}
+
+		Collection<Cluster> clustersCollection = mTargetToPatternsMap.values();
 		
-		Cluster[] clusters = (Cluster[]) mTargetToPatternsMap.values().toArray();
+		Cluster[] clusters = new Cluster[clustersCollection.size()];
 		
-    //TODO: don't use new
+		int i = 0;
+		
+		for (Cluster cluster : clustersCollection)
+			clusters[i++] = cluster;
+
+		// TODO: don't use new
 		Cluster tmpCluster = new Cluster();
-		
-		for (int i = 0; i < clusters.length; i++){
-			
+
+		for (i = 0; i < clusters.length; i++) {
+
 			boolean merged = false;
-			
-			for (int j = i + 1; j < clusters.length; j++){
-				
-				if (clusters[i].calcSharedPatternsPercents(clusters[j]) > Global.S){
-					
-					tmpCluster.mergeClusters(clusters[i],clusters[j]);
+
+			for (int j = i + 1; j < clusters.length; j++) {
+
+				if (clusters[i].calcSharedPatternsPercents(clusters[j]) > Global.S) {
+
+					tmpCluster.mergeClusters(clusters[i], clusters[j]);
 					context.write(hookWord, tmpCluster);
-					//TODO: count this cluster
+					// TODO: count this cluster
 					merged = true;
 				}
 			}
-			
+
 			if (!merged)
 				context.write(hookWord, clusters[i]);
-				//TODO: count this cluster
+			// TODO: count this cluster
 		}
 	};
 }

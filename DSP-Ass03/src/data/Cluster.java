@@ -26,15 +26,51 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	@Override
-	public void readFields(DataInput pArg0) throws IOException {
-		// TODO Auto-generated method stub
+	public void readFields(DataInput in) throws IOException {
 
+		mId = in.readUTF();
+
+		mHookWord.readFields(in);
+
+		int size = in.readInt();
+
+		for (int i = 0; i < size; i++) {
+
+			Pattern pattern = new Pattern();
+			pattern.readFields(in);
+			mCorePatters.add(pattern);
+		}
+
+		size = in.readInt();
+
+		for (int i = 0; i < size; i++) {
+
+			Pattern pattern = new Pattern();
+			pattern.readFields(in);
+			mUnconfirmedPatters.add(pattern);
+		}
+
+		mAllUnconfirmed = in.readBoolean();
 	}
 
 	@Override
-	public void write(DataOutput pArg0) throws IOException {
-		// TODO Auto-generated method stub
+	public void write(DataOutput out) throws IOException {
 
+		out.writeUTF(mId);
+
+		mHookWord.write(out);
+
+		out.writeInt(mCorePatters.size());
+
+		for (Pattern pattern : mCorePatters)
+			pattern.write(out);
+
+		out.writeInt(mUnconfirmedPatters.size());
+
+		for (Pattern pattern : mUnconfirmedPatters)
+			pattern.write(out);
+
+		out.writeBoolean(mAllUnconfirmed);
 	}
 
 	@Override
@@ -44,6 +80,20 @@ public class Cluster implements WritableComparable<Cluster> {
 			return 1;
 
 		return size() - pO.size();
+	}
+
+	@Override
+	public boolean equals(Object pObj) {
+		
+		if (!(pObj instanceof Cluster))
+			return false;
+		
+		return mId.equals(((Cluster)pObj).getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return mId.hashCode();
 	}
 
 	private int size() {
@@ -81,6 +131,12 @@ public class Cluster implements WritableComparable<Cluster> {
 		mUnconfirmedPatters.clear();
 		mCorePatters.addAll(pCluster1.getCorePatters());
 		mUnconfirmedPatters.addAll(pCluster2.getUnconfirmedPatters());
+		
+		if (null == mHookWord)
+			mHookWord = pCluster1.getHookWord();
+		
+		if (null == mHookWord)
+			mHookWord = pCluster2.getHookWord();
 	}
 
 	public Word getHookWord() {
@@ -141,9 +197,8 @@ public class Cluster implements WritableComparable<Cluster> {
 	/*
 	 * n - core patterns size m - unconfirmed patterns size alfa - between
 	 * (0..1), is a parameter that lets us modify the relative weight of core
-	 * and unconfirmed patterns. 
-	 * HITS(C, (w1,w2)) = |{p; (w1,w2) appears in p
-	 * belongs to Pcore}| /n + alfa × |{p; (w1,w2) appears in p belongs to
+	 * and unconfirmed patterns. HITS(C, (w1,w2)) = |{p; (w1,w2) appears in p
+	 * belongs to Pcore}| /n + alfa ï¿½ |{p; (w1,w2) appears in p belongs to
 	 * Punconf }| /m.
 	 */
 
@@ -162,8 +217,8 @@ public class Cluster implements WritableComparable<Cluster> {
 					&& pattern.isWordContained(pWordsPair.mW2))
 				appearsInPubconf++;
 
-		double hit = (appearsInPcore / mCorePatters.size()) +
-						Global.alfa * (appearsInPubconf / mUnconfirmedPatters.size());
+		double hit = (appearsInPcore / mCorePatters.size()) + Global.alfa
+				* (appearsInPubconf / mUnconfirmedPatters.size());
 
 		return hit;
 	}
@@ -183,7 +238,6 @@ public class Cluster implements WritableComparable<Cluster> {
 		allPatterns.addAll(mUnconfirmedPatters);
 
 		return allPatterns;
-
 	}
 
 	public Vector<Pattern> getCorePatters() {
@@ -208,10 +262,8 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	public boolean areShareAllCorePatterns(Cluster pOtherCluster) {
 
-		if (pOtherCluster.getCorePatters().size() != this.mCorePatters.size()) // originally:
-																				// pOtherCluster.size()
-																				// !=
-																				// size()
+		// originally: pOtherCluster.size() != size()
+		if (pOtherCluster.getCorePatters().size() != this.mCorePatters.size()) 
 			return false;
 
 		for (Pattern pattern : pOtherCluster.getCorePatters())
@@ -219,5 +271,49 @@ public class Cluster implements WritableComparable<Cluster> {
 				return false;
 
 		return true;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+
+		Cluster cluster = new Cluster();
+		
+		cluster.setId(mId);
+		
+		cluster.setHookWord(mHookWord);
+
+		Vector<Pattern> patterns = new Vector<Pattern>();
+		
+		for (Pattern pattern : mCorePatters)
+			patterns.add((Pattern) pattern.clone());
+		
+		cluster.setCorePatters(patterns);
+		
+		patterns = new Vector<Pattern>();
+		
+		for (Pattern pattern : mUnconfirmedPatters)
+			patterns.add((Pattern) pattern.clone());
+		
+		cluster.setUnconfirmedPatters(patterns);
+
+		cluster.setAllUnconfirmed(mAllUnconfirmed);
+		
+		return cluster;
+	}
+	
+	@Override
+	public String toString() {
+
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("\n" + mId + "\t" + mHookWord + "\t" + mAllUnconfirmed + "\n");
+		
+		for (Pattern pattern : mCorePatters)
+			builder.append(pattern + "\n");
+		
+		for (Pattern pattern : mUnconfirmedPatters)
+			builder.append(pattern + "\n");
+		
+		return builder.toString();
 	}
 }
