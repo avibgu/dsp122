@@ -25,26 +25,45 @@ public class WordsPair implements WritableComparable<WordsPair>{
 	}
 	
 	@Override
-	public void readFields(DataInput pArg0) throws IOException {
-		// TODO Auto-generated method stub
-		
+	public void readFields(DataInput in) throws IOException {
+		mW1 = in.readUTF();
+		mW2 = in.readUTF();
+		mPositivity = in.readUTF();
 	}
 
 	@Override
-	public void write(DataOutput pArg0) throws IOException {
-		// TODO Auto-generated method stub
-		
+	public void write(DataOutput out) throws IOException {
+		out.writeUTF(mW1);
+		out.writeUTF(mW2);
+		out.writeUTF(mPositivity);
 	}
 
 	@Override
 	public int compareTo(WordsPair pOther) {
 		
-		if(mW1 == pOther.getW1() && mW2 == pOther.getW2() && mPositivity == pOther.getPositivity())
-			return 1;
+		int result = mW1.compareTo(pOther.getW1());
+		if(result != 0)	return result;
 		
-		return 0;
+		result = mW2.compareTo(pOther.getW2());
+		if(result != 0)	return result;
+		
+		return mPositivity.compareTo(pOther.getPositivity());
+	}
+	
+	@Override
+	public boolean equals(Object pObj) {
+		
+		if(! (pObj instanceof WordsPair))
+			return false;
+		
+		return this.compareTo((WordsPair)pObj) == 0;
 	}
 
+	@Override
+	public int hashCode() {
+		return mW1.hashCode();
+	}
+	
 	public String getW1() {
 		return mW1;
 	}
