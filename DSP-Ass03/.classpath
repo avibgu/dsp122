@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="weka/weka/lib/java-cup.jar"/>
 	<classpathentry kind="lib" path="weka/weka/lib/JFlex.jar"/>
 	<classpathentry kind="lib" path="weka/weka/weka.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
