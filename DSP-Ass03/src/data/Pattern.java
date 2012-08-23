@@ -14,8 +14,6 @@ public class Pattern implements WritableComparable<Pattern> {
 	protected Word mInfix;
 	protected Word mPostfix;
 
-	protected List<Word[]> mHookTargetPairs;
-
 	protected List<Word> mHooks;
 	protected List<Word> mTargets;
 
@@ -26,8 +24,6 @@ public class Pattern implements WritableComparable<Pattern> {
 		mPrefix = new Word();
 		mInfix = new Word();
 		mPostfix = new Word();
-
-		mHookTargetPairs = new ArrayList<Word[]>();
 
 		mHooks = new ArrayList<Word>();
 		mTargets = new ArrayList<Word>();
@@ -47,19 +43,6 @@ public class Pattern implements WritableComparable<Pattern> {
 		mPostfix.readFields(in);
 
 		int size = in.readInt();
-
-		for (int i = 0; i < size; i++) {
-
-			Word hook = new Word();
-			hook.readFields(in);
-
-			Word target = new Word();
-			target.readFields(in);
-
-			mHookTargetPairs.add(new Word[] { hook, target });
-		}
-
-		size = in.readInt();
 
 		for (int i = 0; i < size; i++) {
 			Word hook = new Word();
@@ -84,13 +67,6 @@ public class Pattern implements WritableComparable<Pattern> {
 		mPrefix.write(out);
 		mInfix.write(out);
 		mPostfix.write(out);
-
-		out.writeInt(mHookTargetPairs.size());
-
-		for (Word[] pair : mHookTargetPairs) {
-			pair[0].write(out);
-			pair[1].write(out);
-		}
 
 		out.writeInt(mHooks.size());
 
@@ -144,10 +120,6 @@ public class Pattern implements WritableComparable<Pattern> {
 		pattern.mInfix = (Word) this.mInfix.clone();
 		pattern.mPostfix = (Word) this.mInfix.clone();
 
-		for (Word[] pair : this.mHookTargetPairs)
-			pattern.mHookTargetPairs.add(new Word[] { (Word) pair[0].clone(),
-					(Word) pair[0].clone() });
-
 		for (Word hook : this.mHooks)
 			pattern.mHooks.add((Word) hook.clone());
 
@@ -160,9 +132,6 @@ public class Pattern implements WritableComparable<Pattern> {
 	}
 
 	public void add(Word pHook, Word pTarget) {
-
-		mHookTargetPairs.add(new Word[] { pHook, pTarget });
-
 		mHooks.add(pHook);
 		mTargets.add(pTarget);
 	}
@@ -185,13 +154,14 @@ public class Pattern implements WritableComparable<Pattern> {
 
 	public boolean isWordsPairContained(String pW1, String pW2) {
 
-		for (Word[] pair : mHookTargetPairs) {
+		for (int i = 0; i < mHooks.size(); i++) {
 
-			if (pair[0].getWord().equals(pW1) && pair[1].getWord().equals(pW2))
+			if (mHooks.get(i).getWord().equals(pW1)
+					&& mTargets.get(i).getWord().equals(pW2))
 				return true;
 
-			else if (pair[0].getWord().equals(pW2)
-					&& pair[1].getWord().equals(pW1))
+			else if (mHooks.get(i).getWord().equals(pW2)
+					&& mTargets.get(i).getWord().equals(pW1))
 				return true;
 		}
 
