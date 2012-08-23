@@ -1,11 +1,25 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
+import com.amazonaws.auth.PropertiesCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+
+import data.Global;
+
+import step2.Step2;
+import step6.Step6;
 import utilities.FileManipulator;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -28,8 +42,27 @@ public class WekaMain {
 		final File trainFolder = new File("output-train");
 		final File testFolder = new File("output-test");
 
-		Vector<String> trainLines = readFilesFromFolder(trainFolder);
-		Vector<String> testLines = readFilesFromFolder(testFolder);
+		AmazonS3 mAmazonS3 = new AmazonS3Client(
+				new PropertiesCredentials(WekaMain.class
+						.getResourceAsStream("AwsCredentials.properties")));
+
+		Set<String> trainSet = new HashSet<String>();
+		Set<String> testSet = new HashSet<String>();
+
+		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
+				Global.BUCKET_NAME).getObjectSummaries()) {
+
+			String key = objectSummary.getKey();
+
+			if (key.startsWith("output-train"))
+				trainSet.add(key);
+
+			else if (key.startsWith("output-test"))
+				testSet.add(key);
+		}
+
+		Vector<String> trainLines = readFilesFromFolder(mAmazonS3, trainSet);
+		Vector<String> testLines = readFilesFromFolder(mAmazonS3, trainSet);
 
 		int clusterSize = trainLines.get(0).split(",").length - 1;
 
@@ -46,12 +79,33 @@ public class WekaMain {
 
 		// Print the result a la Weka explorer:
 		double accuracy = eTest.pctCorrect();
-		String statistics = eTest.toClassDetailsString("Statistics") + "\nAccuracy: " + accuracy;
+		String statistics = eTest.toClassDetailsString("Statistics")
+				+ "\nAccuracy: " + accuracy;
 		System.out.println(statistics);
 
-		//String strSummary = eTest.toSummaryString();
-		//System.out.println(strSummary);
+		// String strSummary = eTest.toSummaryString();
+		// System.out.println(strSummary);
 
+	}
+
+	private static Vector<String> readFilesFromFolder(AmazonS3 mAmazonS3,
+			Set<String> fileNames) {
+
+		Vector<String> result = new Vector<String>();
+
+		for (String fileName : fileNames) {
+
+			if (!fileName.equals(".svn")) {
+
+				Vector<String> lines = FileManipulator.readFromInputStream(
+						mAmazonS3.getObject(Global.BUCKET_NAME, "totalCounter")
+								.getObjectContent(), false);
+
+				result.addAll(lines);
+			}
+		}
+
+		return result;
 	}
 
 	private static Instances createFeatureVector(Vector<String> lines, int size) {
@@ -93,31 +147,6 @@ public class WekaMain {
 		}
 
 		return data;
-	}
-
-	private static Vector<String> readFilesFromFolder(File folder)
-			throws FileNotFoundException {
-
-		Vector<String> trainFileNames = listFilesForFolder(folder);
-
-		Vector<String> result = new Vector<String>();
-
-		for (String fileName : trainFileNames) {
-
-			if (!fileName.equals(".svn")) {
-
-				File gf = new File(folder + "/" + fileName);
-				InputStream fis = new FileInputStream(gf);
-
-				Vector<String> lines = FileManipulator.readFromInputStream(fis,
-						false);
-
-				result.addAll(lines);
-			}
-		}
-
-		return result;
-
 	}
 
 	public static Vector<String> listFilesForFolder(final File folder) {

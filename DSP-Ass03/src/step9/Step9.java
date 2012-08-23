@@ -16,12 +16,6 @@ public class Step9 {
 
 	public static void main(String[] args) throws Exception {
 
-		// TODO: run this step once for every relation-type (7 times..), and
-		// write the output to 7 different directories
-
-		// TODO: run this step also for the test sets - when the positivity is
-		// "?" (check what it should be) - the output in another 7 folders
-
 		Configuration conf = new Configuration();
 
 		try {

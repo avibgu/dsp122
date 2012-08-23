@@ -76,15 +76,35 @@ public class Main {
 
 		HadoopJarStepConfig hadoopJarStep5 = new HadoopJarStepConfig().withJar(
 				"s3n://" + Global.BUCKET_NAME + "/step5.jar").withMainClass(
-				"step4.Step4").withArgs(
+				"step5.Step5").withArgs(
 				"s3n://" + Global.BUCKET_NAME + "/output4/",
 				"s3n://" + Global.BUCKET_NAME + "/output5/");
 
 		HadoopJarStepConfig hadoopJarStep6 = new HadoopJarStepConfig().withJar(
 				"s3n://" + Global.BUCKET_NAME + "/step6.jar").withMainClass(
-				"step4.Step4").withArgs(
+				"step6.Step6").withArgs(
 				"s3n://" + Global.BUCKET_NAME + "/output5/",
 				"s3n://" + Global.BUCKET_NAME + "/output6/");
+		
+		
+		
+		
+		
+		HadoopJarStepConfig hadoopJarStep9train = new HadoopJarStepConfig().withJar(
+				"s3n://" + Global.BUCKET_NAME + "/step9.jar").withMainClass(
+				"step9.Step9").withArgs(
+				"s3n://" + Global.BUCKET_NAME + "/output8/",
+				"s3n://" + Global.BUCKET_NAME + "/output-train/", "0");
+		
+		HadoopJarStepConfig hadoopJarStep9test = new HadoopJarStepConfig().withJar(
+				"s3n://" + Global.BUCKET_NAME + "/step9.jar").withMainClass(
+				"step9.Step9").withArgs(
+				"s3n://" + Global.BUCKET_NAME + "/output8/",
+				"s3n://" + Global.BUCKET_NAME + "/output-test/", "1");
+		
+		
+		
+		
 
 		StepConfig step1Config = new StepConfig().withName("step1")
 				.withHadoopJarStep(hadoopJarStep1).withActionOnFailure(
