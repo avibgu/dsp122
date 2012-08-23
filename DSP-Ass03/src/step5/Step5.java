@@ -1,4 +1,4 @@
-package step4;
+package step5;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -12,17 +12,17 @@ import data.Cluster;
 import data.Pattern;
 import data.Word;
 
-public class Step4 {
+public class Step5 {
 
 	public static void main(String[] args) throws Exception {
 	
 		Configuration conf = new Configuration();
 
-	    Job job = new Job(conf, "step4");
+	    Job job = new Job(conf, "step5");
 	    
-	    job.setJarByClass(Step4.class);
-	    job.setMapperClass(Mapper4.class);
-	    job.setReducerClass(Reducer4.class);
+	    job.setJarByClass(Step5.class);
+	    job.setMapperClass(Mapper5.class);
+	    job.setReducerClass(Reducer5.class);
 	    
 	    job.setMapOutputKeyClass(Word.class);
 		job.setMapOutputValueClass(Pattern.class);

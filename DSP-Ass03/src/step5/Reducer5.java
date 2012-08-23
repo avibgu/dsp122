@@ -1,4 +1,4 @@
-package step4;
+package step5;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -12,7 +12,7 @@ import data.Global;
 import data.Pattern;
 import data.Word;
 
-public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
+public class Reducer5 extends Reducer<Word, Pattern, Word, Cluster> {
 
 	protected Map<Word, Cluster> mTargetToPatternsMap;
 
