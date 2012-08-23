@@ -27,7 +27,7 @@ public class Global {
 	// Batel
 	public static final String BUCKET_NAME = "dsp122-batel-avi-ass03";
 
-	public static final Integer NUM_OF_INSTANCES = 2;
+	public static final Integer NUM_OF_INSTANCES = 5;
 
 	// private static final String CORPUS_LOCATION =
 	// "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/5gram/data";
@@ -36,7 +36,7 @@ public class Global {
 	// public static final String CORPUS_LOCATION =
 	// "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data";
 
-	public static final String CORPUS_LOCATION = "http://commondatastorage.googleapis.com/books/ngrams/books/googlebooks-eng-1M-5gram-20090715-0.csv.zip";
+	public static final String CORPUS_LOCATION = "s3n://" + Global.BUCKET_NAME + "/corpus";
 
 	public static final String HADOOP_VERSION = "0.20";
 }
