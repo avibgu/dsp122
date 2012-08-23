@@ -20,11 +20,15 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 
 	protected ConcurrentMap<Word, AtomicInteger> mTargetsMap;
 
+	protected long mTotalCounter;
+	
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
 		wordContextsList = new ArrayList<WordContext>();
 		mTargetsMap = new ConcurrentHashMap<Word, AtomicInteger>();
+		
+		mTotalCounter = 0;
 	}
 
 	protected void reduce(Word word, Iterable<WordContext> wordContexts,
@@ -51,8 +55,7 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		word.setCount(sum);
 
 		// we count every word
-		context.getConfiguration().setLong("totalCounter",
-				context.getConfiguration().getLong("totalCounter", 0) + sum);
+		mTotalCounter++;
 
 		if (sum > Global.FH)
 			word.setType(WordType.HFW);
@@ -103,4 +106,10 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		mTargetsMap.putIfAbsent(target, new AtomicInteger(0));
 		mTargetsMap.get(target).incrementAndGet();
 	}
+	
+	protected void cleanup(Context context) throws IOException ,InterruptedException {
+		
+		context.getConfiguration().setLong("totalCounter",
+				context.getConfiguration().getLong("totalCounter", 0) + mTotalCounter);
+	};
 }

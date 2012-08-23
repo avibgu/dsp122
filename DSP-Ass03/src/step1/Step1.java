@@ -14,6 +14,10 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 
 import data.Global;
 import data.Word;
@@ -36,7 +40,8 @@ public class Step1 {
 		job.setOutputKeyClass(Word.class);
 		job.setOutputValueClass(WordContext.class);
 
-		job.setInputFormatClass(TextInputFormat.class); // TODO: SequenceFileInputFormat
+		job.setInputFormatClass(TextInputFormat.class); // TODO:
+		// SequenceFileInputFormat
 		job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 		FileInputFormat.addInputPath(job, new Path(args[1]));
@@ -46,15 +51,24 @@ public class Step1 {
 
 		long total = conf.getLong("totalCounter", 0);
 
-		AmazonS3 mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
-				Step1.class.getResourceAsStream("AwsCredentials.properties")));
+		// AmazonS3 mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
+		// Step1.class.getResourceAsStream("AwsCredentials.properties")));
+		//
+		// File counterFile = new File("totalCounter");
+		// PrintWriter pw = new PrintWriter(counterFile);
+		// pw.write(String.valueOf(total));
+		// pw.close();
+		//
+		// mAmazonS3.putObject(Global.BUCKET_NAME, "totalCounter", counterFile);
 
-		File counterFile = new File("totalCounter");
-		PrintWriter pw = new PrintWriter(counterFile);
-		pw.write(String.valueOf(total));
-		pw.close();
+		AmazonSQS mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
+				new File("AwsCredentials.properties")));
 
-		mAmazonS3.putObject(Global.BUCKET_NAME, "totalCounter", counterFile);
+		String queueUrl = mAmazonSQS.createQueue(
+				new CreateQueueRequest(Global.QUEUE_NAME)).getQueueUrl();
+
+		mAmazonSQS.sendMessage(new SendMessageRequest(queueUrl, String
+				.valueOf(total)));
 
 		System.exit(status ? 0 : 1);
 	}
