@@ -8,7 +8,7 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
-import data.Pattern;
+import data.PatternInstance;
 import data.Word;
 
 public class Step3 {
@@ -24,9 +24,9 @@ public class Step3 {
 	    job.setReducerClass(Reducer3.class);
 	    
 	    job.setMapOutputKeyClass(Word.class);
-		job.setMapOutputValueClass(Pattern.class);
+		job.setMapOutputValueClass(PatternInstance.class);
 	    job.setOutputKeyClass(Word.class);
-	    job.setOutputValueClass(Pattern.class);
+	    job.setOutputValueClass(PatternInstance.class);
 	    
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
 	    job.setOutputFormatClass(SequenceFileOutputFormat.class); 

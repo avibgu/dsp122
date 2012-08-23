@@ -6,14 +6,14 @@ import java.util.Set;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
-import data.Pattern;
+import data.PatternInstance;
 import data.Word;
 import data.WordContext;
 
-public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
+public class Reducer2 extends Reducer<WordContext, Word, Word, PatternInstance> {
 
 	protected Set<Word> wordsSet;
-	protected Pattern mPattern;
+	protected PatternInstance mPatternInstance;
 	protected WordContext mWordContext;
 	protected long mTotalCounter;
 
@@ -22,7 +22,7 @@ public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 			InterruptedException {
 
 		wordsSet = new HashSet<Word>();
-		mPattern = new Pattern();
+		mPatternInstance = new PatternInstance();
 		mWordContext = new WordContext();
 		mTotalCounter = pContext.getCounter("group", "totalCounter").getValue();
 
@@ -47,7 +47,7 @@ public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 			}
 		}
 
-		mPattern.set(
+		mPatternInstance.set(
 				getWordAt(0),
 				getWordAt(1),
 				getWordAt(2),
@@ -57,10 +57,10 @@ public class Reducer2 extends Reducer<WordContext, Word, Word, Pattern> {
 						wordContext.getWordAt(1).getWord()
 								+ wordContext.getWordAt(3).getWord(), 1));
 
-		if (mPattern.isLegal()) {
+		if (mPatternInstance.isLegal()) {
 
-			mPattern.calcPMI(mTotalCounter);
-			context.write(mPattern.getHook(), mPattern);
+			mPatternInstance.calcPMI(mTotalCounter);
+			context.write(mPatternInstance.getHook(), mPatternInstance);
 		}
 	}
 
