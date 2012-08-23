@@ -34,7 +34,6 @@ public class Mapper9 extends Mapper<Word, Cluster, WordsPair, Cluster> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	};
 
 	protected void map(Word word, Cluster cluster, Context context)
