@@ -90,17 +90,17 @@ public class Main {
 		
 		
 		
-		HadoopJarStepConfig hadoopJarStep9train = new HadoopJarStepConfig().withJar(
-				"s3n://" + Global.BUCKET_NAME + "/step9.jar").withMainClass(
-				"step9.Step9").withArgs(
-				"s3n://" + Global.BUCKET_NAME + "/output8/",
-				"s3n://" + Global.BUCKET_NAME + "/output-train/", "0");
-		
-		HadoopJarStepConfig hadoopJarStep9test = new HadoopJarStepConfig().withJar(
-				"s3n://" + Global.BUCKET_NAME + "/step9.jar").withMainClass(
-				"step9.Step9").withArgs(
-				"s3n://" + Global.BUCKET_NAME + "/output8/",
-				"s3n://" + Global.BUCKET_NAME + "/output-test/", "1");
+//		HadoopJarStepConfig hadoopJarStep9train = new HadoopJarStepConfig().withJar(
+//				"s3n://" + Global.BUCKET_NAME + "/step9.jar").withMainClass(
+//				"step9.Step9").withArgs(
+//				"s3n://" + Global.BUCKET_NAME + "/output8/",
+//				"s3n://" + Global.BUCKET_NAME + "/output-train/", "0");
+//		
+//		HadoopJarStepConfig hadoopJarStep9test = new HadoopJarStepConfig().withJar(
+//				"s3n://" + Global.BUCKET_NAME + "/step9.jar").withMainClass(
+//				"step9.Step9").withArgs(
+//				"s3n://" + Global.BUCKET_NAME + "/output8/",
+//				"s3n://" + Global.BUCKET_NAME + "/output-test/", "2");
 		
 		
 		
