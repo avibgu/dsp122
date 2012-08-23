@@ -27,7 +27,7 @@ public class Global {
 	// Batel
 	public static final String BUCKET_NAME = "dsp122-batel-avi-ass03";
 
-	public static final Integer NUM_OF_INSTANCES = 5;
+	public static final Integer NUM_OF_INSTANCES = 10;
 
 	// private static final String CORPUS_LOCATION =
 	// "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/5gram/data";
