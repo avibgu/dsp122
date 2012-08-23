@@ -26,40 +26,39 @@ public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
 			Context context) throws IOException, InterruptedException {
 
 		mTargetToPatternsMap.clear();
-		
+
 		for (Pattern pattern : patterns) {
 
-			Cluster cluster = null;
-
 			try {
-				cluster = mTargetToPatternsMap.get(pattern.getTarget().clone());
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
 
-			if (null == cluster) {
-				cluster = new Cluster();
-				cluster.setHookWord(hookWord);
-				mTargetToPatternsMap.put(pattern.getTarget(), cluster);
-			}
+				for (Word target : pattern.getTargets()) {
 
-			try {
-				cluster.add((Pattern) pattern.clone());
+					Cluster cluster = mTargetToPatternsMap.get(target.clone());
+
+					if (null == cluster) {
+
+						cluster = new Cluster();
+						cluster.setHookWord(hookWord);
+						mTargetToPatternsMap
+								.put((Word) target.clone(), cluster);
+					}
+
+					cluster.add((Pattern) pattern.clone());
+				}
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
 		}
-
+		
 		Collection<Cluster> clustersCollection = mTargetToPatternsMap.values();
-		
+
 		Cluster[] clusters = new Cluster[clustersCollection.size()];
-		
+
 		int i = 0;
-		
+
 		for (Cluster cluster : clustersCollection)
 			clusters[i++] = cluster;
 
-		// TODO: don't use new
 		Cluster tmpCluster = new Cluster();
 
 		for (i = 0; i < clusters.length; i++) {
@@ -72,14 +71,14 @@ public class Reducer4 extends Reducer<Word, Pattern, Word, Cluster> {
 
 					tmpCluster.mergeClusters(clusters[i], clusters[j]);
 					context.write(hookWord, tmpCluster);
-					// TODO: count this cluster
+
 					merged = true;
 				}
 			}
 
 			if (!merged)
 				context.write(hookWord, clusters[i]);
-			// TODO: count this cluster
+
 		}
 	};
 }
