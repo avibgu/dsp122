@@ -10,19 +10,22 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class Cluster implements WritableComparable<Cluster> {
 
+	public static int idgen = 0;
+	
 	protected String mId;
 
 	protected Word mHookWord;
 	protected Vector<Pattern> mCorePatters;
 	protected Vector<Pattern> mUnconfirmedPatters;
-	protected boolean mAllUnconfirmed;
 
 	public Cluster() {
-		mId = UUID.randomUUID().toString();
+//		mId = UUID.randomUUID().toString();
+		
+		mId = String.valueOf(idgen++);
+		
 		mHookWord = new Word();
 		mCorePatters = new Vector<Pattern>();
 		mUnconfirmedPatters = new Vector<Pattern>();
-		mAllUnconfirmed = true;
 	}
 
 	@Override
@@ -49,8 +52,6 @@ public class Cluster implements WritableComparable<Cluster> {
 			pattern.readFields(in);
 			mUnconfirmedPatters.add(pattern);
 		}
-
-		mAllUnconfirmed = in.readBoolean();
 	}
 
 	@Override
@@ -69,14 +70,12 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		for (Pattern pattern : mUnconfirmedPatters)
 			pattern.write(out);
-
-		out.writeBoolean(mAllUnconfirmed);
 	}
 
 	@Override
 	public int compareTo(Cluster pO) {
 
-		if (!mAllUnconfirmed)
+		if (!isAllUnconfirmed())
 			return 1;
 
 		return size() - pO.size();
@@ -148,16 +147,7 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	public boolean isAllUnconfirmed() {
-		return mAllUnconfirmed;
-	}
-
-	public void setNotAllUnconformed() {
-
-		if (mAllUnconfirmed) {
-
-			mAllUnconfirmed = false;
-			// TODO dec the num of clusters counter.. ???? Who calls it?
-		}
+		return mCorePatters.size() == 0;
 	}
 
 	public void mergeWithOtherClusterAndMarkCorePatterns(Cluster pCluster) {
@@ -198,7 +188,7 @@ public class Cluster implements WritableComparable<Cluster> {
 	 * n - core patterns size m - unconfirmed patterns size alfa - between
 	 * (0..1), is a parameter that lets us modify the relative weight of core
 	 * and unconfirmed patterns. HITS(C, (w1,w2)) = |{p; (w1,w2) appears in p
-	 * belongs to Pcore}| /n + alfa � |{p; (w1,w2) appears in p belongs to
+	 * belongs to Pcore}| /n + alfa |{p; (w1,w2) appears in p belongs to
 	 * Punconf }| /m.
 	 */
 
@@ -208,13 +198,11 @@ public class Cluster implements WritableComparable<Cluster> {
 		int appearsInPubconf = 0;
 
 		for (Pattern pattern : mCorePatters)
-			if (pattern.isWordContained(pWordsPair.mW1)
-					&& pattern.isWordContained(pWordsPair.mW2))
+			if (pattern.isWordsPairContained(pWordsPair.mW1, pWordsPair.mW2))
 				appearsInPcore++;
 
 		for (Pattern pattern : mUnconfirmedPatters)
-			if (pattern.isWordContained(pWordsPair.mW1)
-					&& pattern.isWordContained(pWordsPair.mW2))
+			if (pattern.isWordsPairContained(pWordsPair.mW1, pWordsPair.mW2))
 				appearsInPubconf++;
 
 		double hit = (appearsInPcore / mCorePatters.size()) + Global.alfa
@@ -256,10 +244,6 @@ public class Cluster implements WritableComparable<Cluster> {
 		mUnconfirmedPatters = pUnconfirmedPatters;
 	}
 
-	public void setAllUnconfirmed(boolean pAllUnconfirmed) {
-		mAllUnconfirmed = pAllUnconfirmed;
-	}
-
 	public boolean areShareAllCorePatterns(Cluster pOtherCluster) {
 
 		// originally: pOtherCluster.size() != size()
@@ -295,8 +279,6 @@ public class Cluster implements WritableComparable<Cluster> {
 			patterns.add((Pattern) pattern.clone());
 		
 		cluster.setUnconfirmedPatters(patterns);
-
-		cluster.setAllUnconfirmed(mAllUnconfirmed);
 		
 		return cluster;
 	}
@@ -306,7 +288,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append("\n" + mId + "\t" + mHookWord + "\t" + mAllUnconfirmed + "\n");
+		builder.append("\n" + mId + "\t" + mHookWord + "\n");
 		
 		for (Pattern pattern : mCorePatters)
 			builder.append(pattern + "\n");
