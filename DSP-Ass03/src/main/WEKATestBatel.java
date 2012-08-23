@@ -1,9 +1,5 @@
 package main;
 
-import java.util.Vector;
-
-import data.WordsPair;
-import utilities.Reader;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -20,7 +16,6 @@ public class WEKATestBatel {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-
 		FastVector fvNominalVal = new FastVector(3);
 		fvNominalVal.addElement("1");
 		fvNominalVal.addElement("2");
