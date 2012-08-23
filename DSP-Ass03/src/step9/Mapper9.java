@@ -22,10 +22,12 @@ public class Mapper9 extends Mapper<Word, Cluster, WordsPair, Cluster> {
 
 		mFileIndex = context.getConfiguration().getInt("fileIndex", 0);
 
-		if (mFileIndex == 0)
+		if (0 == mFileIndex)
 			mFileName = "train/relation-1-train.txt";
-		else
+		else if (1 == mFileIndex)
 			mFileName = "test/relation-1-test.txt";
+		else if (2 == mFileIndex)
+			mFileName = "answer/relation-1-score.txt";
 
 		Reader reader = new Reader(mFileName);
 
