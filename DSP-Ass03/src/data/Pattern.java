@@ -3,84 +3,77 @@ package data;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.hadoop.io.WritableComparable;
 
 public class Pattern implements WritableComparable<Pattern> {
 
 	protected Word mPrefix;
-	protected Word mCW1;
 	protected Word mInfix;
-	protected Word mCW2;
 	protected Word mPostfix;
 
-	protected Word mHook;
-	protected Word mTarget;
+	protected List<Word[]> mHookTargetPairs;
 
-	protected Integer mHookTargetCount;
-
-	protected Double mPMI;
+	protected List<Word> mHooks;
+	protected List<Word> mTargets;
 
 	protected PatternType mType;
 
 	public Pattern() {
-		this(new Word(), new Word(), new Word(), new Word(), new Word(),
-				new Word(), new Word(), 0);
+
+		mPrefix = new Word();
+		mInfix = new Word();
+		mPostfix = new Word();
+
+		mHookTargetPairs = new ArrayList<Word[]>();
+
+		mHooks = new ArrayList<Word>();
+		mTargets = new ArrayList<Word>();
 	}
 
-	public Pattern(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
-			Word pPostfix, Word pHook, Word pTarget, Integer pHookTargetCount) {
-		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, pHook, pTarget,
-				pHookTargetCount);
-	}
-
-	public boolean isLegal() {
-
-		if (mPrefix.getType() == WordType.HFW
-				&& mInfix.getType() == WordType.HFW
-				&& mPostfix.getType() == WordType.HFW) {
-
-			if (mCW1.getType() == WordType.HOOK
-					&& mCW2.getType() == WordType.CW) {
-
-				setHook(mCW1);
-				setTarget(mCW2);
-				return true;
-			}
-
-			else if (mCW1.getType() == WordType.CW
-					&& mCW2.getType() == WordType.HOOK) {
-
-				setHook(mCW2);
-				setTarget(mCW1);
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public void calcPMI(long pTotal) {
-		
-		mPMI = Math.log(mHookTargetCount) + Math.log(pTotal)
-				- Math.log(mHook.getCount()) - Math.log(mTarget.getCount());
+	public void set(PatternInstance pPatternInstance) {
+		mPrefix = pPatternInstance.getPrefix();
+		mInfix = pPatternInstance.getInfix();
+		mPostfix = pPatternInstance.getPostfix();
 	}
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
 
 		mPrefix.readFields(in);
-		mCW1.readFields(in);
 		mInfix.readFields(in);
-		mCW2.readFields(in);
 		mPostfix.readFields(in);
 
-		mHook.readFields(in);
-		mTarget.readFields(in);
+		int size = in.readInt();
 
-		mHookTargetCount = in.readInt();
+		for (int i = 0; i < size; i++) {
 
-		mPMI = in.readDouble();
+			Word hook = new Word();
+			hook.readFields(in);
+
+			Word target = new Word();
+			target.readFields(in);
+
+			mHookTargetPairs.add(new Word[] { hook, target });
+		}
+
+		size = in.readInt();
+
+		for (int i = 0; i < size; i++) {
+			Word hook = new Word();
+			hook.readFields(in);
+			mHooks.add(hook);
+		}
+
+		size = in.readInt();
+
+		for (int i = 0; i < size; i++) {
+			Word target = new Word();
+			target.readFields(in);
+			mTargets.add(target);
+		}
 
 		mType = in.readBoolean() ? PatternType.CORE : PatternType.UNCONFIRMED;
 	}
@@ -89,140 +82,97 @@ public class Pattern implements WritableComparable<Pattern> {
 	public void write(DataOutput out) throws IOException {
 
 		mPrefix.write(out);
-		mCW1.write(out);
 		mInfix.write(out);
-		mCW2.write(out);
 		mPostfix.write(out);
 
-		mHook.write(out);
-		mTarget.write(out);
+		out.writeInt(mHookTargetPairs.size());
 
-		out.writeInt(mHookTargetCount);
+		for (Word[] pair : mHookTargetPairs) {
+			pair[0].write(out);
+			pair[1].write(out);
+		}
 
-		out.writeDouble(mPMI);
+		out.writeInt(mHooks.size());
+
+		for (Word hook : mHooks)
+			hook.write(out);
+
+		out.writeInt(mTargets.size());
+
+		for (Word target : mTargets)
+			target.write(out);
 
 		out.writeBoolean((PatternType.CORE == mType) ? true : false);
 	}
 
 	@Override
-	public int compareTo(Pattern o) {
+	public int compareTo(Pattern pOther) {
 
-		if (mPMI < o.getPMI())
-			return -1;
+		int answer = mPrefix.compareTo(pOther.mPrefix);
+		if (0 != answer)
+			return answer;
 
-		else if (mPMI > o.getPMI())
-			return 1;
+		answer = mInfix.compareTo(pOther.mInfix);
+		if (0 != answer)
+			return answer;
 
-		else
-			return 0;
+		answer = mPostfix.compareTo(pOther.mPostfix);
+		return answer;
+	}
+
+	@Override
+	public boolean equals(Object pOther) {
+
+		if (!(pOther instanceof Pattern))
+			return false;
+
+		return this.compareTo((Pattern) pOther) == 0;
 	}
 
 	@Override
 	public int hashCode() {
-		return mHook.hashCode();
+		return mPrefix.hashCode() / 3 + mInfix.hashCode() / 3
+				+ mPostfix.hashCode() / 3;
 	}
 
 	@Override
-	public boolean equals(Object pObj) {
+	public Object clone() throws CloneNotSupportedException {
 
-		if (!(pObj instanceof Pattern))
-			return false;
+		Pattern pattern = new Pattern();
 
-		Pattern other = (Pattern) pObj;
+		pattern.mPrefix = (Word) this.mInfix.clone();
+		pattern.mInfix = (Word) this.mInfix.clone();
+		pattern.mPostfix = (Word) this.mInfix.clone();
 
-		return mPrefix.equals(other.mPrefix) && mCW1.equals(other.mCW1)
-				&& mInfix.equals(other.mInfix) && mCW2.equals(other.mCW2)
-				&& mPostfix.equals(other.mPostfix) && mHook.equals(other.mHook)
-				&& mTarget.equals(other.mTarget)
-				&& mHookTargetCount == other.mHookTargetCount
-				&& mPMI == other.mPMI && mType == other.mType;
+		for (Word[] pair : this.mHookTargetPairs)
+			pattern.mHookTargetPairs.add(new Word[] { (Word) pair[0].clone(),
+					(Word) pair[0].clone() });
+
+		for (Word hook : this.mHooks)
+			pattern.mHooks.add((Word) hook.clone());
+
+		for (Word target : this.mHooks)
+			pattern.mTargets.add((Word) target.clone());
+
+		pattern.mType = this.mType;
+
+		return pattern;
 	}
 
-	public boolean isWordContained(String strWord) {
+	public void add(Word pHook, Word pTarget) {
 
-		Word word = new Word(strWord);
+		mHookTargetPairs.add(new Word[] { pHook, pTarget });
 
-		if (mPrefix.compareTo(word) == 1 || mCW1.compareTo(word) == 1
-				|| mInfix.compareTo(word) == 1 || mCW2.compareTo(word) == 1
-				|| mPostfix.compareTo(word) == 1)
-
-			return true;
-
-		else
-			return false;
-
+		mHooks.add(pHook);
+		mTargets.add(pTarget);
 	}
 
-	public Word getPrefix() {
-		return mPrefix;
+	public List<Word> getHookWords() {
+		return mHooks;
 	}
 
-	public void setPrefix(Word pPrefix) {
-		mPrefix = pPrefix;
-	}
-
-	public Word getCW1() {
-		return mCW1;
-	}
-
-	public void setCW1(Word pCW1) {
-		mCW1 = pCW1;
-	}
-
-	public Word getInfix() {
-		return mInfix;
-	}
-
-	public void setInfix(Word pInfix) {
-		mInfix = pInfix;
-	}
-
-	public Word getCW2() {
-		return mCW2;
-	}
-
-	public void setCW2(Word pCW2) {
-		mCW2 = pCW2;
-	}
-
-	public Word getPostfix() {
-		return mPostfix;
-	}
-
-	public void setPostfix(Word pPostfix) {
-		mPostfix = pPostfix;
-	}
-
-	public Word getHook() {
-		return mHook;
-	}
-
-	public void setHook(Word pHook) {
-		mHook = pHook;
-	}
-
-	public Word getTarget() {
-		return mTarget;
-	}
-
-	public void setTarget(Word pTarget) {
-		mTarget = pTarget;
-	}
-
-	public Integer getHookTargetCount() {
-		return mHookTargetCount;
-	}
-
-	public void setHookTargetCount(Integer pHookTargetCount) {
-		mHookTargetCount = pHookTargetCount;
-	}
-
-	public Double getPMI() {
-		return mPMI;
-	}
-
-	public void setPMI(Double pPMI) {
-		mPMI = pPMI;
+	public List<Word> getTargets() {
+		return mTargets;
 	}
 
 	public PatternType getType() {
@@ -233,72 +183,18 @@ public class Pattern implements WritableComparable<Pattern> {
 		mType = pType;
 	}
 
-	public void set(String pPrefix, String pCW1, String pInfix, String pCW2,
-			String pPostfix) {
+	public boolean isWordsPairContained(String pW1, String pW2) {
 
-		mPrefix.setWord(pPrefix);
-		mCW1.setWord(pCW1);
-		mInfix.setWord(pInfix);
-		mCW2.setWord(pCW2);
-		mPostfix.setWord(pPostfix);
-	}
+		for (Word[] pair : mHookTargetPairs) {
 
-	public void set(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
-			Word pPostfix, Word pHook, Word pTarget, Integer pHookTargetCount) {
+			if (pair[0].getWord().equals(pW1) && pair[1].getWord().equals(pW2))
+				return true;
 
-		mPrefix = pPrefix;
-		mCW1 = pCW1;
-		mInfix = pInfix;
-		mCW2 = pCW2;
-		mPostfix = pPostfix;
+			else if (pair[0].getWord().equals(pW2)
+					&& pair[1].getWord().equals(pW1))
+				return true;
+		}
 
-		mHook = pHook;
-		mTarget = pTarget;
-
-		mHookTargetCount = pHookTargetCount;
-
-		mPMI = 0.0;
-
-		mType = PatternType.UNCONFIRMED;
-	}
-
-	public void set(Word pPrefix, Word pCW1, Word pInfix, Word pCW2,
-			Word pPostfix, Integer pHookTargetCount) {
-		set(pPrefix, pCW1, pInfix, pCW2, pPostfix, null, null, pHookTargetCount);
-	}
-
-	@Override
-	public String toString() {
-
-		StringBuilder stringBuilder = new StringBuilder();
-
-		stringBuilder.append(mPrefix + "\t");
-		stringBuilder.append(mCW1 + "\t");
-		stringBuilder.append(mInfix + "\t");
-		stringBuilder.append(mCW2 + "\t");
-		stringBuilder.append(mPostfix + "\n");
-
-		stringBuilder.append(mHook + "\t");
-		stringBuilder.append(mTarget + "\n");
-
-		stringBuilder.append(mHookTargetCount + "\t");
-		stringBuilder.append(mPMI + "\t");
-		stringBuilder.append(mType + "\n\n");
-
-		return stringBuilder.toString();
-	}
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-
-		Pattern pattern = new Pattern((Word) mPrefix.clone(),
-				(Word) mCW1.clone(), (Word) mInfix.clone(),
-				(Word) mCW2.clone(), (Word) mPostfix.clone(),
-				(Word) mHook.clone(), (Word) mTarget.clone(), mHookTargetCount);
-
-		pattern.setPMI(mPMI);
-		pattern.setType(mType);
-
-		return pattern;
+		return false;
 	}
 }

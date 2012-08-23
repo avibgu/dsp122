@@ -1,55 +1,61 @@
 package step3;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Global;
-import data.Pattern;
+import data.PatternInstance;
 import data.Word;
 
-public class Reducer3 extends Reducer<Word, Pattern, Word, Pattern> {
+public class Reducer3 extends Reducer<Word, PatternInstance, Word, PatternInstance> {
 
 
-	protected Set<Pattern> sortedPatterns;
+	protected Set<PatternInstance> sortedPatternInstances;
+	protected Set<PatternInstance> patternInstancesToRemove;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
-		sortedPatterns = new TreeSet<Pattern>();
+		sortedPatternInstances = new TreeSet<PatternInstance>();
+		patternInstancesToRemove = new HashSet<PatternInstance>();
 	}
 
-	protected void reduce(Word hookWord, Iterable<Pattern> patterns, Context context)
+	protected void reduce(Word hookWord, Iterable<PatternInstance> patterns, Context context)
 			throws IOException, InterruptedException {
 
-		sortedPatterns.clear();
+		sortedPatternInstances.clear();
+		patternInstancesToRemove.clear();
 		
-		for (Pattern pattern : patterns){
+		for (PatternInstance pattern : patterns){
 			
 			try {
-				sortedPatterns.add((Pattern)pattern.clone());
+				sortedPatternInstances.add((PatternInstance)pattern.clone());
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
-			}	
+			}
 		}
 
-		int filterIndex = sortedPatterns.size() * Global.L / 100;
+		int filterIndex = sortedPatternInstances.size() * Global.L / 100;
 		
 		int i = -1;
+
+		for (PatternInstance pattern : sortedPatternInstances){
 		
-		for (Pattern pattern : sortedPatterns){
-			
 			i++;
 			
 			if (i < filterIndex)
-				continue;
+				patternInstancesToRemove.add(pattern);
 			
-			else if (i > sortedPatterns.size() - filterIndex)
-				break;
-			
-			context.write(hookWord, pattern);
+			else if (i > sortedPatternInstances.size() - filterIndex)
+				patternInstancesToRemove.add(pattern);	
 		}
+		
+		for (PatternInstance pattern : sortedPatternInstances)
+			if (!patternInstancesToRemove.contains(pattern))
+				context.write(hookWord, pattern);
 	}
 }
