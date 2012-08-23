@@ -2,13 +2,14 @@ package step8;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+
+import data.Cluster;
+import data.Word;
 
 public class Step8 {
 
@@ -22,10 +23,10 @@ public class Step8 {
 	    job.setMapperClass(Mapper8.class);
 	    job.setReducerClass(Reducer8.class);
 	    
-	    job.setMapOutputKeyClass(DoubleWritable.class);
-		job.setMapOutputValueClass(Text.class);
-	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(DoubleWritable.class);
+	    job.setMapOutputKeyClass(Cluster.class);
+		job.setMapOutputValueClass(Cluster.class);
+	    job.setOutputKeyClass(Word.class);
+	    job.setOutputValueClass(Cluster.class);
 	    
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
 	    job.setOutputFormatClass(SequenceFileOutputFormat.class);
