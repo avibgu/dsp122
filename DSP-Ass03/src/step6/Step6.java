@@ -43,8 +43,7 @@ public class Step6 {
 		job.setOutputValueClass(Cluster.class);
 
 		job.setInputFormatClass(SequenceFileInputFormat.class);
-		job.setOutputFormatClass(TextOutputFormat.class); // TODO:
-		// SequenceFileOutputFormat
+		job.setOutputFormatClass(TextOutputFormat.class); // TODO: SequenceFileOutputFormat
 
 		inDir = args[1];
 		outDir = args[2];

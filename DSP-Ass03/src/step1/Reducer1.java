@@ -29,7 +29,7 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 
 	protected void reduce(Word word, Iterable<WordContext> wordContexts,
 			Context context) throws IOException, InterruptedException {
-		
+
 		wordContextsList.clear();
 		mTargetsMap.clear();
 
@@ -40,9 +40,9 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		for (WordContext wordContext : wordContexts) {
 
 			sum += wordContext.getNumOfOccurrences();
-			
+
 			try {
-				wordContextsList.add((WordContext)wordContext.clone());
+				wordContextsList.add((WordContext) wordContext.clone());
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -51,7 +51,8 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		word.setCount(sum);
 
 		// we count every word
-		context.getCounter("group", "totalCounter").increment(sum);
+		context.getConfiguration().setLong("totalCounter",
+				context.getConfiguration().getLong("totalCounter", 0) + sum);
 
 		if (sum > Global.FH)
 			word.setType(WordType.HFW);
@@ -70,7 +71,7 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 		// for each Hook word, write in the context - how many times
 		// the target word appeared with me..
 		if (word.getType() == WordType.HOOK) {
-				
+
 			for (WordContext wordContext : wordContextsList) {
 
 				if (wordContext.getWordAt(1).equals(word))
@@ -79,16 +80,16 @@ public class Reducer1 extends Reducer<Word, WordContext, Word, WordContext> {
 				if (wordContext.getWordAt(3).equals(word))
 					incTargetCounter(wordContext.getWordAt(1));
 			}
-						
+
 			for (WordContext wordContext : wordContextsList) {
 
 				if (wordContext.getWordAt(1).equals(word))
-					wordContext.setHookTargetCount(mTargetsMap.get(wordContext
-							.getWordAt(3)).get());
+					wordContext.setHookTargetCount(mTargetsMap.get(
+							wordContext.getWordAt(3)).get());
 
 				if (wordContext.getWordAt(3).equals(word))
-					wordContext.setHookTargetCount(mTargetsMap.get(wordContext
-							.getWordAt(1)).get());
+					wordContext.setHookTargetCount(mTargetsMap.get(
+							wordContext.getWordAt(1)).get());
 			}
 		}
 
