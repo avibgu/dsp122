@@ -2,13 +2,15 @@ package step9;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+import data.Cluster;
+import data.WordsPair;
 
 public class Step9 {
 
@@ -34,10 +36,10 @@ public class Step9 {
 		job.setMapperClass(Mapper9.class);
 		job.setReducerClass(Reducer9.class);
 
-		job.setMapOutputKeyClass(DoubleWritable.class);
-		job.setMapOutputValueClass(Text.class);
+		job.setMapOutputKeyClass(WordsPair.class);
+		job.setMapOutputValueClass(Cluster.class);
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(DoubleWritable.class);
+		job.setOutputValueClass(Text.class);
 
 		job.setInputFormatClass(SequenceFileInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);

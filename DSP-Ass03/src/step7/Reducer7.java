@@ -7,9 +7,9 @@ import java.util.List;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
-import data.Pattern;
+import data.PatternInstance;
 
-public class Reducer7 extends Reducer<Pattern, Cluster, Cluster, Cluster> {
+public class Reducer7 extends Reducer<PatternInstance, Cluster, Cluster, Cluster> {
 
 	protected List<Cluster> mClusters;
 
@@ -19,7 +19,7 @@ public class Reducer7 extends Reducer<Pattern, Cluster, Cluster, Cluster> {
 		mClusters = new ArrayList<Cluster>();
 	};
 
-	protected void reduce(Pattern pattern, Iterable<Cluster> clusters,
+	protected void reduce(PatternInstance pattern, Iterable<Cluster> clusters,
 			Context context) throws IOException, InterruptedException {
 		
 		mClusters.clear();
