@@ -27,6 +27,8 @@ public class Global {
 	// Batel
 	public static final String BUCKET_NAME = "dsp122-batel-avi-ass03";
 
+	public static final String QUEUE_NAME = "TOTAL_COUNTER";
+	
 	public static final Integer NUM_OF_INSTANCES = 10;
 
 	// private static final String CORPUS_LOCATION =
