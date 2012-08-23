@@ -1,5 +1,7 @@
 package step6;
 
+import java.io.File;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
@@ -14,6 +16,9 @@ import data.Word;
 
 public class Step6 {
 
+	protected static String inDir;
+	protected static String outDir;
+	
 	public static void main(String[] args) throws Exception {
 
 		Configuration conf = new Configuration();
@@ -32,15 +37,33 @@ public class Step6 {
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
 	    job.setOutputFormatClass(TextOutputFormat.class);		// TODO: SequenceFileOutputFormat
 
-	    FileInputFormat.addInputPath(job, new Path(args[1]));
-	    FileOutputFormat.setOutputPath(job, new Path(args[2]));
+	    inDir = args[1];
+	    outDir = args[2];
+	    
+	    FileInputFormat.addInputPath(job, new Path(inDir));
+	    FileOutputFormat.setOutputPath(job, new Path(outDir));
 
-	    // TODO: read the allUnConfirmed counter
-//	    while (true){
+	    while (conf.getBoolean("ClustersCounter", true)){
+		
+	    	conf.setBoolean("ClustersCounter", false);
+	    
+	    	handleInOutDirectories();
+	    	
 	    	job.waitForCompletion(true);
-	    	//TODO: handle in and out directories..
-//	    }
+	    	
+	    }
 
-//	    System.exit(0);
+	    System.exit(0);
+	}
+
+	private static void handleInOutDirectories() {
+
+		File out = new File(outDir);
+		File in = new File(inDir);
+		
+		in.delete();
+		out.renameTo(in);		
+		out.delete();
+		
 	}
 }
