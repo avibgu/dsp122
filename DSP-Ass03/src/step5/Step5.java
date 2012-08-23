@@ -7,6 +7,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import data.Cluster;
 import data.Pattern;
@@ -30,7 +31,7 @@ public class Step5 {
 	    job.setOutputValueClass(Cluster.class);
 	    
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
-	    job.setOutputFormatClass(SequenceFileOutputFormat.class); 
+	    job.setOutputFormatClass(TextOutputFormat.class);		// TODO: SequenceFileOutputFormat 
 	    
 	    FileInputFormat.addInputPath(job, new Path(args[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[2]));
