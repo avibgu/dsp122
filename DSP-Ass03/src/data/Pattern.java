@@ -24,6 +24,8 @@ public class Pattern implements WritableComparable<Pattern> {
 		mPrefix = new Word();
 		mInfix = new Word();
 		mPostfix = new Word();
+		
+		mType = PatternType.UNCONFIRMED;
 
 		mHooks = new ArrayList<Word>();
 		mTargets = new ArrayList<Word>();

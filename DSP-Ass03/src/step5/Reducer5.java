@@ -27,6 +27,7 @@ public class Reducer5 extends Reducer<Word, Pattern, Word, Cluster> {
 
 		mTargetToPatternsMap.clear();
 
+		//Union by Target word
 		for (Pattern pattern : patterns) {
 
 			try {
@@ -61,6 +62,7 @@ public class Reducer5 extends Reducer<Word, Pattern, Word, Cluster> {
 
 		Cluster tmpCluster = new Cluster();
 
+		//merge clusters that share more than S percent of their patterns
 		for (i = 0; i < clusters.length; i++) {
 
 			boolean merged = false;
