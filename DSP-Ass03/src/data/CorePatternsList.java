@@ -22,26 +22,40 @@ public class CorePatternsList implements WritableComparable<CorePatternsList>{
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		for(Pattern pattern : mCorePatterns)
+		
+		int size = in.readInt(); 
+		
+		for(int i = 0; i < size; i++){
+			
+			Pattern pattern = new Pattern();
 			pattern.readFields(in);
+			mCorePatterns.add(pattern);
+		}
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
+		
+		out.writeInt(mCorePatterns.size());
+		
 		for(Pattern pattern : mCorePatterns)
 			pattern.write(out);
 	}
-
+	
+	//TODO: should be equals or contains??..
 	@Override
 	public int compareTo(CorePatternsList pOther) {
 
-		int ans = 0;
-		Vector<Pattern> other =  pOther.getCorePatterns();
+		int ans = this.mCorePatterns.size() - pOther.getCorePatterns().size();
 		
-		for(int i = 0; i < mCorePatterns.size() && ans == 0; i++)
-			ans = other.get(i).compareTo(mCorePatterns.get(i));
+		if (0 != ans)
+			return ans;
+	
+		for(Pattern pattern : pOther.getCorePatterns())
+			if (!mCorePatterns.contains(pattern))
+				return -1;
 		
-		return ans;
+		return 0;
 	}
 	
 	@Override
@@ -55,8 +69,14 @@ public class CorePatternsList implements WritableComparable<CorePatternsList>{
 
 	@Override
 	public int hashCode() {
-		//TODO
-		return 0;
+		
+		int hashCode = 0;
+		int size = mCorePatterns.size();
+		
+		for(Pattern pattern : mCorePatterns)
+			hashCode += pattern.hashCode() / size;
+		
+		return hashCode; 
 	}
 	
 	public Vector<Pattern> getCorePatterns() {
@@ -66,5 +86,4 @@ public class CorePatternsList implements WritableComparable<CorePatternsList>{
 	public void setCorePatterns(Vector<Pattern> pCorePatterns) {
 		this.mCorePatterns = pCorePatterns;
 	}
-
 }
