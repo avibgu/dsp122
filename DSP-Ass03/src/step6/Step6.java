@@ -33,6 +33,9 @@ public class Step6 {
 
 		Job job = new Job(conf, "step6");
 
+		//TODO need only one reducer - the clusters should come in order, sorted by their num of patterns, 
+		//so the minimal cluster would be chosen first
+		
 		job.setJarByClass(Step6.class);
 		job.setMapperClass(Mapper6.class);
 		job.setReducerClass(Reducer6.class);
