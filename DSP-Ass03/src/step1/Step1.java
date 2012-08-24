@@ -49,7 +49,7 @@ public class Step1 {
 
 		boolean status = job.waitForCompletion(true);
 
-		long total = conf.getLong("totalCounter", 0);
+		long total = conf.getLong("totalCounter", 5000);
 
 		// AmazonS3 mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
 		// Step1.class.getResourceAsStream("AwsCredentials.properties")));
@@ -62,7 +62,7 @@ public class Step1 {
 		// mAmazonS3.putObject(Global.BUCKET_NAME, "totalCounter", counterFile);
 
 		AmazonSQS mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
-				new File("AwsCredentials.properties")));
+				Step1.class.getResourceAsStream("AwsCredentials.properties")));
 
 		String queueUrl = mAmazonSQS.createQueue(
 				new CreateQueueRequest(Global.QUEUE_NAME)).getQueueUrl();

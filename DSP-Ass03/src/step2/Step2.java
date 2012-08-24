@@ -19,6 +19,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
@@ -34,15 +35,15 @@ public class Step2 {
 
 		Configuration conf = new Configuration();
 
-//		AmazonS3 mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
-//				Step2.class.getResourceAsStream("AwsCredentials.properties")));
-//
-//		long totalCounter = Long.valueOf(new BufferedReader(
-//				new InputStreamReader(mAmazonS3.getObject(Global.BUCKET_NAME,
-//						"totalCounter").getObjectContent())).readLine());
-		
+		// AmazonS3 mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
+		// Step2.class.getResourceAsStream("AwsCredentials.properties")));
+		//
+		// long totalCounter = Long.valueOf(new BufferedReader(
+		// new InputStreamReader(mAmazonS3.getObject(Global.BUCKET_NAME,
+		// "totalCounter").getObjectContent())).readLine());
+
 		AmazonSQS mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
-				new File("AwsCredentials.properties")));
+				Step2.class.getResourceAsStream("AwsCredentials.properties")));
 
 		String queueUrl = mAmazonSQS.createQueue(
 				new CreateQueueRequest(Global.QUEUE_NAME)).getQueueUrl();
@@ -56,6 +57,9 @@ public class Step2 {
 				receiveMessageRequest).getMessages();
 
 		conf.setLong("totalCounter", Long.valueOf(messages.get(0).getBody()));
+
+//		mAmazonSQS.deleteMessage(new DeleteMessageRequest(queueUrl, messages
+//				.get(0).getReceiptHandle()));
 
 		Job job = new Job(conf, "step2");
 
