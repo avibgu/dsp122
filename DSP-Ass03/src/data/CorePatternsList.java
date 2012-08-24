@@ -21,20 +21,41 @@ public class CorePatternsList implements WritableComparable<CorePatternsList>{
 	} 
 
 	@Override
-	public void readFields(DataInput arg0) throws IOException {
-		// TODO Auto-generated method stub
-		
+	public void readFields(DataInput in) throws IOException {
+		for(Pattern pattern : mCorePatterns)
+			pattern.readFields(in);
 	}
 
 	@Override
-	public void write(DataOutput arg0) throws IOException {
-		// TODO Auto-generated method stub
-		
+	public void write(DataOutput out) throws IOException {
+		for(Pattern pattern : mCorePatterns)
+			pattern.write(out);
 	}
 
 	@Override
-	public int compareTo(CorePatternsList arg0) {
-		// TODO Auto-generated method stub
+	public int compareTo(CorePatternsList pOther) {
+
+		int ans = 0;
+		Vector<Pattern> other =  pOther.getCorePatterns();
+		
+		for(int i = 0; i < mCorePatterns.size() && ans == 0; i++)
+			ans = other.get(i).compareTo(mCorePatterns.get(i));
+		
+		return ans;
+	}
+	
+	@Override
+	public boolean equals(Object pOther) {
+
+		if (!(pOther instanceof CorePatternsList))
+			return false;
+
+		return this.compareTo((CorePatternsList) pOther) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		//TODO
 		return 0;
 	}
 	
