@@ -21,8 +21,10 @@ public class Mapper51 extends Mapper<Text, Pattern, HookTargetPair, Pattern> {
 	protected void map(Text hookWord, Pattern pattern, Context context)
 			throws IOException, InterruptedException {
 		
-		for (String target : pattern.getTargets()) {
-			mHookTargetPair.set(hookWord.toString(), target);
+		String hook = hookWord.toString();
+		
+		for (String target : pattern.getTargetsAsSet()) {
+			mHookTargetPair.set(hook, target);
 			context.write(mHookTargetPair, pattern);
 		}
 	}
