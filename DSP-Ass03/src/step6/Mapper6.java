@@ -11,10 +11,10 @@ public class Mapper6 extends Mapper<Text, Cluster, Cluster, Text> {
 
 	protected void map(Text hookWord, Cluster cluster, Context context)
 			throws IOException, InterruptedException {
-		
-		if(cluster.isAllUnconfirmed())
-			context.getConfiguration().setBoolean("ClustersCounter", true);
-		
+
+		if (cluster.isAllUnconfirmed())
+			context.getCounter("Counters", "toStop").increment(1);
+
 		context.write(cluster, hookWord);
 	}
 }

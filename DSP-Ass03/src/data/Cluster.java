@@ -18,6 +18,8 @@ public class Cluster implements WritableComparable<Cluster> {
 	protected Vector<Pattern> mCorePatters;
 	protected Vector<Pattern> mUnconfirmedPatters;
 
+	protected boolean mMerged;
+
 	public Cluster() {
 		// mId = UUID.randomUUID().toString();
 
@@ -26,6 +28,8 @@ public class Cluster implements WritableComparable<Cluster> {
 		mHookWord = "";
 		mCorePatters = new Vector<Pattern>();
 		mUnconfirmedPatters = new Vector<Pattern>();
+		
+		mMerged = false;
 	}
 
 	@Override
@@ -52,6 +56,8 @@ public class Cluster implements WritableComparable<Cluster> {
 			pattern.readFields(in);
 			mUnconfirmedPatters.add(pattern);
 		}
+		
+		mMerged = in.readBoolean();
 	}
 
 	@Override
@@ -70,6 +76,8 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		for (Pattern pattern : mUnconfirmedPatters)
 			pattern.write(out);
+		
+		out.writeBoolean(mMerged);
 	}
 
 	@Override
@@ -318,5 +326,13 @@ public class Cluster implements WritableComparable<Cluster> {
 		mHookWord = "";
 		mCorePatters.clear();
 		mUnconfirmedPatters.clear();
+	}
+
+	public boolean hasMerged() {
+		return mMerged;
+	}
+
+	public void markAsMerged() {
+		mMerged = true;
 	}
 }
