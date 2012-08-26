@@ -1,6 +1,11 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -8,10 +13,13 @@ import java.util.Vector;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import data.Global;
 
+import step2.Step2;
+import step6.Step6;
 import utilities.FileManipulator;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -31,8 +39,8 @@ public class WekaMain {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		final File trainFolder = new File("output-train");
-		final File testFolder = new File("output-test");
+//		final File trainFolder = new File("outputTrain");
+//		final File testFolder = new File("outputTest");
 
 		AmazonS3 mAmazonS3 = new AmazonS3Client(
 				new PropertiesCredentials(WekaMain.class
@@ -42,21 +50,17 @@ public class WekaMain {
 		Set<String> testSet = new HashSet<String>();
 
 		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
-				Global.BUCKET_NAME).getObjectSummaries()) {
+				Global.BUCKET_NAME, "outputTrain").getObjectSummaries())
+			trainSet.add(objectSummary.getKey());
 
-			String key = objectSummary.getKey();
-
-			if (key.startsWith("output-train"))
-				trainSet.add(key);
-
-			else if (key.startsWith("output-test"))
-				testSet.add(key);
-		}
+		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
+				Global.BUCKET_NAME, "outputTest").getObjectSummaries())
+			testSet.add(objectSummary.getKey());
 
 		Vector<String> trainLines = readFilesFromFolder(mAmazonS3, trainSet);
 		Vector<String> testLines = readFilesFromFolder(mAmazonS3, trainSet);
 
-		int clusterSize = trainLines.get(0).split(",").length - 1;
+		int clusterSize = trainLines.get(0).trim().split(",").length - 1;
 
 		Instances isTrainingSet = createFeatureVector(trainLines, clusterSize);
 		Instances isTestingSet = createFeatureVector(testLines, clusterSize);
