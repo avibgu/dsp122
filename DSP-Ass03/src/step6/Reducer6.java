@@ -2,19 +2,22 @@ package step6;
 
 import java.io.IOException;
 
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
 import data.Global;
 import data.Word;
 
-public class Reducer6 extends Reducer<Cluster, Word, Word, Cluster> {
+public class Reducer6 extends Reducer<Cluster, Word, Text, Cluster> {
 
 	protected Cluster mCluster;
+	protected Text mTextWord;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 		mCluster = null;
+		mTextWord = new Text();
 	};
 
 	protected void reduce(Cluster cluster, Iterable<Word> hookWords,
@@ -32,13 +35,17 @@ public class Reducer6 extends Reducer<Cluster, Word, Word, Cluster> {
 				&& mCluster.areShareAllCorePatterns(cluster))
 			mCluster.mergeWithOtherClusterAndMarkCorePatterns(cluster);
 		
-		else
-			context.write(cluster.getHookWord(), cluster);
+		else{
+			mTextWord.set(cluster.getHookWord());
+			context.write(mTextWord, cluster);
+		}
 	};
 
 	protected void cleanup(Context context) throws IOException,
 			InterruptedException {
-		if (!mCluster.isAllUnconfirmed())
-			context.write(mCluster.getHookWord(), mCluster);
+		if (!mCluster.isAllUnconfirmed()){
+			mTextWord.set(mCluster.getHookWord());
+			context.write(mTextWord, mCluster);
+		}
 	};
 }

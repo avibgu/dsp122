@@ -2,14 +2,15 @@ package step56;
 
 import java.io.IOException;
 
+import javax.xml.soap.Text;
+
 import org.apache.hadoop.mapreduce.Mapper;
 
 import data.Cluster;
-import data.Word;
 
-public class Mapper56 extends Mapper<Word, Cluster, Word, Cluster> {
+public class Mapper56 extends Mapper<Text, Cluster, Text, Cluster> {
 
-	protected void map(Word hookWord, Cluster cluster, Context context)
+	protected void map(Text hookWord, Cluster cluster, Context context)
 			throws IOException, InterruptedException {
 		context.write(hookWord, cluster);
 	}

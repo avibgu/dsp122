@@ -4,20 +4,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
 import data.CorePatternsList;
 import data.Global;
-import data.Word;
 
-public class Reducer7 extends Reducer<CorePatternsList, Cluster, Word, Cluster> {
+public class Reducer7 extends Reducer<CorePatternsList, Cluster, Text, Cluster> {
 
 	protected List<Cluster> mClusters;
+	protected Text mTextWord;
 
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-
+		
+		mTextWord = new Text();
 		mClusters = new ArrayList<Cluster>();
 	};
 
@@ -48,7 +50,8 @@ public class Reducer7 extends Reducer<CorePatternsList, Cluster, Word, Cluster> 
 					clusterI.mergeWithOtherClusterAndMarkCorePatterns(clusterJ);
 			}
 
-			context.write(clusterI.getHookWord(), clusterI);
+			mTextWord.set(clusterI.getHookWord());
+			context.write(mTextWord, clusterI);
 		}
 	}
 }
