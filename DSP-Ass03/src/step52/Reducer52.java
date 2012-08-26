@@ -1,4 +1,4 @@
-package step56;
+package step52;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import data.Cluster;
 import data.Global;
 
-public class Reducer56 extends Reducer<Text, Cluster, Text, Cluster> {
+public class Reducer52 extends Reducer<Text, Cluster, Text, Cluster> {
 
 	protected ArrayList<Cluster> mClustersArray;
 	

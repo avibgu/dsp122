@@ -1,4 +1,4 @@
-package step56;
+package step52;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import data.Cluster;
 import data.Word;
 
-public class Step56 {
+public class Step52 {
 
 	public static void main(String[] args) throws Exception {
 	
@@ -19,9 +19,9 @@ public class Step56 {
 
 	    Job job = new Job(conf, "step56");
 	    
-	    job.setJarByClass(Step56.class);
-	    job.setMapperClass(Mapper56.class);
-	    job.setReducerClass(Reducer56.class);
+	    job.setJarByClass(Step52.class);
+	    job.setMapperClass(Mapper52.class);
+	    job.setReducerClass(Reducer52.class);
 	    
 	    job.setMapOutputKeyClass(Word.class);
 		job.setMapOutputValueClass(Cluster.class);
