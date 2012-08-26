@@ -23,8 +23,8 @@ public class Reducer4 extends Reducer<Pattern, PatternInstance, Text, Pattern> {
 			throws IOException, InterruptedException {
 
 		for (PatternInstance patternInstance : PatternInstances)
-			pattern.add(patternInstance.getHook().toString(), patternInstance
-					.getTarget().toString());
+			pattern.add(patternInstance.getHook().getWord(), patternInstance
+					.getTarget().getWord());
 
 		if (pattern.getHookWords().size() > 1) {
 
