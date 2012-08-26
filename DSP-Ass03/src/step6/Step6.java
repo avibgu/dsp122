@@ -79,14 +79,14 @@ public class Step6 {
 
 			String key = objectSummary.getKey();
 
-			if (key.startsWith("output5"))
+			if (key.startsWith(inDir))
 				mAmazonS3.deleteObject(new DeleteObjectRequest(
 						Global.BUCKET_NAME, key));
 
-			if (key.startsWith("output6")) {
+			if (key.startsWith(outDir)) {
 
 				mAmazonS3.copyObject(new CopyObjectRequest(Global.BUCKET_NAME,
-						key, Global.BUCKET_NAME, key.replaceFirst("6", "5")));
+						key, Global.BUCKET_NAME, key.replaceFirst(outDir, inDir)));
 
 				mAmazonS3.deleteObject(new DeleteObjectRequest(
 						Global.BUCKET_NAME, key));
