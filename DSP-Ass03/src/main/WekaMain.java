@@ -1,11 +1,6 @@
 package main;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -13,13 +8,10 @@ import java.util.Vector;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import data.Global;
 
-import step2.Step2;
-import step6.Step6;
 import utilities.FileManipulator;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
