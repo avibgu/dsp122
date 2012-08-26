@@ -2,8 +2,7 @@ package step52;
 
 import java.io.IOException;
 
-import javax.xml.soap.Text;
-
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import data.Cluster;
