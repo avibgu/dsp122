@@ -24,8 +24,8 @@ import data.Global;
 
 public class Step6 {
 
-	protected static String inDir;
-	protected static String outDir;
+	protected static String inDir = "output52";
+	protected static String outDir = "output56";
 
 	public static void main(String[] args) throws Exception {
 
@@ -47,6 +47,9 @@ public class Step6 {
 			// so the minimal cluster would be chosen first
 			conf.set("mapred.reduce.tasks", "1");
 
+			conf.set("mapred.map.child.java.opts", "-Xmx5120m");
+			conf.set("mapred.reduce.child.java.opts", "-Xmx5120m");
+			
 			job.setJarByClass(Step6.class);
 			job.setMapperClass(Mapper6.class);
 			job.setReducerClass(Reducer6.class);
@@ -80,7 +83,7 @@ public class Step6 {
 				Step6.class.getResourceAsStream("AwsCredentials.properties")));
 
 		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
-				Global.BUCKET_NAME).getObjectSummaries()) {
+				Global.BUCKET_NAME, "output").getObjectSummaries()) {
 
 			String key = objectSummary.getKey();
 

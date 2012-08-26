@@ -26,8 +26,8 @@ import data.Global;
 
 public class Step52 {
 
-	protected static String inDir = "";
-	protected static String outDir = "";
+	protected static String inDir = "output51";
+	protected static String outDir = "output52";
 
 	public static void main(String[] args) throws Exception {
 
@@ -42,6 +42,9 @@ public class Step52 {
 
 			Configuration conf = new Configuration();
 
+			conf.set("mapred.map.child.java.opts", "-Xmx5120m");
+			conf.set("mapred.reduce.child.java.opts", "-Xmx5120m");
+			
 			Job job = new Job(conf, "step52");
 
 			job.setJarByClass(Step52.class);
@@ -77,10 +80,12 @@ public class Step52 {
 				Step1.class.getResourceAsStream("AwsCredentials.properties")));
 
 		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
-				Global.BUCKET_NAME).getObjectSummaries()) {
+				Global.BUCKET_NAME, "output5").getObjectSummaries()) {
 
 			String key = objectSummary.getKey();
 
+			System.out.println(key);
+			
 			if (key.startsWith(inDir))
 				mAmazonS3.deleteObject(new DeleteObjectRequest(
 						Global.BUCKET_NAME, key));

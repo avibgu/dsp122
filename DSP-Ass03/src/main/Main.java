@@ -137,8 +137,8 @@ public class Main {
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 				.withInstanceCount(Global.NUM_OF_INSTANCES)
-				.withMasterInstanceType(InstanceType.M1Small.toString())
-				.withSlaveInstanceType(InstanceType.M1Small.toString())
+				.withMasterInstanceType(InstanceType.M1Large.toString())
+				.withSlaveInstanceType(InstanceType.M1Large.toString())
 				.withHadoopVersion(Global.HADOOP_VERSION)
 				.withEc2KeyName(Global.KEY_PAIR)
 				.withKeepJobFlowAliveWhenNoSteps(false)
