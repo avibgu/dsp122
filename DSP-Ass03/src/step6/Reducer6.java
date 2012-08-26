@@ -43,7 +43,7 @@ public class Reducer6 extends Reducer<Cluster, Text, Text, Cluster> {
 
 	protected void cleanup(Context context) throws IOException,
 			InterruptedException {
-		if (!mCluster.isAllUnconfirmed()){
+		if (null != mCluster && !mCluster.isAllUnconfirmed()){
 			mTextWord.set(mCluster.getHookWord());
 			context.write(mTextWord, mCluster);
 		}

@@ -20,6 +20,10 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 
 import data.Cluster;
 import data.Global;
@@ -28,11 +32,14 @@ public class Step52 {
 
 	protected static String inDir = "output51";
 	protected static String outDir = "output52";
+	protected static String outDirBase = "output52";
+	
+	protected static int counter = 1;
 
 	public static void main(String[] args) throws Exception {
 
 		inDir = args[1];
-		outDir = args[2];
+		outDirBase = args[2];
 
 		boolean status = true;
 
@@ -40,6 +47,8 @@ public class Step52 {
 
 		while (!toStop && status) {
 
+			outDir = outDirBase + "-" + counter++;
+			
 			Configuration conf = new Configuration();
 
 			conf.set("mapred.map.child.java.opts", "-Xmx5120m");
@@ -67,9 +76,19 @@ public class Step52 {
 			toStop = (0 == job.getCounters().getGroup("Counters")
 					.findCounter("toStop").getValue());
 
-			handleInOutDirectories();
+//			handleInOutDirectories();
+			
+			inDir = outDir;
 		}
 
+		AmazonSQS mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
+				Step1.class.getResourceAsStream("AwsCredentials.properties")));
+
+		String queueUrl = mAmazonSQS.createQueue(
+				new CreateQueueRequest(Global.QUEUE_NAME)).getQueueUrl();
+
+		mAmazonSQS.sendMessage(new SendMessageRequest(queueUrl, outDir));
+		
 		System.exit(status ? 0 : 1);
 	}
 

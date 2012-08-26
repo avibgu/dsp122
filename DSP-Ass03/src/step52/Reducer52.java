@@ -32,10 +32,10 @@ public class Reducer52 extends Reducer<Text, Cluster, Text, Cluster> {
 			}
 		}
 		
-		if (found){
-			context.getCounter("Counters", "toStop").increment(1);
+		if (!found)
 			return;
-		}
+		
+		context.getCounter("Counters", "toStop").increment(1);
 
 		clusterI.markAsMerged();
 
