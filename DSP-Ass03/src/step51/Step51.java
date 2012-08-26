@@ -1,4 +1,4 @@
-package step4;
+package step51;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -9,28 +9,29 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
+import data.Cluster;
+import data.HookTargetPair;
 import data.Pattern;
-import data.PatternInstance;
 
-public class Step4 {
+public class Step51 {
 
 	public static void main(String[] args) throws Exception {
 	
 		Configuration conf = new Configuration();
 
-	    Job job = new Job(conf, "step4");
+	    Job job = new Job(conf, "step51");
 	    
-	    job.setJarByClass(Step4.class);
-	    job.setMapperClass(Mapper4.class);
-	    job.setReducerClass(Reducer4.class);
+	    job.setJarByClass(Step51.class);
+	    job.setMapperClass(Mapper51.class);
+	    job.setReducerClass(Reducer51.class);
 	    
-	    job.setMapOutputKeyClass(Pattern.class);
-		job.setMapOutputValueClass(PatternInstance.class);
+	    job.setMapOutputKeyClass(HookTargetPair.class);
+		job.setMapOutputValueClass(Pattern.class);
 	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(Pattern.class);
+	    job.setOutputValueClass(Cluster.class);
 	    
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
-	    job.setOutputFormatClass(SequenceFileOutputFormat.class); 
+	    job.setOutputFormatClass(SequenceFileOutputFormat.class);
 	    
 	    FileInputFormat.addInputPath(job, new Path(args[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[2]));

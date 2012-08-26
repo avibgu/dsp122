@@ -14,7 +14,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	protected String mId;
 
-	protected Word mHookWord;
+	protected String mHookWord;
 	protected Vector<Pattern> mCorePatters;
 	protected Vector<Pattern> mUnconfirmedPatters;
 
@@ -23,7 +23,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		mId = String.valueOf(idgen++);
 
-		mHookWord = new Word();
+		mHookWord = "";
 		mCorePatters = new Vector<Pattern>();
 		mUnconfirmedPatters = new Vector<Pattern>();
 	}
@@ -33,7 +33,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		mId = in.readUTF();
 
-		mHookWord.readFields(in);
+		mHookWord = in.readUTF();
 
 		int size = in.readInt();
 
@@ -59,7 +59,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		out.writeUTF(mId);
 
-		mHookWord.write(out);
+		out.writeUTF(mHookWord);
 
 		out.writeInt(mCorePatters.size());
 
@@ -151,11 +151,11 @@ public class Cluster implements WritableComparable<Cluster> {
 				mUnconfirmedPatters.add(pattern);
 	}
 
-	public Word getHookWord() {
+	public String getHookWord() {
 		return mHookWord;
 	}
 
-	public void setHookWord(Word pHookWord) {
+	public void setHookWord(String pHookWord) {
 		mHookWord = pHookWord;
 	}
 
@@ -310,5 +310,13 @@ public class Cluster implements WritableComparable<Cluster> {
 			builder.append(pattern + "\n");
 
 		return builder.toString();
+	}
+
+	public void clear() {
+		
+		mId = "0";
+		mHookWord = "";
+		mCorePatters.clear();
+		mUnconfirmedPatters.clear();
 	}
 }

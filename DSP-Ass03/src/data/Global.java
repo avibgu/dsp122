@@ -29,7 +29,7 @@ public class Global {
 
 	public static final String QUEUE_NAME = "TOTAL_COUNTER";
 	
-	public static final Integer NUM_OF_INSTANCES = 5;
+	public static final Integer NUM_OF_INSTANCES = 10;
 
 	// private static final String CORPUS_LOCATION =
 	// "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/5gram/data";
