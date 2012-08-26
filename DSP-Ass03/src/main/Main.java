@@ -81,6 +81,12 @@ public class Main {
 				.withArgs("s3n://" + Global.BUCKET_NAME + "/output4/",
 						"s3n://" + Global.BUCKET_NAME + "/output51/");
 
+		HadoopJarStepConfig hadoopJarStep51Text = new HadoopJarStepConfig()
+				.withJar("s3n://" + Global.BUCKET_NAME + "/step51text.jar")
+				.withMainClass("step51.Step51")
+				.withArgs("s3n://" + Global.BUCKET_NAME + "/output4/",
+						"s3n://" + Global.BUCKET_NAME + "/output51text/");
+
 		// HadoopJarStepConfig hadoopJarStep52 = new HadoopJarStepConfig()
 		// .withJar("s3n://" + Global.BUCKET_NAME + "/step52.jar")
 		// .withMainClass("step52.Step52")
@@ -125,6 +131,10 @@ public class Main {
 				.withHadoopJarStep(hadoopJarStep51)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
+		StepConfig step51TextConfig = new StepConfig().withName("step51text")
+				.withHadoopJarStep(hadoopJarStep51Text)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
 		// StepConfig step52Config = new StepConfig().withName("step52")
 		// .withHadoopJarStep(hadoopJarStep52)
 		// .withActionOnFailure("TERMINATE_JOB_FLOW");
@@ -143,8 +153,8 @@ public class Main {
 
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 				.withInstanceCount(Global.NUM_OF_INSTANCES)
-				.withMasterInstanceType(InstanceType.M1Large.toString())
-				.withSlaveInstanceType(InstanceType.M1Large.toString())
+				.withMasterInstanceType(InstanceType.M1Small.toString())
+				.withSlaveInstanceType(InstanceType.M1Small.toString())
 				.withHadoopVersion(Global.HADOOP_VERSION)
 				.withEc2KeyName(Global.KEY_PAIR)
 				.withKeepJobFlowAliveWhenNoSteps(false)
@@ -157,7 +167,7 @@ public class Main {
 						step4Config, step51Config,
 						// step52Config,
 						// step6Config,
-						step9trainConfig, step9testConfig)
+						step9trainConfig, step9testConfig, step51TextConfig)
 				.withLogUri("s3n://" + Global.BUCKET_NAME + "/logs/");
 
 		RunJobFlowResult runJobFlowResult = mapReduce

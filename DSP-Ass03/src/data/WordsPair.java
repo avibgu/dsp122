@@ -65,7 +65,7 @@ public class WordsPair implements WritableComparable<WordsPair>{
 
 	@Override
 	public int hashCode() {
-		return mW1.hashCode();
+		return mW1.hashCode() / 2 + mW1.hashCode() / 2;
 	}
 	
 	public String getW1() {
@@ -91,5 +91,4 @@ public class WordsPair implements WritableComparable<WordsPair>{
 	public void setPositivity(String pPositivity) {
 		mPositivity = pPositivity;
 	}
-
 }

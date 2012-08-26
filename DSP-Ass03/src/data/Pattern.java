@@ -90,8 +90,7 @@ public class Pattern implements WritableComparable<Pattern> {
 		if (0 != answer)
 			return answer;
 
-		answer = mPostfix.compareTo(pOther.mPostfix);
-		return answer;
+		return mPostfix.compareTo(pOther.mPostfix);
 	}
 
 	@Override
@@ -114,9 +113,9 @@ public class Pattern implements WritableComparable<Pattern> {
 
 		Pattern pattern = new Pattern();
 
-		pattern.mPrefix = this.mInfix;
+		pattern.mPrefix = this.mPrefix;
 		pattern.mInfix = this.mInfix;
-		pattern.mPostfix = this.mInfix;
+		pattern.mPostfix = this.mPostfix;
 
 		for (String hook : this.mHooks)
 			pattern.mHooks.add(hook);

@@ -45,9 +45,8 @@ public class Step2 {
 
 		conf.setLong("totalCounter", Long.valueOf(messages.get(0).getBody()));
 
-		// TODO
-//		mAmazonSQS.deleteMessage(new DeleteMessageRequest(queueUrl, messages
-//				.get(0).getReceiptHandle()));
+		mAmazonSQS.deleteMessage(new DeleteMessageRequest(queueUrl, messages
+				.get(0).getReceiptHandle()));
 
 		Job job = new Job(conf, "step2");
 
