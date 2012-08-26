@@ -3,13 +3,13 @@ package step56;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import data.Cluster;
 import data.Global;
-import data.Word;
 
-public class Reducer56 extends Reducer<Word, Cluster, Word, Cluster> {
+public class Reducer56 extends Reducer<Text, Cluster, Text, Cluster> {
 
 	protected ArrayList<Cluster> mClustersArray;
 	
@@ -18,7 +18,7 @@ public class Reducer56 extends Reducer<Word, Cluster, Word, Cluster> {
 		mClustersArray = new ArrayList<Cluster>();
 	};
 
-	protected void reduce(Word hookWord, Iterable<Cluster> clusters,
+	protected void reduce(Text hookWord, Iterable<Cluster> clusters,
 			Context context) throws IOException, InterruptedException {
 
 		mClustersArray.clear();
@@ -54,8 +54,6 @@ public class Reducer56 extends Reducer<Word, Cluster, Word, Cluster> {
 				context.write(hookWord, mClustersArray.get(i));
 			
 			mClustersArray.set(i, null);
-			
-//			System.gc();
 		}
 	};
 }
