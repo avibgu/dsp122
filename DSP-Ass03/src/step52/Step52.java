@@ -1,36 +1,37 @@
-package step4;
+package step52;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
+import data.Cluster;
+import data.HookTargetPair;
 import data.Pattern;
-import data.PatternInstance;
+import data.Word;
 
-public class Step4 {
+public class Step52 {
 
 	public static void main(String[] args) throws Exception {
 	
 		Configuration conf = new Configuration();
 
-	    Job job = new Job(conf, "step4");
+	    Job job = new Job(conf, "step51");
 	    
-	    job.setJarByClass(Step4.class);
-	    job.setMapperClass(Mapper4.class);
-	    job.setReducerClass(Reducer4.class);
+	    job.setJarByClass(Step52.class);
+	    job.setMapperClass(Mapper52.class);
+	    job.setReducerClass(Reducer52.class);
 	    
-	    job.setMapOutputKeyClass(Pattern.class);
-		job.setMapOutputValueClass(PatternInstance.class);
-	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(Pattern.class);
+	    job.setMapOutputKeyClass(HookTargetPair.class);
+		job.setMapOutputValueClass(Pattern.class);
+	    job.setOutputKeyClass(Word.class);
+	    job.setOutputValueClass(Cluster.class);
 	    
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
-	    job.setOutputFormatClass(SequenceFileOutputFormat.class); 
+	    job.setOutputFormatClass(SequenceFileOutputFormat.class);
 	    
 	    FileInputFormat.addInputPath(job, new Path(args[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(args[2]));

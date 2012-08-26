@@ -10,11 +10,18 @@ import data.Word;
 
 public class Mapper7 extends Mapper<Word, Cluster, CorePatternsList, Cluster> {
 
+	protected CorePatternsList corePatternsList;
+	
+	@Override
+	protected void setup(Context pContext)
+			throws IOException, InterruptedException {
+		corePatternsList = new CorePatternsList();
+	}
+	
 	protected void map(Word hookWord, Cluster cluster, Context context)
 			throws IOException, InterruptedException {
 		
-		CorePatternsList corePatterns = new CorePatternsList(cluster.getCorePatters());
-		
-		context.write(corePatterns, cluster);
+		corePatternsList.setCorePatterns(cluster.getCorePatters());
+		context.write(corePatternsList, cluster);
 	}
 }

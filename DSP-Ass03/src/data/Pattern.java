@@ -10,55 +10,49 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class Pattern implements WritableComparable<Pattern> {
 
-	protected Word mPrefix;
-	protected Word mInfix;
-	protected Word mPostfix;
+	protected String mPrefix;
+	protected String mInfix;
+	protected String mPostfix;
 
-	protected List<Word> mHooks;
-	protected List<Word> mTargets;
+	protected List<String> mHooks;
+	protected List<String> mTargets;
 
 	protected PatternType mType;
 
 	public Pattern() {
 
-		mPrefix = new Word();
-		mInfix = new Word();
-		mPostfix = new Word();
-		
+		mPrefix = "";
+		mInfix = "";
+		mPostfix = "";
+
 		mType = PatternType.UNCONFIRMED;
 
-		mHooks = new ArrayList<Word>();
-		mTargets = new ArrayList<Word>();
+		mHooks = new ArrayList<String>();
+		mTargets = new ArrayList<String>();
 	}
 
 	public void set(PatternInstance pPatternInstance) {
-		mPrefix = pPatternInstance.getPrefix();
-		mInfix = pPatternInstance.getInfix();
-		mPostfix = pPatternInstance.getPostfix();
+		mPrefix = pPatternInstance.getPrefix().getWord();
+		mInfix = pPatternInstance.getInfix().getWord();
+		mPostfix = pPatternInstance.getPostfix().getWord();
 	}
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
 
-		mPrefix.readFields(in);
-		mInfix.readFields(in);
-		mPostfix.readFields(in);
+		mPrefix = in.readUTF();
+		mInfix = in.readUTF();
+		mPostfix = in.readUTF();
 
 		int size = in.readInt();
 
-		for (int i = 0; i < size; i++) {
-			Word hook = new Word();
-			hook.readFields(in);
-			mHooks.add(hook);
-		}
+		for (int i = 0; i < size; i++)
+			mHooks.add(in.readUTF());
 
 		size = in.readInt();
 
-		for (int i = 0; i < size; i++) {
-			Word target = new Word();
-			target.readFields(in);
-			mTargets.add(target);
-		}
+		for (int i = 0; i < size; i++)
+			mTargets.add(in.readUTF());
 
 		mType = in.readBoolean() ? PatternType.CORE : PatternType.UNCONFIRMED;
 	}
@@ -66,19 +60,19 @@ public class Pattern implements WritableComparable<Pattern> {
 	@Override
 	public void write(DataOutput out) throws IOException {
 
-		mPrefix.write(out);
-		mInfix.write(out);
-		mPostfix.write(out);
+		out.writeUTF(mPrefix);
+		out.writeUTF(mInfix);
+		out.writeUTF(mPostfix);
 
 		out.writeInt(mHooks.size());
 
-		for (Word hook : mHooks)
-			hook.write(out);
+		for (String hook : mHooks)
+			out.writeUTF(hook);
 
 		out.writeInt(mTargets.size());
 
-		for (Word target : mTargets)
-			target.write(out);
+		for (String target : mTargets)
+			out.writeUTF(target);
 
 		out.writeBoolean((PatternType.CORE == mType) ? true : false);
 	}
@@ -118,31 +112,31 @@ public class Pattern implements WritableComparable<Pattern> {
 
 		Pattern pattern = new Pattern();
 
-		pattern.mPrefix = (Word) this.mInfix.clone();
-		pattern.mInfix = (Word) this.mInfix.clone();
-		pattern.mPostfix = (Word) this.mInfix.clone();
+		pattern.mPrefix = this.mInfix;
+		pattern.mInfix = this.mInfix;
+		pattern.mPostfix = this.mInfix;
 
-		for (Word hook : this.mHooks)
-			pattern.mHooks.add((Word) hook.clone());
+		for (String hook : this.mHooks)
+			pattern.mHooks.add(hook);
 
-		for (Word target : this.mHooks)
-			pattern.mTargets.add((Word) target.clone());
+		for (String target : this.mTargets)
+			pattern.mTargets.add(target);
 
 		pattern.mType = this.mType;
 
 		return pattern;
 	}
 
-	public void add(Word pHook, Word pTarget) {
+	public void add(String pHook, String pTarget) {
 		mHooks.add(pHook);
 		mTargets.add(pTarget);
 	}
 
-	public List<Word> getHookWords() {
+	public List<String> getHookWords() {
 		return mHooks;
 	}
 
-	public List<Word> getTargets() {
+	public List<String> getTargets() {
 		return mTargets;
 	}
 
@@ -158,12 +152,10 @@ public class Pattern implements WritableComparable<Pattern> {
 
 		for (int i = 0; i < mHooks.size(); i++) {
 
-			if (mHooks.get(i).getWord().equals(pW1)
-					&& mTargets.get(i).getWord().equals(pW2))
+			if (mHooks.get(i).equals(pW1) && mTargets.get(i).equals(pW2))
 				return true;
 
-			else if (mHooks.get(i).getWord().equals(pW2)
-					&& mTargets.get(i).getWord().equals(pW1))
+			else if (mHooks.get(i).equals(pW2) && mTargets.get(i).equals(pW1))
 				return true;
 		}
 

@@ -27,8 +27,14 @@ public class Reducer7 extends Reducer<CorePatternsList, Cluster, Word, Cluster> 
 
 		mClusters.clear();
 
-		for (Cluster cluster : clusters)
-			mClusters.add(cluster);
+		for (Cluster cluster : clusters) {
+
+			try {
+				mClusters.add((Cluster) cluster.clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+		}
 
 		for (int i = 0; i < mClusters.size(); i++) {
 
@@ -39,13 +45,10 @@ public class Reducer7 extends Reducer<CorePatternsList, Cluster, Word, Cluster> 
 				Cluster clusterJ = mClusters.get(j);
 
 				if (clusterI.calcSharedPatternsPercents(clusterJ) >= Global.S)
-
 					clusterI.mergeWithOtherClusterAndMarkCorePatterns(clusterJ);
-
 			}
 
 			context.write(clusterI.getHookWord(), clusterI);
-
 		}
 	}
 }
