@@ -28,7 +28,7 @@ public class Cluster implements WritableComparable<Cluster> {
 		mHookWord = "";
 		mCorePatters = new Vector<Pattern>();
 		mUnconfirmedPatters = new Vector<Pattern>();
-		
+
 		mMerged = false;
 	}
 
@@ -56,7 +56,7 @@ public class Cluster implements WritableComparable<Cluster> {
 			pattern.readFields(in);
 			mUnconfirmedPatters.add(pattern);
 		}
-		
+
 		mMerged = in.readBoolean();
 	}
 
@@ -76,7 +76,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		for (Pattern pattern : mUnconfirmedPatters)
 			pattern.write(out);
-		
+
 		out.writeBoolean(mMerged);
 	}
 
@@ -216,7 +216,7 @@ public class Cluster implements WritableComparable<Cluster> {
 	public Double clacHits(WordsPair pWordsPair) {
 
 		int appearsInPcore = 0;
-		int appearsInPubconf = 0;
+		int appearsInPunconf = 0;
 
 		for (Pattern pattern : mCorePatters)
 			if (pattern.isWordsPairContained(pWordsPair.mW1, pWordsPair.mW2))
@@ -224,10 +224,20 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		for (Pattern pattern : mUnconfirmedPatters)
 			if (pattern.isWordsPairContained(pWordsPair.mW1, pWordsPair.mW2))
-				appearsInPubconf++;
+				appearsInPunconf++;
 
-		double hit = (appearsInPcore / mCorePatters.size()) + Global.alfa
-				* (appearsInPubconf / mUnconfirmedPatters.size());
+		double hit = 0.0;
+
+		try {
+			hit += appearsInPcore / mCorePatters.size();
+		} catch (Exception e) {
+		}
+
+		try {
+			hit += Global.alfa
+					* (appearsInPunconf / mUnconfirmedPatters.size());
+		} catch (Exception e) {
+		}
 
 		return hit;
 	}
@@ -240,14 +250,14 @@ public class Cluster implements WritableComparable<Cluster> {
 		mId = pId;
 	}
 
-//	public Vector<Pattern> getAllPatterns() {
-//
-//		Vector<Pattern> allPatterns = new Vector<Pattern>();
-//		allPatterns.addAll(mCorePatters);
-//		allPatterns.addAll(mUnconfirmedPatters);
-//
-//		return allPatterns;
-//	}
+	// public Vector<Pattern> getAllPatterns() {
+	//
+	// Vector<Pattern> allPatterns = new Vector<Pattern>();
+	// allPatterns.addAll(mCorePatters);
+	// allPatterns.addAll(mUnconfirmedPatters);
+	//
+	// return allPatterns;
+	// }
 
 	public Vector<Pattern> getCorePatters() {
 		return mCorePatters;
@@ -321,7 +331,7 @@ public class Cluster implements WritableComparable<Cluster> {
 	}
 
 	public void clear() {
-		
+
 		mId = "0";
 		mHookWord = "";
 		mCorePatters.clear();
