@@ -277,7 +277,6 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	public boolean areShareAllCorePatterns(Cluster pOtherCluster) {
 
-		// originally: pOtherCluster.size() != size()
 		if (pOtherCluster.getCorePatters().size() != this.mCorePatters.size())
 			return false;
 
