@@ -43,8 +43,8 @@ public class Step1 {
 
 		boolean status = job.waitForCompletion(true);
 
-		// TODO: bug..
-		long total = conf.getLong("totalCounter", 5000);
+		long total = job.getCounters().getGroup("Counters")
+				.findCounter("totalCounter").getValue();
 
 		AmazonSQS mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
 				Step1.class.getResourceAsStream("AwsCredentials.properties")));
