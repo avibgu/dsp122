@@ -26,6 +26,9 @@ public class Step9 {
 
 		Job job = new Job(conf, "step9");
 
+		conf.set("mapred.map.child.java.opts", "-Xmx5120m");
+		conf.set("mapred.reduce.child.java.opts", "-Xmx5120m");
+		
 		job.setJarByClass(Step9.class);
 		job.setMapperClass(Mapper9.class);
 		job.setReducerClass(Reducer9.class);
