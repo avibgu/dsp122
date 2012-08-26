@@ -2,14 +2,14 @@ package step6;
 
 import java.io.IOException;
 
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import data.Cluster;
-import data.Word;
 
-public class Mapper6 extends Mapper<Word, Cluster, Cluster, Word> {
+public class Mapper6 extends Mapper<Text, Cluster, Cluster, Text> {
 
-	protected void map(Word hookWord, Cluster cluster, Context context)
+	protected void map(Text hookWord, Cluster cluster, Context context)
 			throws IOException, InterruptedException {
 		
 		if(cluster.isAllUnconfirmed())

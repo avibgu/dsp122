@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -20,7 +21,6 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import data.Cluster;
 import data.Global;
-import data.Word;
 
 public class Step6 {
 
@@ -33,17 +33,18 @@ public class Step6 {
 
 		Job job = new Job(conf, "step6");
 
-		// TODO need only one reducer - the clusters should come in order,
+		// need only one reducer - the clusters should come in order,
 		// sorted by their num of patterns,
 		// so the minimal cluster would be chosen first
+		conf.set("mapred.reduce.tasks","1");
 
 		job.setJarByClass(Step6.class);
 		job.setMapperClass(Mapper6.class);
 		job.setReducerClass(Reducer6.class);
 
 		job.setMapOutputKeyClass(Cluster.class);
-		job.setMapOutputValueClass(Word.class);
-		job.setOutputKeyClass(Word.class);
+		job.setMapOutputValueClass(Text.class);
+		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Cluster.class);
 
 		job.setInputFormatClass(SequenceFileInputFormat.class);

@@ -1,8 +1,5 @@
 package step1;
 
-import java.io.File;
-import java.io.PrintWriter;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
@@ -12,8 +9,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 import com.amazonaws.auth.PropertiesCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
@@ -40,8 +35,7 @@ public class Step1 {
 		job.setOutputKeyClass(Word.class);
 		job.setOutputValueClass(WordContext.class);
 
-		job.setInputFormatClass(TextInputFormat.class); // TODO:
-		// SequenceFileInputFormat
+		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 		FileInputFormat.addInputPath(job, new Path(args[1]));
@@ -49,17 +43,8 @@ public class Step1 {
 
 		boolean status = job.waitForCompletion(true);
 
+		// TODO: bug..
 		long total = conf.getLong("totalCounter", 5000);
-
-		// AmazonS3 mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
-		// Step1.class.getResourceAsStream("AwsCredentials.properties")));
-		//
-		// File counterFile = new File("totalCounter");
-		// PrintWriter pw = new PrintWriter(counterFile);
-		// pw.write(String.valueOf(total));
-		// pw.close();
-		//
-		// mAmazonS3.putObject(Global.BUCKET_NAME, "totalCounter", counterFile);
 
 		AmazonSQS mAmazonSQS = new AmazonSQSClient(new PropertiesCredentials(
 				Step1.class.getResourceAsStream("AwsCredentials.properties")));
