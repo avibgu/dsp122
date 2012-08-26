@@ -4,7 +4,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.hadoop.io.WritableComparable;
 
@@ -160,5 +162,25 @@ public class Pattern implements WritableComparable<Pattern> {
 		}
 
 		return false;
+	}
+
+	public Set<String> getTargetsAsSet() {
+		return new HashSet<String>(mTargets);
+	}
+
+	@Override
+	public String toString() {
+
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("\n" + mPrefix + "\t" + mInfix + "\t" + mPostfix + "\t"
+				+ mType + "\n");
+
+		for (int i = 0; i < mHooks.size(); i++)
+			builder.append("<" + mHooks.get(i) + "," + mTargets.get(i) + "> ");
+
+		builder.append("\n");
+		
+		return builder.toString();
 	}
 }
