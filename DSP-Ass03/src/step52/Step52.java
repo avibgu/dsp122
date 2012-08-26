@@ -2,6 +2,7 @@ package step52;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -9,7 +10,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 import data.Cluster;
-import data.Word;
 
 public class Step52 {
 
@@ -17,15 +17,15 @@ public class Step52 {
 	
 		Configuration conf = new Configuration();
 
-	    Job job = new Job(conf, "step56");
+	    Job job = new Job(conf, "step52");
 	    
 	    job.setJarByClass(Step52.class);
 	    job.setMapperClass(Mapper52.class);
 	    job.setReducerClass(Reducer52.class);
 	    
-	    job.setMapOutputKeyClass(Word.class);
+	    job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Cluster.class);
-	    job.setOutputKeyClass(Word.class);
+	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Cluster.class);
 	    
 	    job.setInputFormatClass(SequenceFileInputFormat.class);

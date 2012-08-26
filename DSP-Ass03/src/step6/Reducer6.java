@@ -9,7 +9,7 @@ import data.Cluster;
 import data.Global;
 import data.Word;
 
-public class Reducer6 extends Reducer<Cluster, Word, Text, Cluster> {
+public class Reducer6 extends Reducer<Cluster, Text, Text, Cluster> {
 
 	protected Cluster mCluster;
 	protected Text mTextWord;
