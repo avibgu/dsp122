@@ -83,25 +83,28 @@ public class Step6 {
 				Step6.class.getResourceAsStream("AwsCredentials.properties")));
 
 		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
-				Global.BUCKET_NAME, "output").getObjectSummaries()) {
+				Global.BUCKET_NAME, inDir).getObjectSummaries())
+			mAmazonS3.deleteObject(new DeleteObjectRequest(Global.BUCKET_NAME,
+					objectSummary.getKey()));
+
+		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
+				Global.BUCKET_NAME, outDir).getObjectSummaries()) {
 
 			String key = objectSummary.getKey();
 
-			if (key.startsWith(inDir))
-				mAmazonS3.deleteObject(new DeleteObjectRequest(
-						Global.BUCKET_NAME, key));
+			mAmazonS3.copyObject(new CopyObjectRequest(Global.BUCKET_NAME, key,
+					Global.BUCKET_NAME, key.replaceFirst(outDir, inDir)));
 
-			if (key.startsWith(outDir)) {
-
-				mAmazonS3.copyObject(new CopyObjectRequest(Global.BUCKET_NAME,
-						key, Global.BUCKET_NAME, key
-								.replaceFirst(outDir, inDir)));
-
-				mAmazonS3.deleteObject(new DeleteObjectRequest(
-						Global.BUCKET_NAME, key));
-			}
+			mAmazonS3.deleteObject(new DeleteObjectRequest(Global.BUCKET_NAME,
+					key));
 		}
 
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		/*
 		 * File out = new File(outDir); File in = new File(inDir);
 		 * 
