@@ -25,6 +25,8 @@ public class CorePatternsList implements WritableComparable<CorePatternsList>{
 		
 		int size = in.readInt(); 
 		
+		mCorePatterns.clear();
+		
 		for(int i = 0; i < size; i++){
 			
 			Pattern pattern = new Pattern();
