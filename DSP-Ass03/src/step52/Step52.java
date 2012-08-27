@@ -51,9 +51,6 @@ public class Step52 {
 			
 			Configuration conf = new Configuration();
 
-			conf.set("mapred.map.child.java.opts", "-Xmx5120m");
-			conf.set("mapred.reduce.child.java.opts", "-Xmx5120m");
-
 			Job job = new Job(conf, "step52");
 
 			job.setJarByClass(Step52.class);
