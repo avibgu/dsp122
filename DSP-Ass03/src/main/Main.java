@@ -99,12 +99,12 @@ public class Main {
 				.withArgs("s3n://" + Global.BUCKET_NAME + "/output51/",
 						"s3n://" + Global.BUCKET_NAME + "/output52/");
 
-		// HadoopJarStepConfig hadoopJarStep6 = new HadoopJarStepConfig()
-		// .withJar("s3n://" + Global.BUCKET_NAME + "/step6.jar")
-		// .withMainClass("step6.Step6")
-		// .withArgs("s3n://" + Global.BUCKET_NAME + "/output52/",
-		// "s3n://" + Global.BUCKET_NAME + "/output6/");
-		//
+		HadoopJarStepConfig hadoopJarStep6 = new HadoopJarStepConfig()
+				.withJar("s3n://" + Global.BUCKET_NAME + "/step6.jar")
+				.withMainClass("step6.Step6")
+				.withArgs("s3n://" + Global.BUCKET_NAME + "/output52/",
+						"s3n://" + Global.BUCKET_NAME + "/output6/");
+
 		// HadoopJarStepConfig hadoopJarStep7 = new HadoopJarStepConfig()
 		// .withJar("s3n://" + Global.BUCKET_NAME + "/step7.jar")
 		// .withMainClass("step7.Step7")
@@ -114,14 +114,30 @@ public class Main {
 		HadoopJarStepConfig hadoopJarStep9train = new HadoopJarStepConfig()
 				.withJar("s3n://" + Global.BUCKET_NAME + "/step9.jar")
 				.withMainClass("step9.Step9")
-				.withArgs("s3n://" + Global.BUCKET_NAME + "/output51/", // TODO
+				.withArgs("s3n://" + Global.BUCKET_NAME + "/output51/",
 						"s3n://" + Global.BUCKET_NAME + "/outputTrain/", "0");
 
 		HadoopJarStepConfig hadoopJarStep9test = new HadoopJarStepConfig()
 				.withJar("s3n://" + Global.BUCKET_NAME + "/step9.jar")
 				.withMainClass("step9.Step9")
-				.withArgs("s3n://" + Global.BUCKET_NAME + "/output51/", // TODO
+				.withArgs("s3n://" + Global.BUCKET_NAME + "/output51/",
 						"s3n://" + Global.BUCKET_NAME + "/outputTest/", "2");
+
+		HadoopJarStepConfig hadoopJarStep9train2 = new HadoopJarStepConfig()
+				.withJar("s3n://" + Global.BUCKET_NAME + "/step9.jar")
+				.withMainClass("step9.Step9")
+				.withArgs(
+						"s3n://" + Global.BUCKET_NAME + "/output6/",
+						"s3n://" + Global.BUCKET_NAME
+								+ "/outputTrainWithMerge/", "0");
+
+		HadoopJarStepConfig hadoopJarStep9test2 = new HadoopJarStepConfig()
+				.withJar("s3n://" + Global.BUCKET_NAME + "/step9.jar")
+				.withMainClass("step9.Step9")
+				.withArgs(
+						"s3n://" + Global.BUCKET_NAME + "/output6/",
+						"s3n://" + Global.BUCKET_NAME + "/outputTestWithMerge/",
+						"2");
 
 		StepConfig step1Config = new StepConfig().withName("step1")
 				.withHadoopJarStep(hadoopJarStep1)
@@ -155,9 +171,9 @@ public class Main {
 				.withHadoopJarStep(hadoopJarStep52)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
-		// StepConfig step6Config = new StepConfig().withName("step6")
-		// .withHadoopJarStep(hadoopJarStep6)
-		// .withActionOnFailure("TERMINATE_JOB_FLOW");
+		StepConfig step6Config = new StepConfig().withName("step6")
+				.withHadoopJarStep(hadoopJarStep6)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
 		// StepConfig step7Config = new StepConfig().withName("step7")
 		// .withHadoopJarStep(hadoopJarStep7)
@@ -171,6 +187,14 @@ public class Main {
 				.withHadoopJarStep(hadoopJarStep9test)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
+		StepConfig step9trainConfig2 = new StepConfig().withName("step9train")
+				.withHadoopJarStep(hadoopJarStep9train2)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
+		StepConfig step9testConfig2 = new StepConfig().withName("step9test")
+				.withHadoopJarStep(hadoopJarStep9test2)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
 		JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 				.withInstanceCount(Global.NUM_OF_INSTANCES)
 				.withMasterInstanceType(InstanceType.M1Small.toString())
@@ -181,17 +205,14 @@ public class Main {
 				.withPlacement(new PlacementType());
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-				.withName(jobName)
-				.withInstances(instances)
-				.withSteps(debugConfig, step1Config, step2Config,
-						step3Config,
-						step4Config,
-						step51Config,
-						// step52Config,
-						// step6Config,
-						// step7Config,
-						step9trainConfig, step9testConfig, step4TextConfig,
-						step51TextConfig)
+				.withName(jobName).withInstances(instances).withSteps(
+				// debugConfig,
+						// step1Config, step2Config, step3Config,
+						// step4Config, step51Config,
+						// step9trainConfig, step9testConfig, step4TextConfig,
+						// step51TextConfig, step52Config, step6Config,
+						// ,step7Config,
+						step9trainConfig2, step9testConfig2)
 				.withLogUri("s3n://" + Global.BUCKET_NAME + "/logs/");
 
 		RunJobFlowResult runJobFlowResult = mapReduce

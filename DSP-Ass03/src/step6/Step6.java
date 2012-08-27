@@ -80,9 +80,6 @@ public class Step6 {
 			// sorted by their num of patterns,
 			// so the minimal cluster would be chosen first
 			conf.set("mapred.reduce.tasks", "1");
-
-			conf.set("mapred.map.child.java.opts", "-Xmx5120m");
-			conf.set("mapred.reduce.child.java.opts", "-Xmx5120m");
 			
 			job.setJarByClass(Step6.class);
 			job.setMapperClass(Mapper6.class);
@@ -114,6 +111,22 @@ public class Step6 {
 
 		mAmazonSQS.sendMessage(new SendMessageRequest(queueUrl, outDir));
 
+		// copy the output dir to output6
+		AmazonS3 mAmazonS3 = new AmazonS3Client(new PropertiesCredentials(
+				Step6.class.getResourceAsStream("AwsCredentials.properties")));
+		
+		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
+				Global.BUCKET_NAME, outDir).getObjectSummaries()) {
+
+			String key = objectSummary.getKey();
+
+			mAmazonS3.copyObject(new CopyObjectRequest(Global.BUCKET_NAME, key,
+					Global.BUCKET_NAME, key.replaceFirst(outDir, outDirBase)));
+
+			mAmazonS3.deleteObject(new DeleteObjectRequest(Global.BUCKET_NAME,
+					key));
+		}		
+		
 		System.exit(status ? 0 : 1);
 	}
 
