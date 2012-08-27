@@ -1,11 +1,6 @@
 package main;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -13,13 +8,10 @@ import java.util.Vector;
 import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import data.Global;
 
-import step2.Step2;
-import step6.Step6;
 import utilities.FileManipulator;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -39,9 +31,6 @@ public class WekaMain {
 	 */
 	public static void main(String[] args) throws Exception {
 
-//		final File trainFolder = new File("outputTrain");
-//		final File testFolder = new File("outputTest");
-
 		AmazonS3 mAmazonS3 = new AmazonS3Client(
 				new PropertiesCredentials(WekaMain.class
 						.getResourceAsStream("AwsCredentials.properties")));
@@ -56,7 +45,7 @@ public class WekaMain {
 		for (S3ObjectSummary objectSummary : mAmazonS3.listObjects(
 				Global.BUCKET_NAME, "outputTest").getObjectSummaries())
 			testSet.add(objectSummary.getKey());
-
+		
 		Vector<String> trainLines = readFilesFromFolder(mAmazonS3, trainSet);
 		Vector<String> testLines = readFilesFromFolder(mAmazonS3, trainSet);
 
@@ -134,9 +123,9 @@ public class WekaMain {
 			for (int i = 0; i < splitted.length - 1; i++)
 				featureVector.setValue((Attribute) attributes.elementAt(i),
 						Double.parseDouble(splitted[i]));
-
+			
 			featureVector.setValue((Attribute) attributes.elementAt(size),
-					(String) splitted[splitted.length - 1]);
+					(String) splitted[splitted.length - 1].split("\t")[0]);
 
 			data.add(featureVector);
 
