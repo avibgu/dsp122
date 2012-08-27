@@ -127,7 +127,7 @@ public class Main {
 				.withJar("s3n://" + Global.BUCKET_NAME + "/step9.jar")
 				.withMainClass("step9.Step9")
 				.withArgs(
-						"s3n://" + Global.BUCKET_NAME + "/output6/",
+						"s3n://" + Global.BUCKET_NAME + "/output52-3/",
 						"s3n://" + Global.BUCKET_NAME
 								+ "/outputTrainWithMerge/", "0");
 
@@ -135,7 +135,7 @@ public class Main {
 				.withJar("s3n://" + Global.BUCKET_NAME + "/step9.jar")
 				.withMainClass("step9.Step9")
 				.withArgs(
-						"s3n://" + Global.BUCKET_NAME + "/output6/",
+						"s3n://" + Global.BUCKET_NAME + "/output52-3/",
 						"s3n://" + Global.BUCKET_NAME + "/outputTestWithMerge/",
 						"2");
 
@@ -205,15 +205,15 @@ public class Main {
 				.withPlacement(new PlacementType());
 
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-				.withName(jobName).withInstances(instances).withSteps(
-				// debugConfig,
-						// step1Config, step2Config, step3Config,
-						// step4Config, step51Config,
-						// step9trainConfig, step9testConfig, step4TextConfig,
-						// step51TextConfig, step52Config, step6Config,
-						// ,step7Config,
-						step9trainConfig2, step9testConfig2)
-				.withLogUri("s3n://" + Global.BUCKET_NAME + "/logs/");
+				.withName(jobName)
+				.withInstances(instances)
+				.withSteps(debugConfig, step1Config, step2Config, step3Config,
+						step4Config, step51Config, step9trainConfig,
+						step9testConfig, step4TextConfig, step51TextConfig
+				// , step52Config, step6Config,
+				// ,step7Config,
+				// step9trainConfig2, step9testConfig2
+				).withLogUri("s3n://" + Global.BUCKET_NAME + "/logs/");
 
 		RunJobFlowResult runJobFlowResult = mapReduce
 				.runJobFlow(runFlowRequest);
