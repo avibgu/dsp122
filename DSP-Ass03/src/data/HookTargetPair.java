@@ -44,9 +44,7 @@ public class HookTargetPair implements WritableComparable<HookTargetPair> {
 		if (result != 0)
 			return result;
 
-		result = this.mTarget.compareTo(pOther.mTarget);
-
-		return result;
+		return this.mTarget.compareTo(pOther.mTarget);
 	}
 
 	@Override
@@ -77,5 +75,10 @@ public class HookTargetPair implements WritableComparable<HookTargetPair> {
 
 	public void setTarget(String pTarget) {
 		mTarget = pTarget;
+	}
+	
+	@Override
+	public String toString() {
+		return "<" + mHook + "," + mTarget + ">";
 	}
 }

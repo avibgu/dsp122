@@ -75,6 +75,12 @@ public class Main {
 				.withArgs("s3n://" + Global.BUCKET_NAME + "/output3/",
 						"s3n://" + Global.BUCKET_NAME + "/output4/");
 
+		HadoopJarStepConfig hadoopJarStep4Text = new HadoopJarStepConfig()
+				.withJar("s3n://" + Global.BUCKET_NAME + "/step4text.jar")
+				.withMainClass("step4.Step4")
+				.withArgs("s3n://" + Global.BUCKET_NAME + "/output3/",
+						"s3n://" + Global.BUCKET_NAME + "/output4text/");
+
 		HadoopJarStepConfig hadoopJarStep51 = new HadoopJarStepConfig()
 				.withJar("s3n://" + Global.BUCKET_NAME + "/step51.jar")
 				.withMainClass("step51.Step51")
@@ -87,17 +93,23 @@ public class Main {
 				.withArgs("s3n://" + Global.BUCKET_NAME + "/output4/",
 						"s3n://" + Global.BUCKET_NAME + "/output51text/");
 
-		// HadoopJarStepConfig hadoopJarStep52 = new HadoopJarStepConfig()
-		// .withJar("s3n://" + Global.BUCKET_NAME + "/step52.jar")
-		// .withMainClass("step52.Step52")
-		// .withArgs("s3n://" + Global.BUCKET_NAME + "/output51/",
-		// "s3n://" + Global.BUCKET_NAME + "/output52/");
-		//
+		HadoopJarStepConfig hadoopJarStep52 = new HadoopJarStepConfig()
+				.withJar("s3n://" + Global.BUCKET_NAME + "/step52.jar")
+				.withMainClass("step52.Step52")
+				.withArgs("s3n://" + Global.BUCKET_NAME + "/output51/",
+						"s3n://" + Global.BUCKET_NAME + "/output52/");
+
 		// HadoopJarStepConfig hadoopJarStep6 = new HadoopJarStepConfig()
 		// .withJar("s3n://" + Global.BUCKET_NAME + "/step6.jar")
 		// .withMainClass("step6.Step6")
 		// .withArgs("s3n://" + Global.BUCKET_NAME + "/output52/",
 		// "s3n://" + Global.BUCKET_NAME + "/output6/");
+		//
+		// HadoopJarStepConfig hadoopJarStep7 = new HadoopJarStepConfig()
+		// .withJar("s3n://" + Global.BUCKET_NAME + "/step7.jar")
+		// .withMainClass("step7.Step7")
+		// .withArgs("s3n://" + Global.BUCKET_NAME + "/output6/",
+		// "s3n://" + Global.BUCKET_NAME + "/output7/");
 
 		HadoopJarStepConfig hadoopJarStep9train = new HadoopJarStepConfig()
 				.withJar("s3n://" + Global.BUCKET_NAME + "/step9.jar")
@@ -127,6 +139,10 @@ public class Main {
 				.withHadoopJarStep(hadoopJarStep4)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
+		StepConfig step4TextConfig = new StepConfig().withName("step4text")
+				.withHadoopJarStep(hadoopJarStep4Text)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
 		StepConfig step51Config = new StepConfig().withName("step51")
 				.withHadoopJarStep(hadoopJarStep51)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
@@ -135,12 +151,16 @@ public class Main {
 				.withHadoopJarStep(hadoopJarStep51Text)
 				.withActionOnFailure("TERMINATE_JOB_FLOW");
 
-		// StepConfig step52Config = new StepConfig().withName("step52")
-		// .withHadoopJarStep(hadoopJarStep52)
-		// .withActionOnFailure("TERMINATE_JOB_FLOW");
-		//
+		StepConfig step52Config = new StepConfig().withName("step52")
+				.withHadoopJarStep(hadoopJarStep52)
+				.withActionOnFailure("TERMINATE_JOB_FLOW");
+
 		// StepConfig step6Config = new StepConfig().withName("step6")
 		// .withHadoopJarStep(hadoopJarStep6)
+		// .withActionOnFailure("TERMINATE_JOB_FLOW");
+
+		// StepConfig step7Config = new StepConfig().withName("step7")
+		// .withHadoopJarStep(hadoopJarStep7)
 		// .withActionOnFailure("TERMINATE_JOB_FLOW");
 
 		StepConfig step9trainConfig = new StepConfig().withName("step9train")
@@ -163,11 +183,15 @@ public class Main {
 		RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
 				.withName(jobName)
 				.withInstances(instances)
-				.withSteps(debugConfig, step1Config, step2Config, step3Config,
-						step4Config, step51Config,
+				.withSteps(debugConfig, step1Config, step2Config,
+						step3Config,
+						step4Config,
+						step51Config,
 						// step52Config,
 						// step6Config,
-						step9trainConfig, step9testConfig, step51TextConfig)
+						// step7Config,
+						step9trainConfig, step9testConfig, step4TextConfig,
+						step51TextConfig)
 				.withLogUri("s3n://" + Global.BUCKET_NAME + "/logs/");
 
 		RunJobFlowResult runJobFlowResult = mapReduce

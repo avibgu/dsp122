@@ -48,11 +48,15 @@ public class Pattern implements WritableComparable<Pattern> {
 
 		int size = in.readInt();
 
+		mHooks.clear();
+		
 		for (int i = 0; i < size; i++)
 			mHooks.add(in.readUTF());
 
 		size = in.readInt();
 
+		mTargets.clear();
+		
 		for (int i = 0; i < size; i++)
 			mTargets.add(in.readUTF());
 
@@ -90,7 +94,18 @@ public class Pattern implements WritableComparable<Pattern> {
 		if (0 != answer)
 			return answer;
 
-		return mPostfix.compareTo(pOther.mPostfix);
+		answer = mPostfix.compareTo(pOther.mPostfix);
+		if (0 != answer)
+			return answer;
+
+		if 	(this.mHooks.size() != pOther.mHooks.size())
+			return 1;
+		
+		for (int i = 0; i < mHooks.size(); i++)
+			if (!pOther.isWordsPairContained(mHooks.get(i), mTargets.get(i)))
+				return 1;
+
+		return 0;
 	}
 
 	@Override
@@ -179,7 +194,7 @@ public class Pattern implements WritableComparable<Pattern> {
 			builder.append("<" + mHooks.get(i) + "," + mTargets.get(i) + "> ");
 
 		builder.append("\n");
-		
+
 		return builder.toString();
 	}
 }

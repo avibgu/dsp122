@@ -94,7 +94,7 @@ public class WekaMain {
 			if (!fileName.equals(".svn")) {
 
 				Vector<String> lines = FileManipulator.readFromInputStream(
-						mAmazonS3.getObject(Global.BUCKET_NAME, "totalCounter")
+						mAmazonS3.getObject(Global.BUCKET_NAME, fileName)
 								.getObjectContent(), false);
 
 				result.addAll(lines);
