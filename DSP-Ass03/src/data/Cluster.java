@@ -10,8 +10,6 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class Cluster implements WritableComparable<Cluster> {
 
-	public static int idgen = 0;
-
 	protected String mId;
 
 	protected String mHookWord;
@@ -21,9 +19,8 @@ public class Cluster implements WritableComparable<Cluster> {
 	protected boolean mMerged;
 
 	public Cluster() {
-		// mId = UUID.randomUUID().toString();
-
-		mId = String.valueOf(idgen++);
+		
+		mId = UUID.randomUUID().toString();
 
 		mHookWord = "";
 		mCorePatters = new Vector<Pattern>();
@@ -41,6 +38,8 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		int size = in.readInt();
 
+		mCorePatters.clear();
+		
 		for (int i = 0; i < size; i++) {
 
 			Pattern pattern = new Pattern();
@@ -50,6 +49,8 @@ public class Cluster implements WritableComparable<Cluster> {
 
 		size = in.readInt();
 
+		mUnconfirmedPatters.clear();
+		
 		for (int i = 0; i < size; i++) {
 
 			Pattern pattern = new Pattern();
@@ -331,7 +332,7 @@ public class Cluster implements WritableComparable<Cluster> {
 
 	public void clear() {
 
-		mId = "0";
+		mId = UUID.randomUUID().toString();
 		mHookWord = "";
 		mCorePatters.clear();
 		mUnconfirmedPatters.clear();

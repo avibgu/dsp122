@@ -29,7 +29,7 @@ public class Reducer51 extends Reducer<HookTargetPair, Pattern, Text, Cluster> {
 		mCluster.setHookWord(hookTargetPair.getHook());
 		
 		for (Pattern pattern : patterns){
-			
+
 			try {
 				mCluster.add((Pattern) pattern.clone());
 			} catch (CloneNotSupportedException e) {
@@ -40,10 +40,4 @@ public class Reducer51 extends Reducer<HookTargetPair, Pattern, Text, Cluster> {
 		mTextWord.set(mCluster.getHookWord());
 		context.write(mTextWord, mCluster);
 	};
-	
-//	@Override
-//	protected void cleanup(Context context)
-//			throws IOException, InterruptedException {
-//		context.write(mCluster.getHookWord(), mCluster);
-//	}
 }

@@ -17,13 +17,14 @@ public class Mapper51 extends Mapper<Text, Pattern, HookTargetPair, Pattern> {
 			throws IOException, InterruptedException {
 		mHookTargetPair = new HookTargetPair();
 	}
-		
+
 	protected void map(Text hookWord, Pattern pattern, Context context)
 			throws IOException, InterruptedException {
-		
+
 		String hook = hookWord.toString();
 		
 		for (String target : pattern.getTargetsAsSet()) {
+			
 			mHookTargetPair.set(hook, target);
 			context.write(mHookTargetPair, pattern);
 		}
